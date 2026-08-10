@@ -1,0 +1,452 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --green: #438500;
+  --green-dark: #3d7900;
+  --black: #050505;
+  --muted: #676767;
+  --line: #e4e4e4;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  width: 100%;
+  min-width: 320px;
+  background: #ffffff;
+  color: var(--black);
+  font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.topbar {
+  width: 100%;
+  height: 126px;
+
+  padding: 23px 28px 0 28px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.brand {
+  display: block;
+
+  width: 207px;
+  height: 92px;
+}
+
+.brand img {
+  width: 207px;
+  height: 92px;
+
+  object-fit: contain;
+  object-position: left top;
+
+  display: block;
+}
+
+.top-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 24px;
+  padding-top: 24px;
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+
+  border: 0;
+  padding: 0;
+
+  background: transparent;
+
+  display: grid;
+  place-items: center;
+
+  cursor: pointer;
+}
+
+.icon-button svg {
+  width: 31px;
+  height: 31px;
+
+  fill: none;
+  stroke: #111111;
+
+  stroke-width: 2.2;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.menu-button svg {
+  width: 34px;
+  height: 34px;
+
+  stroke-width: 2.4;
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+  text-align: center;
+
+  padding: 77px 24px 0;
+}
+
+.hero h1 {
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-weight: 900;
+
+  font-size: 75px;
+
+  line-height: 0.93;
+
+  letter-spacing: -3.8px;
+}
+
+.hero h1 span {
+  display: block;
+
+  white-space: nowrap;
+}
+
+.hero h1 em {
+  color: var(--green);
+
+  font-style: normal;
+}
+
+
+/* =========================
+   DESCRIPTION
+========================= */
+
+.hero-copy {
+  margin: 48px auto 0;
+
+  max-width: 585px;
+
+  color: #666666;
+
+  font-size: 29px;
+
+  line-height: 1.58;
+
+  font-weight: 400;
+}
+
+
+/* =========================
+   HERO BUTTONS
+========================= */
+
+.hero-buttons {
+  margin: 54px auto 0;
+
+  width: 345px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 22px;
+}
+
+.primary-button,
+.secondary-button {
+  width: 100%;
+  height: 78px;
+
+  border-radius: 11px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 800;
+
+  font-size: 25px;
+
+  letter-spacing: 0.2px;
+}
+
+
+/* GET STARTED */
+
+.primary-button {
+  color: #ffffff;
+
+  background: var(--green);
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.14);
+
+  gap: 14px;
+}
+
+.primary-button svg {
+  width: 28px;
+  height: 28px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 2.2;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+
+/* BROWSE SERVICES */
+
+.secondary-button {
+  color: #090909;
+
+  background: #ffffff;
+
+  border: 2px solid #e4e4e4;
+
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================
+   SERVICES MARQUEE
+========================= */
+
+.service-marquee {
+  margin-top: 205px;
+
+  width: 100%;
+  height: 108px;
+
+  background: var(--green);
+
+  overflow: hidden;
+
+  display: flex;
+  align-items: center;
+
+  white-space: nowrap;
+}
+
+.marquee-track {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 74px;
+
+  padding-left: 38px;
+
+  min-width: max-content;
+
+  animation: marquee 18s linear infinite;
+
+  color: #ffffff;
+}
+
+.marquee-track span {
+  font-size: 29px;
+
+  font-weight: 800;
+
+  letter-spacing: 1px;
+}
+
+.marquee-track b {
+  font-size: 32px;
+
+  font-weight: 400;
+}
+
+@keyframes marquee {
+
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-45%);
+  }
+
+}
+
+
+/* =========================
+   STATISTICS
+========================= */
+
+.stats {
+  width: calc(100% - 64px);
+
+  margin: 104px auto 100px;
+
+  display: grid;
+
+  grid-template-columns: 1fr 1fr;
+
+  border-top: 1px solid var(--line);
+}
+
+.stat {
+  min-height: 265px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.stat:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+
+.stat strong {
+  color: var(--green);
+
+  font-size: 51px;
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  letter-spacing: -2px;
+}
+
+.stat span {
+  margin-top: 20px;
+
+  color: #777777;
+
+  font-size: 22px;
+
+  line-height: 1.38;
+
+  font-weight: 400;
+
+  letter-spacing: 0.3px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+  .topbar {
+    height: 112px;
+
+    padding: 20px 24px 0 25px;
+  }
+
+  .brand,
+  .brand img {
+    width: 185px;
+    height: 82px;
+  }
+
+  .top-actions {
+    gap: 19px;
+
+    padding-top: 19px;
+  }
+
+  .icon-button {
+    width: 29px;
+    height: 29px;
+  }
+
+  .hero {
+    padding-top: 69px;
+  }
+
+  .hero h1 {
+    font-size: clamp(
+      48px,
+      12.2vw,
+      75px
+    );
+
+    letter-spacing: -2.7px;
+  }
+
+  .hero-copy {
+    margin-top: 43px;
+
+    font-size: clamp(
+      20px,
+      4.7vw,
+      29px
+    );
+
+    line-height: 1.58;
+  }
+
+  .hero-buttons {
+    width: min(
+      345px,
+      calc(100vw - 80px)
+    );
+
+    margin-top: 50px;
+
+    gap: 20px;
+  }
+
+  .primary-button,
+  .secondary-button {
+    height: 78px;
+
+    font-size: 24px;
+  }
+
+  .service-marquee {
+    margin-top: 205px;
+  }
+
+  .stats {
+    width: calc(100% - 64px);
+
+    margin-top: 104px;
+  }
+
+}
