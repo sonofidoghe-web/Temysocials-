@@ -382,10 +382,12 @@
 
       try {
         await signInWithEmailAndPassword(auth, email, password);
-        showMessage('Signed in successfully!', 'success');
-        
-        // Optional: redirect after success
-        // setTimeout(() => window.location.href = 'dashboard.html', 1500);
+showMessage('Signed in successfully!', 'success');
+
+// Redirect to dashboard after successful login
+setTimeout(() => {
+  window.location.href = 'dashboard.html';
+}, 1000);
       } catch (error) {
         let errorMsg = 'Something went wrong. Please try again.';
         
