@@ -2,187 +2,180 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temmy Social - Menu</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #111;
+      min-height: 100vh;
+    }
 
-  <title>Menu - Temmy Social</title>
+    .menu {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  <link rel="stylesheet" href="menu.css">
+    /* Header */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .logo {
+      height: 42px;
+      width: auto;
+      display: block;
+    }
+
+    .header-icons {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Navigation links */
+    nav {
+      flex: 1;
+      padding: 32px 8px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 36px;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #111;
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -0.3px;
+      transition: color 0.2s;
+    }
+
+    nav a:hover {
+      color: #3d6b1e;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: #e5e5e5;
+      margin: 8px 0 28px;
+    }
+
+    /* Buttons */
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 0 4px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 16px 24px;
+      font-size: 17px;
+      font-weight: 500;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #111;
+      border: 1.5px solid #e0e0e0;
+    }
+
+    .btn-outline:hover {
+      background: #f8f8f8;
+      border-color: #ccc;
+    }
+
+    .btn-solid {
+      background: #3d6b1e;       /* matches the green in your design */
+      color: #fff;
+      border: none;
+    }
+
+    .btn-solid:hover {
+      background: #345c19;
+    }
+  </style>
 </head>
-
 <body>
+  <div class="menu">
+    <!-- Header -->
+    <div class="header">
+      <!-- Replace logo.png with your actual logo file -->
+      <img src="logo.png" alt="Temmy Social" class="logo">
 
-  <div class="menu-page">
-
-    <!-- HEADER -->
-    <header class="menu-header">
-
-      <!-- LOGO -->
-      <a href="index.html" class="menu-logo">
-        <img src="logo.png.jpg" alt="Temmy Social">
-      </a>
-
-
-      <!-- HEADER ACTIONS -->
-      <div class="menu-actions">
-
-        <!-- THEME ICON - DISABLED -->
-        <button
-          type="button"
-          class="menu-theme"
-          aria-label="Theme disabled"
-          disabled
-        >
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-
-            <circle
-              cx="16"
-              cy="16"
-              r="5.2"
-            ></circle>
-
-            <line
-              x1="16"
-              y1="2.8"
-              x2="16"
-              y2="7"
-            ></line>
-
-            <line
-              x1="16"
-              y1="25"
-              x2="16"
-              y2="29.2"
-            ></line>
-
-            <line
-              x1="2.8"
-              y1="16"
-              x2="7"
-              y2="16"
-            ></line>
-
-            <line
-              x1="25"
-              y1="16"
-              x2="29.2"
-              y2="16"
-            ></line>
-
-            <line
-              x1="6.6"
-              y1="6.6"
-              x2="9.6"
-              y2="9.6"
-            ></line>
-
-            <line
-              x1="22.4"
-              y1="22.4"
-              x2="25.4"
-              y2="25.4"
-            ></line>
-
-            <line
-              x1="22.4"
-              y1="9.6"
-              x2="25.4"
-              y2="6.6"
-            ></line>
-
-            <line
-              x1="6.6"
-              y1="25.4"
-              x2="9.6"
-              y2="22.4"
-            ></line>
-
+      <div class="header-icons">
+        <!-- Theme toggle (sun) -->
+        <button class="icon-btn" aria-label="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
           </svg>
         </button>
 
-
-        <!-- CLOSE -->
-        <button
-          type="button"
-          class="menu-close"
-          aria-label="Close menu"
-          onclick="window.location.href='index.html'"
-        >
-
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-
-            <line
-              x1="6"
-              y1="6"
-              x2="26"
-              y2="26"
-            ></line>
-
-            <line
-              x1="26"
-              y1="6"
-              x2="6"
-              y2="26"
-            ></line>
-
+        <!-- Close (X) -->
+        <button class="icon-btn" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
-
         </button>
-
       </div>
+    </div>
 
-    </header>
+    <!-- Menu links -->
+    <nav>
+      <a href="services.html">Services</a>
+      <a href="about.html">About</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="faq.html">FAQ</a>
+    </nav>
 
+    <div class="divider"></div>
 
-    <!-- MENU CONTENT -->
-    <main class="menu-content">
-
-      <nav class="menu-links">
-
-        <a href="services.html">
-          Services
-        </a>
-
-        <a href="about.html">
-          About
-        </a>
-
-        <a href="pricing.html">
-          Pricing
-        </a>
-
-        <a href="faq.html">
-          FAQ
-        </a>
-
-      </nav>
-
-
-      <!-- ACCOUNT BUTTONS -->
-      <div class="menu-account">
-
-        <a
-          href="login.html"
-          class="menu-signin"
-        >
-          Sign in
-        </a>
-
-        <a
-          href="signup.html"
-          class="menu-get-started"
-        >
-          Get started free
-        </a>
-
-      </div>
-
-    </main>
-
+    <!-- Action buttons -->
+    <div class="buttons">
+      <a href="#signin" class="btn btn-outline">Sign in</a>
+      <a href="#get-started" class="btn btn-solid">Get started free</a>
+    </div>
   </div>
-
 </body>
 </html>
