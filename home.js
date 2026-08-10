@@ -52,3 +52,20 @@ document.querySelectorAll(".faq-question").forEach(function (button) {
   });
 
 });
+const menuButton = document.querySelector(".menu-button");
+const mobileMenu = document.getElementById("mobileMenu");
+const closeMenu = document.getElementById("closeMenu");
+
+if (menuButton && mobileMenu) {
+  menuButton.addEventListener("click", () => {
+    mobileMenu.style.display = "block";
+    document.body.style.overflow = "hidden";
+  });
+}
+
+if (closeMenu && mobileMenu) {
+  closeMenu.addEventListener("click", () => {
+    mobileMenu.style.display = "none";
+    document.body.style.overflow = "";
+  });
+}
