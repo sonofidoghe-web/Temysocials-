@@ -29,3 +29,26 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 });
+/* =====================================================
+   FAQ ACCORDION
+===================================================== */
+
+document.querySelectorAll(".faq-question").forEach(function (button) {
+
+  button.addEventListener("click", function () {
+
+    const currentItem = button.closest(".faq-item");
+
+    document.querySelectorAll(".faq-item").forEach(function (item) {
+
+      if (item !== currentItem) {
+        item.classList.remove("active");
+      }
+
+    });
+
+    currentItem.classList.toggle("active");
+
+  });
+
+});
