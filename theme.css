@@ -1,0 +1,162 @@
+/* =====================================================
+   GLOBAL THEME
+===================================================== */
+
+:root {
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #0b0b0b;
+  --muted: #777777;
+  --border: #e5e5e5;
+  --soft: #f7f7f7;
+  --green: #4f8500;
+}
+
+/* DARK THEME */
+
+html.dark-theme {
+  --bg: #000000;
+  --surface: #000000;
+  --text: #ffffff;
+  --muted: #b8b8b8;
+  --border: #292929;
+  --soft: #111111;
+}
+
+/* PAGE */
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* COMMON ELEMENTS */
+
+body,
+section,
+main,
+header,
+footer,
+article,
+nav,
+div {
+  border-color: var(--border);
+}
+
+/* TEXT */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+strong,
+label {
+  color: inherit;
+}
+
+/* INPUTS */
+
+input,
+textarea,
+select {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+/* CARDS / BOXES */
+
+.card,
+.service-card,
+.process-card,
+.process-step,
+.efficiency-feature,
+.review-card,
+.faq-item {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+/* WHITE AREAS */
+
+.white-bg,
+.bg-white {
+  background: var(--surface);
+}
+
+/* LIGHT GRAY AREAS */
+
+.light-bg,
+.bg-light {
+  background: var(--soft);
+}
+
+/* LINKS */
+
+a {
+  color: inherit;
+}
+
+/* KEEP YOUR GREEN */
+
+.section-label,
+.process-label,
+.service-link,
+.efficiency-link,
+.efficiency-intro h2 span {
+  color: var(--green);
+}
+
+/* BUTTONS THAT ARE SUPPOSED TO STAY GREEN */
+
+.primary-button,
+.efficiency-button {
+  background: var(--green);
+  color: #ffffff;
+}
+
+/* OUTLINE BUTTONS */
+
+.secondary-button {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+/* ICONS */
+
+.icon-button {
+  color: var(--text);
+}
+
+.icon-button svg {
+  stroke: currentColor;
+}
+
+/* SVGs */
+
+svg {
+  color: inherit;
+}
+
+/* FAQ PLUS */
+
+.faq-item .plus {
+  color: var(--muted);
+}
+
+/* IMAGES MUST NOT BE INVERTED */
+
+img {
+  filter: none !important;
+}
