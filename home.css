@@ -3477,3 +3477,6 @@ a {
     margin-bottom: 30px;
   }
 }
+.mobile-menu {
+  display: none;
+}
