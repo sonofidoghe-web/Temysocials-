@@ -1,39 +1,32 @@
-/* =====================================================
-   GLOBAL THEME SYSTEM
-===================================================== */
+document.addEventListener("DOMContentLoaded", function () {
 
-(function () {
+  const themeButtons = document.querySelectorAll(
+    ".theme-button, .mobile-theme-button"
+  );
 
-  const savedTheme = localStorage.getItem("temmy-theme");
+  const savedTheme = localStorage.getItem("temy-theme");
 
   if (savedTheme === "dark") {
     document.documentElement.classList.add("dark-theme");
+    document.body.classList.add("dark-theme");
   }
 
-  document.addEventListener("DOMContentLoaded", function () {
+  themeButtons.forEach(function (button) {
 
-    const themeButtons = document.querySelectorAll(
-      ".theme-button"
-    );
+    button.addEventListener("click", function () {
 
-    themeButtons.forEach(function (button) {
+      const isDark =
+        document.documentElement.classList.toggle("dark-theme");
 
-      button.addEventListener("click", function () {
+      document.body.classList.toggle("dark-theme", isDark);
 
-        const html = document.documentElement;
-
-        html.classList.toggle("dark-theme");
-
-        if (html.classList.contains("dark-theme")) {
-          localStorage.setItem("temmy-theme", "dark");
-        } else {
-          localStorage.setItem("temmy-theme", "light");
-        }
-
-      });
+      localStorage.setItem(
+        "temy-theme",
+        isDark ? "dark" : "light"
+      );
 
     });
 
   });
 
-})();
+});
