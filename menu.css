@@ -1,6 +1,6 @@
 /* =====================================================
    MENU PAGE
-   MOBILE DESIGN
+   MATCH THE REFERENCE IMAGE
 ===================================================== */
 
 * {
@@ -24,7 +24,7 @@ body {
 
 
 /* =====================================================
-   PAGE
+   MENU PAGE
 ===================================================== */
 
 .menu-page {
@@ -55,12 +55,12 @@ body {
 ===================================================== */
 
 .menu-logo {
-  display: flex;
-  align-items: center;
-
-  text-decoration: none;
+  display: block;
 
   width: 285px;
+  height: auto;
+
+  text-decoration: none;
 }
 
 .menu-logo img {
@@ -86,7 +86,7 @@ body {
 
 
 /* =====================================================
-   THEME BUTTON
+   THEME
    DISABLED
 ===================================================== */
 
@@ -94,8 +94,8 @@ body {
   width: 42px;
   height: 42px;
 
-  border: 0;
   padding: 0;
+  border: 0;
 
   background: transparent;
 
@@ -104,8 +104,6 @@ body {
   justify-content: center;
 
   cursor: default;
-
-  opacity: 1;
 }
 
 .theme-button:disabled {
@@ -118,14 +116,13 @@ body {
 
   fill: none;
   stroke: #111111;
-
   stroke-width: 2.3;
   stroke-linecap: round;
 }
 
 
 /* =====================================================
-   CLOSE BUTTON
+   CLOSE
 ===================================================== */
 
 .close-button {
@@ -145,26 +142,25 @@ body {
 
   fill: none;
   stroke: #111111;
-
   stroke-width: 2.5;
   stroke-linecap: round;
 }
 
 
 /* =====================================================
-   HEADER DIVIDER
+   HEADER LINE
 ===================================================== */
 
 .header-divider {
   width: 100%;
   height: 1px;
 
-  background: #e6e6e6;
+  background: #e4e4e4;
 }
 
 
 /* =====================================================
-   MAIN
+   MENU CONTENT
 ===================================================== */
 
 .menu-main {
@@ -174,6 +170,10 @@ body {
 
 /* =====================================================
    MENU LINKS
+
+   These are deliberately compact.
+   They should NOT push the buttons
+   down the page.
 ===================================================== */
 
 .menu-links {
@@ -188,16 +188,22 @@ body {
   width: fit-content;
 
   color: #111111;
-
   text-decoration: none;
 
-  font-size: 42px;
+  font-size: 40px;
   font-weight: 400;
 
   line-height: 1;
 
-  margin-bottom: 84px;
+  margin-bottom: 86px;
 }
+
+
+/*
+   Home is the last menu item.
+   Give it a smaller bottom space so
+   the account section starts sooner.
+*/
 
 .menu-links a:last-child {
   margin-bottom: 0;
@@ -205,7 +211,10 @@ body {
 
 
 /* =====================================================
-   ACCOUNT AREA
+   ACCOUNT SECTION
+
+   This is where the reference screenshot
+   reaches the middle portion of the page.
 ===================================================== */
 
 .account-area {
@@ -215,12 +224,12 @@ body {
 
   padding: 36px 46px 0;
 
-  border-top: 1px solid #e2e2e2;
+  border-top: 1px solid #e1e1e1;
 }
 
 
 /* =====================================================
-   SIGN IN
+   SIGN IN BUTTON
 ===================================================== */
 
 .sign-in-button {
@@ -243,13 +252,16 @@ body {
   font-size: 32px;
   font-weight: 400;
 
-  box-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 
 /* =====================================================
-   GET STARTED
+   GET STARTED FREE
+
+   This button is the LAST major element.
+   It finishes around the middle of the
+   reference layout, not near the bottom.
 ===================================================== */
 
 .get-started-button {
@@ -276,7 +288,8 @@ body {
 
 
 /* =====================================================
-   MOBILE
+   IMPORTANT
+   NO SHRINKING
 ===================================================== */
 
 @media (max-width: 600px) {
@@ -286,47 +299,45 @@ body {
     padding: 0 46px;
   }
 
-  .menu-logo {
-    width: 285px;
-  }
-
+  .menu-logo,
   .menu-logo img {
     width: 285px;
   }
 
   .menu-actions {
-    gap: 32px;
+    gap: 48px;
   }
 
   .theme-button {
+    width: 42px;
+    height: 42px;
+  }
+
+  .theme-button svg {
     width: 38px;
     height: 38px;
   }
 
-  .theme-button svg {
-    width: 36px;
-    height: 36px;
-  }
-
   .close-button {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
 
   .close-button svg {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
   }
 
   .menu-links {
-    padding-top: 36px;
+    padding-top: 34px;
     padding-left: 82px;
-    padding-right: 30px;
+    padding-right: 40px;
   }
 
   .menu-links a {
-    font-size: 42px;
-    margin-bottom: 84px;
+    font-size: 40px;
+    line-height: 1;
+    margin-bottom: 86px;
   }
 
   .account-area {
@@ -345,45 +356,5 @@ body {
     margin-top: 30px;
     font-size: 32px;
     border-radius: 20px;
-  }
-}
-
-
-/* =====================================================
-   SMALLER PHONES
-===================================================== */
-
-@media (max-width: 390px) {
-
-  .menu-header {
-    padding: 0 30px;
-  }
-
-  .menu-logo,
-  .menu-logo img {
-    width: 235px;
-  }
-
-  .menu-actions {
-    gap: 20px;
-  }
-
-  .menu-links {
-    padding-left: 50px;
-  }
-
-  .menu-links a {
-    font-size: 34px;
-    margin-bottom: 70px;
-  }
-
-  .account-area {
-    padding-left: 30px;
-    padding-right: 30px;
-  }
-
-  .sign-in-button,
-  .get-started-button {
-    font-size: 27px;
   }
 }
