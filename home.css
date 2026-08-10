@@ -595,3 +595,93 @@ a {
     margin-top: 14px;
   }
 }
+/* =====================================================
+   FINAL BUTTON SIZE OVERRIDE
+   Paste this at the VERY BOTTOM of home.css
+===================================================== */
+
+.hero-buttons {
+  width: 100% !important;
+  margin: 40px auto 0 !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+
+  gap: 18px !important;
+}
+
+
+/* GET STARTED */
+
+.hero-buttons .primary-button {
+  width: 324px !important;
+  max-width: calc(100vw - 80px) !important;
+
+  height: 68px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 22px !important;
+  font-weight: 800 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  gap: 11px !important;
+}
+
+.hero-buttons .primary-button svg {
+  width: 23px !important;
+  height: 23px !important;
+}
+
+
+/* BROWSE SERVICES */
+
+.hero-buttons .secondary-button {
+  width: 365px !important;
+  max-width: calc(100vw - 55px) !important;
+
+  height: 68px !important;
+
+  border-radius: 9px !important;
+
+  font-size: 22px !important;
+  font-weight: 800 !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+
+/* SMALL PHONE */
+
+@media (max-width: 390px) {
+
+  .hero-buttons {
+    margin-top: 38px !important;
+    gap: 17px !important;
+  }
+
+  .hero-buttons .primary-button {
+    width: 285px !important;
+    max-width: calc(100vw - 55px) !important;
+
+    height: 64px !important;
+
+    font-size: 20px !important;
+  }
+
+  .hero-buttons .secondary-button {
+    width: 315px !important;
+    max-width: calc(100vw - 35px) !important;
+
+    height: 64px !important;
+
+    font-size: 20px !important;
+  }
+
+}
