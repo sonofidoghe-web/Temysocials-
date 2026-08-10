@@ -685,3 +685,289 @@ a {
   }
 
 }
+/* =====================================================
+   SERVICES SECTION
+   MOBILE ONLY
+===================================================== */
+
+.services-section {
+  width: 100%;
+  padding: 0 27px 70px;
+  background: #ffffff;
+}
+
+
+/* INTRO */
+
+.services-intro {
+  width: 100%;
+  border-top: 1px solid #eeeeee;
+}
+
+.section-label {
+  margin: 0;
+  padding-top: 58px;
+
+  color: #438500;
+
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 700;
+
+  letter-spacing: 2px;
+}
+
+.services-intro h2 {
+  margin: 24px 0 0;
+
+  color: #050505;
+
+  font-size: 47px;
+  line-height: 1.08;
+
+  font-weight: 900;
+
+  letter-spacing: -1.8px;
+}
+
+.section-description {
+  margin: 28px 0 0;
+
+  color: #707070;
+
+  font-size: 22px;
+  line-height: 1.48;
+
+  font-weight: 400;
+}
+
+
+/* SERVICE CARD */
+
+.service-card {
+  width: 100%;
+
+  margin-top: 86px;
+  padding-top: 50px;
+
+  border-top: 1px solid #eeeeee;
+}
+
+.service-number {
+  margin-left: 43px;
+  margin-bottom: 24px;
+
+  color: #e8e8e8;
+
+  font-size: 54px;
+  line-height: 1;
+
+  font-weight: 900;
+
+  letter-spacing: -2px;
+}
+
+
+/* IMAGE */
+
+.service-image {
+  display: block;
+
+  width: calc(100% - 86px);
+
+  height: auto;
+
+  margin-left: 43px;
+
+  aspect-ratio: 1.72 / 1;
+
+  object-fit: cover;
+}
+
+
+/* CONTENT */
+
+.service-content {
+  width: calc(100% - 86px);
+
+  margin-left: 43px;
+}
+
+.service-content h3 {
+  margin-top: 35px;
+
+  color: #080808;
+
+  font-size: 31px;
+  line-height: 1.15;
+
+  font-weight: 800;
+
+  letter-spacing: -0.8px;
+}
+
+.service-description {
+  margin-top: 18px;
+
+  color: #777777;
+
+  font-size: 21px;
+  line-height: 1.63;
+
+  font-weight: 400;
+}
+
+
+/* TAGS */
+
+.service-tags {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 9px;
+
+  margin-top: 21px;
+}
+
+.service-tags span {
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  min-height: 34px;
+
+  padding: 5px 17px;
+
+  background: #f5f5f5;
+
+  border: 1px solid #e5e5e5;
+
+  border-radius: 20px;
+
+  color: #111111;
+
+  font-size: 15px;
+  line-height: 1;
+
+  font-weight: 400;
+
+  white-space: nowrap;
+}
+
+
+/* GET STARTED */
+
+.service-link {
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-top: 34px;
+
+  color: #438500;
+
+  font-size: 19px;
+  line-height: 1;
+
+  font-weight: 700;
+}
+
+.service-arrow {
+  font-size: 23px;
+  line-height: 1;
+}
+
+
+/* DIVIDER */
+
+.service-card + .service-card {
+  margin-top: 48px;
+  padding-top: 58px;
+
+  border-top: 1px solid #e3e3e3;
+}
+
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media (max-width: 390px) {
+
+  .services-section {
+    padding-left: 27px;
+    padding-right: 27px;
+  }
+
+  .section-label {
+    padding-top: 53px;
+    font-size: 16px;
+  }
+
+  .services-intro h2 {
+    margin-top: 21px;
+    font-size: 42px;
+  }
+
+  .section-description {
+    margin-top: 25px;
+    font-size: 20px;
+    line-height: 1.58;
+  }
+
+  .service-card {
+    margin-top: 76px;
+    padding-top: 43px;
+  }
+
+  .service-number {
+    margin-left: 43px;
+    margin-bottom: 22px;
+    font-size: 49px;
+  }
+
+  .service-image {
+    width: calc(100% - 86px);
+    margin-left: 43px;
+  }
+
+  .service-content {
+    width: calc(100% - 86px);
+    margin-left: 43px;
+  }
+
+  .service-content h3 {
+    margin-top: 31px;
+    font-size: 28px;
+  }
+
+  .service-description {
+    margin-top: 17px;
+    font-size: 19px;
+    line-height: 1.62;
+  }
+
+  .service-tags {
+    margin-top: 19px;
+    gap: 8px;
+  }
+
+  .service-tags span {
+    min-height: 32px;
+    padding: 5px 15px;
+    font-size: 14px;
+  }
+
+  .service-link {
+    margin-top: 31px;
+    font-size: 18px;
+  }
+
+  .service-card + .service-card {
+    margin-top: 43px;
+    padding-top: 53px;
+  }
+}
