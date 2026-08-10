@@ -37,49 +37,126 @@ a {
 
 
 /* =====================================================
-   HEADER
+   FIXED HEADER
 ===================================================== */
 
 .topbar {
-  width: 100%;
-  height: 105px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
 
-  padding: 18px 28px 0 28px;
+  width: 100%;
+  height: 100px;
+
+  padding: 17px 25px 0;
 
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+
+  background: transparent;
+
+  transition:
+    height 0.25s ease,
+    padding 0.25s ease,
+    background 0.25s ease,
+    backdrop-filter 0.25s ease,
+    -webkit-backdrop-filter 0.25s ease;
+
+  pointer-events: none;
 }
+
+.topbar > * {
+  pointer-events: auto;
+}
+
+
+/* Small transparent header while scrolling */
+
+.topbar.scrolled {
+  height: 67px;
+
+  padding: 8px 20px 0;
+
+  background: rgba(255, 255, 255, 0.72);
+
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+
+  box-shadow:
+    0 1px 8px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
 
 .brand {
   display: block;
 
-  width: 185px;
-  height: 78px;
+  width: 178px;
+  height: 75px;
+
+  transition:
+    width 0.25s ease,
+    height 0.25s ease;
 }
 
 .brand img {
-  width: 185px;
-  height: 78px;
+  width: 178px;
+  height: 75px;
 
   display: block;
 
   object-fit: contain;
   object-position: left top;
+
+  transition:
+    width 0.25s ease,
+    height 0.25s ease;
 }
+
+
+/* Smaller logo after scrolling */
+
+.topbar.scrolled .brand {
+  width: 142px;
+  height: 58px;
+}
+
+.topbar.scrolled .brand img {
+  width: 142px;
+  height: 58px;
+}
+
+
+/* =====================================================
+   HEADER ICONS
+===================================================== */
 
 .top-actions {
   display: flex;
   align-items: center;
 
-  gap: 18px;
+  gap: 17px;
 
-  padding-top: 20px;
+  padding-top: 18px;
+
+  transition:
+    padding 0.25s ease,
+    gap 0.25s ease;
+}
+
+.topbar.scrolled .top-actions {
+  padding-top: 11px;
+  gap: 13px;
 }
 
 .icon-button {
-  width: 28px;
-  height: 28px;
+  width: 27px;
+  height: 27px;
 
   border: 0;
   padding: 0;
@@ -94,8 +171,8 @@ a {
 }
 
 .icon-button svg {
-  width: 26px;
-  height: 26px;
+  width: 25px;
+  height: 25px;
 
   fill: none;
 
@@ -105,13 +182,27 @@ a {
 
   stroke-linecap: round;
   stroke-linejoin: round;
+
+  transition:
+    width 0.25s ease,
+    height 0.25s ease;
 }
 
 .menu-button svg {
-  width: 30px;
-  height: 30px;
+  width: 29px;
+  height: 29px;
 
   stroke-width: 2.3;
+}
+
+.topbar.scrolled .icon-button svg {
+  width: 22px;
+  height: 22px;
+}
+
+.topbar.scrolled .menu-button svg {
+  width: 25px;
+  height: 25px;
 }
 
 
@@ -124,7 +215,11 @@ a {
 
   text-align: center;
 
-  padding: 72px 20px 0;
+  /*
+    Because the header is fixed,
+    the hero starts underneath it.
+  */
+  padding: 176px 18px 0;
 }
 
 .hero h1 {
@@ -132,13 +227,13 @@ a {
 
   font-family: Arial, Helvetica, sans-serif;
 
-  font-size: clamp(46px, 10.8vw, 68px);
+  font-size: clamp(43px, 10.7vw, 66px);
 
   font-weight: 900;
 
   line-height: 0.94;
 
-  letter-spacing: -3px;
+  letter-spacing: -2.8px;
 }
 
 .hero h1 span {
@@ -155,18 +250,18 @@ a {
 
 
 /* =====================================================
-   HERO DESCRIPTION
+   DESCRIPTION
 ===================================================== */
 
 .hero-copy {
   width: 100%;
   max-width: 570px;
 
-  margin: 42px auto 0;
+  margin: 41px auto 0;
 
   color: var(--grey);
 
-  font-size: clamp(19px, 4.1vw, 26px);
+  font-size: clamp(18px, 4vw, 25px);
 
   line-height: 1.7;
 
@@ -175,46 +270,62 @@ a {
 
 
 /* =====================================================
-   BUTTONS
+   BUTTON CONTAINER
 ===================================================== */
 
 .hero-buttons {
-  width: 345px;
-  max-width: calc(100% - 100px);
+  width: 100%;
 
-  margin: 43px auto 0;
+  margin: 42px auto 0;
 
   display: flex;
+
   flex-direction: column;
+
+  align-items: center;
 
   gap: 20px;
 }
 
+
+/* =====================================================
+   BUTTON BASE
+===================================================== */
+
 .primary-button,
 .secondary-button {
-  width: 100%;
-  height: 76px;
-
-  border-radius: 10px;
-
   display: flex;
+
   align-items: center;
   justify-content: center;
+
+  height: 78px;
+
+  border-radius: 10px;
 
   font-size: 23px;
 
   font-weight: 800;
 
   letter-spacing: 0;
+
+  flex-shrink: 0;
 }
 
 
-/* GET STARTED */
+/* =====================================================
+   GET STARTED
+   Screenshot: narrower button
+===================================================== */
 
 .primary-button {
-  background: var(--green);
+  width: 325px;
+
+  max-width: calc(100vw - 80px);
 
   color: #ffffff;
+
+  background: var(--green);
 
   gap: 13px;
 
@@ -237,12 +348,19 @@ a {
 }
 
 
-/* BROWSE SERVICES */
+/* =====================================================
+   BROWSE SERVICES
+   Screenshot: wider button
+===================================================== */
 
 .secondary-button {
-  background: #ffffff;
+  width: 365px;
+
+  max-width: calc(100vw - 55px);
 
   color: #090909;
+
+  background: #ffffff;
 
   border: 2px solid #e4e4e4;
 
@@ -252,7 +370,7 @@ a {
 
 
 /* =====================================================
-   SERVICES MOVING BAR
+   SERVICES BAR
 ===================================================== */
 
 .service-marquee {
@@ -274,6 +392,7 @@ a {
 
 .marquee-track {
   display: inline-flex;
+
   align-items: center;
 
   min-width: max-content;
@@ -351,9 +470,6 @@ a {
   border-right: 1px solid var(--line);
 }
 
-
-/* STAT NUMBER */
-
 .stat strong {
   display: block;
 
@@ -368,9 +484,6 @@ a {
   letter-spacing: -1.8px;
 }
 
-
-/* STAT DESCRIPTION */
-
 .stat span {
   display: block;
 
@@ -383,149 +496,6 @@ a {
   line-height: 1.42;
 
   font-weight: 400;
-
-  letter-spacing: 0;
-}
-
-
-/* =====================================================
-   MOBILE
-===================================================== */
-
-@media (max-width: 600px) {
-
-  /* HEADER */
-
-  .topbar {
-    height: 100px;
-
-    padding: 17px 24px 0 25px;
-  }
-
-  .brand,
-  .brand img {
-    width: 178px;
-    height: 75px;
-  }
-
-  .top-actions {
-    gap: 17px;
-
-    padding-top: 18px;
-  }
-
-  .icon-button {
-    width: 27px;
-    height: 27px;
-  }
-
-  .icon-button svg {
-    width: 25px;
-    height: 25px;
-  }
-
-  .menu-button svg {
-    width: 29px;
-    height: 29px;
-  }
-
-
-  /* HERO */
-
-  .hero {
-    padding: 76px 18px 0;
-  }
-
-  .hero h1 {
-    font-size: clamp(43px, 10.7vw, 66px);
-
-    line-height: 0.94;
-
-    letter-spacing: -2.8px;
-  }
-
-
-  /* DESCRIPTION */
-
-  .hero-copy {
-    margin-top: 41px;
-
-    font-size: clamp(18px, 4vw, 25px);
-
-    line-height: 1.7;
-  }
-
-
-  /* BUTTONS */
-
-  .hero-buttons {
-    width: 345px;
-
-    max-width: calc(100% - 80px);
-
-    margin-top: 42px;
-
-    gap: 20px;
-  }
-
-  .primary-button,
-  .secondary-button {
-    height: 76px;
-
-    font-size: 23px;
-
-    border-radius: 10px;
-  }
-
-
-  /* GREEN BAR */
-
-  .service-marquee {
-    height: 82px;
-
-    margin-top: 205px;
-  }
-
-  .marquee-track {
-    padding-left: 37px;
-
-    gap: 66px;
-  }
-
-  .marquee-track span {
-    font-size: 25px;
-  }
-
-  .marquee-track b {
-    font-size: 28px;
-  }
-
-
-  /* STATS */
-
-  .stats {
-    width: calc(100% - 64px);
-
-    margin-top: 104px;
-
-    margin-bottom: 70px;
-  }
-
-  .stat {
-    min-height: 235px;
-  }
-
-  .stat strong {
-    font-size: 44px;
-  }
-
-  .stat span {
-    margin-top: 17px;
-
-    font-size: 19px;
-
-    line-height: 1.42;
-  }
 }
 
 
@@ -550,6 +520,7 @@ a {
     gap: 14px;
   }
 
+
   .hero {
     padding-left: 14px;
     padding-right: 14px;
@@ -567,16 +538,27 @@ a {
     line-height: 1.65;
   }
 
-  .hero-buttons {
-    max-width: calc(100% - 55px);
-  }
 
-  .primary-button,
-  .secondary-button {
-    height: 70px;
+  .primary-button {
+    width: 325px;
+
+    max-width: calc(100vw - 55px);
+
+    height: 76px;
 
     font-size: 21px;
   }
+
+  .secondary-button {
+    width: 365px;
+
+    max-width: calc(100vw - 35px);
+
+    height: 76px;
+
+    font-size: 21px;
+  }
+
 
   .service-marquee {
     margin-top: 190px;
@@ -591,6 +573,7 @@ a {
   .marquee-track b {
     font-size: 25px;
   }
+
 
   .stats {
     width: calc(100% - 42px);
