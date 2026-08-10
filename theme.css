@@ -2,161 +2,190 @@
    GLOBAL THEME
 ===================================================== */
 
-:root {
-  --bg: #ffffff;
-  --surface: #ffffff;
-  --text: #0b0b0b;
-  --muted: #777777;
-  --border: #e5e5e5;
-  --soft: #f7f7f7;
-  --green: #4f8500;
-}
-
-/* DARK THEME */
-
-html.dark-theme {
-  --bg: #000000;
-  --surface: #000000;
-  --text: #ffffff;
-  --muted: #b8b8b8;
-  --border: #292929;
-  --soft: #111111;
-}
-
-/* PAGE */
-
 html,
 body {
-  background: var(--bg);
-  color: var(--text);
+  background: #ffffff;
+  color: #111111;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
-/* COMMON ELEMENTS */
 
-body,
-section,
-main,
-header,
-footer,
-article,
-nav,
-div {
-  border-color: var(--border);
+/* =====================================================
+   DARK THEME
+===================================================== */
+
+html.dark-theme,
+html.dark-theme body,
+body.dark-theme {
+  background: #000000 !important;
+  color: #ffffff !important;
 }
 
-/* TEXT */
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-span,
-strong,
-label {
-  color: inherit;
-}
+/* =====================================================
+   TEXT
+===================================================== */
 
-/* INPUTS */
-
-input,
-textarea,
-select {
-  background: var(--surface);
-  color: var(--text);
-  border-color: var(--border);
-}
-
-input::placeholder,
-textarea::placeholder {
-  color: var(--muted);
-}
-
-/* CARDS / BOXES */
-
-.card,
-.service-card,
-.process-card,
-.process-step,
-.efficiency-feature,
-.review-card,
-.faq-item {
-  background: var(--surface);
-  border-color: var(--border);
-}
-
-/* WHITE AREAS */
-
-.white-bg,
-.bg-white {
-  background: var(--surface);
-}
-
-/* LIGHT GRAY AREAS */
-
-.light-bg,
-.bg-light {
-  background: var(--soft);
-}
-
-/* LINKS */
-
-a {
-  color: inherit;
-}
-
-/* KEEP YOUR GREEN */
-
-.section-label,
-.process-label,
-.service-link,
-.efficiency-link,
-.efficiency-intro h2 span {
-  color: var(--green);
-}
-
-/* BUTTONS THAT ARE SUPPOSED TO STAY GREEN */
-
-.primary-button,
-.efficiency-button {
-  background: var(--green);
+.dark-theme h1,
+.dark-theme h2,
+.dark-theme h3,
+.dark-theme h4,
+.dark-theme h5,
+.dark-theme h6,
+.dark-theme p,
+.dark-theme span,
+.dark-theme strong,
+.dark-theme a {
   color: #ffffff;
 }
 
-/* OUTLINE BUTTONS */
 
-.secondary-button {
-  background: transparent;
-  color: var(--text);
-  border-color: var(--border);
+/* =====================================================
+   HEADER
+===================================================== */
+
+.dark-theme .topbar {
+  background: rgba(0, 0, 0, 0.88);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
-/* ICONS */
-
-.icon-button {
-  color: var(--text);
+.dark-theme .icon-button {
+  color: #ffffff;
 }
 
-.icon-button svg {
+.dark-theme .icon-button svg {
+  stroke: #ffffff;
+}
+
+
+/* =====================================================
+   HERO
+===================================================== */
+
+.dark-theme .hero {
+  background: #000000;
+}
+
+.dark-theme .hero h1 {
+  color: #ffffff;
+}
+
+.dark-theme .hero-copy {
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+
+.dark-theme .secondary-button {
+  background: #ffffff;
+  color: #000000;
+}
+
+.dark-theme .secondary-button:hover {
+  background: #eeeeee;
+  color: #000000;
+}
+
+
+/* =====================================================
+   CARDS
+===================================================== */
+
+.dark-theme .service-card,
+.dark-theme .process-card,
+.dark-theme .process-step,
+.dark-theme .efficiency-feature,
+.dark-theme .testimonial-card,
+.dark-theme .faq-item {
+  background: #000000;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+
+/* =====================================================
+   INPUTS
+===================================================== */
+
+.dark-theme input,
+.dark-theme textarea,
+.dark-theme select {
+  background: #111111;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.dark-theme input::placeholder,
+.dark-theme textarea::placeholder {
+  color: #888888;
+}
+
+
+/* =====================================================
+   TAGS
+===================================================== */
+
+.dark-theme .service-tags span {
+  background: #111111;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+
+/* =====================================================
+   FAQ
+===================================================== */
+
+.dark-theme .faq-question {
+  background: #000000;
+  color: #ffffff;
+}
+
+.dark-theme .faq-answer {
+  background: #000000;
+  color: #ffffff;
+}
+
+.dark-theme .faq-plus {
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.dark-theme .site-footer {
+  background: #000000;
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dark-theme .site-footer a,
+.dark-theme .site-footer p,
+.dark-theme .site-footer h3 {
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   LINKS
+===================================================== */
+
+.dark-theme a {
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   SVG ICONS
+===================================================== */
+
+.dark-theme svg {
   stroke: currentColor;
-}
-
-/* SVGs */
-
-svg {
-  color: inherit;
-}
-
-/* FAQ PLUS */
-
-.faq-item .plus {
-  color: var(--muted);
-}
-
-/* IMAGES MUST NOT BE INVERTED */
-
-img {
-  filter: none !important;
 }
