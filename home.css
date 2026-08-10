@@ -1217,3 +1217,138 @@ a {
   }
 
 }
+/* =====================================================
+   SIMPLE PROCESS — FINAL COMPACT MOBILE OVERRIDE
+   PASTE AT THE VERY BOTTOM OF home.css
+===================================================== */
+
+.process-section {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 58px 16px 42px !important;
+  background: #f8f8f5 !important;
+}
+
+.process-heading {
+  width: 100% !important;
+  text-align: center !important;
+}
+
+.process-label {
+  margin: 0 !important;
+  padding: 0 !important;
+  color: #438500 !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  font-weight: 700 !important;
+  letter-spacing: 1.5px !important;
+}
+
+.process-heading h2 {
+  margin: 19px 0 0 !important;
+  color: #050505 !important;
+  font-size: 29px !important;
+  line-height: 1.25 !important;
+  font-weight: 900 !important;
+  letter-spacing: -0.8px !important;
+}
+
+.process-card {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  margin-top: 57px !important;
+  background: #ffffff !important;
+}
+
+.process-step {
+  width: 100% !important;
+  box-sizing: border-box !important;
+  padding: 26px 26px 30px !important;
+  border-bottom: 1px solid #e7e7e7 !important;
+}
+
+.process-step:last-child {
+  border-bottom: none !important;
+}
+
+.process-top {
+  width: 100% !important;
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: space-between !important;
+}
+
+.process-icon {
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f0f3e9 !important;
+  border-radius: 13px !important;
+}
+
+.process-icon svg {
+  width: 21px !important;
+  height: 21px !important;
+  fill: none !important;
+  stroke: #438500 !important;
+  stroke-width: 1.8 !important;
+  stroke-linecap: round !important;
+  stroke-linejoin: round !important;
+}
+
+.process-number {
+  margin-top: 8px !important;
+  color: #eeeeee !important;
+  font-size: 28px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: -1px !important;
+}
+
+.process-step h3 {
+  margin: 25px 0 0 !important;
+  color: #080808 !important;
+  font-size: 21px !important;
+  line-height: 1.2 !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.4px !important;
+}
+
+.process-step p {
+  margin: 13px 0 0 !important;
+  color: #777777 !important;
+  font-size: 16px !important;
+  line-height: 1.65 !important;
+  font-weight: 400 !important;
+}
+
+@media (max-width: 360px) {
+
+  .process-section {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .process-heading h2 {
+    font-size: 27px !important;
+  }
+
+  .process-card {
+    margin-top: 52px !important;
+  }
+
+  .process-step {
+    padding: 25px 25px 28px !important;
+  }
+
+  .process-step h3 {
+    font-size: 20px !important;
+  }
+
+  .process-step p {
+    font-size: 15px !important;
+  }
+
+}
