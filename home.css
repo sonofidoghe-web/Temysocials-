@@ -2520,3 +2520,464 @@ a {
     font-size: 14px;
   }
 }
+/* =========================================================
+   FAQ SECTION
+   MOBILE REFERENCE DESIGN
+========================================================= */
+
+.faq-section {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 58px 26px 74px;
+
+  background: #f8f9f5;
+}
+
+
+/* FAQ HEADING */
+
+.faq-heading {
+  text-align: center;
+
+  margin: 0;
+  padding: 0;
+}
+
+.faq-label {
+  margin: 0 0 22px;
+
+  color: #438500;
+
+  font-size: 14px;
+  line-height: 1;
+
+  font-weight: 700;
+  letter-spacing: 1.5px;
+}
+
+.faq-heading h2 {
+  margin: 0;
+
+  color: #050505;
+
+  font-size: 30px;
+  line-height: 1.28;
+
+  font-weight: 900;
+  letter-spacing: -1px;
+}
+
+
+/* FAQ LIST */
+
+.faq-list {
+  width: 100%;
+
+  margin-top: 86px;
+
+  background: #fff;
+}
+
+
+/* FAQ ITEM */
+
+.faq-item {
+  width: 100%;
+
+  border-bottom: 1px solid #dedede;
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+
+/* QUESTION BUTTON */
+
+.faq-question {
+  width: 100%;
+  min-height: 99px;
+
+  box-sizing: border-box;
+
+  padding: 0 31px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 20px;
+
+  border: 0;
+  background: transparent;
+
+  color: #111;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  font-size: 17px;
+  line-height: 1.35;
+
+  font-weight: 700;
+
+  text-align: left;
+
+  cursor: pointer;
+}
+
+.faq-question span:first-child {
+  max-width: 310px;
+}
+
+.faq-plus {
+  flex: 0 0 auto;
+
+  color: #777;
+
+  font-size: 22px;
+  line-height: 1;
+
+  font-weight: 300;
+}
+
+
+/* ANSWER */
+
+.faq-answer {
+  display: grid;
+
+  grid-template-rows: 0fr;
+
+  transition: grid-template-rows 0.25s ease;
+}
+
+.faq-answer p {
+  overflow: hidden;
+
+  margin: 0;
+  padding: 0 31px;
+
+  color: #666;
+
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.faq-item.active .faq-answer {
+  grid-template-rows: 1fr;
+}
+
+.faq-item.active .faq-answer p {
+  padding-bottom: 22px;
+}
+
+.faq-item.active .faq-plus {
+  transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   FINAL CTA
+========================================================= */
+
+.final-cta-section {
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 122px 26px 70px;
+
+  background: #fff;
+}
+
+
+.final-cta {
+  position: relative;
+
+  width: 100%;
+  min-height: 820px;
+
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  border-radius: 27px;
+
+  background: #478500;
+}
+
+
+/* DECORATIVE CIRCLES */
+
+.cta-circle {
+  position: absolute;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  pointer-events: none;
+}
+
+.cta-circle-one {
+  width: 380px;
+  height: 380px;
+
+  top: -105px;
+  left: -115px;
+}
+
+.cta-circle-two {
+  width: 390px;
+  height: 390px;
+
+  right: -125px;
+  bottom: -115px;
+}
+
+
+/* CTA CONTENT */
+
+.cta-content {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  box-sizing: border-box;
+
+  padding: 86px 39px 45px;
+
+  text-align: center;
+}
+
+
+/* LABEL */
+
+.cta-label {
+  margin: 0;
+
+  color: rgba(255, 255, 255, 0.72);
+
+  font-size: 14px;
+  line-height: 1.2;
+
+  font-weight: 700;
+
+  letter-spacing: 1px;
+}
+
+
+/* HEADING */
+
+.cta-content h2 {
+  margin: 23px 0 0;
+
+  color: #fff;
+
+  font-size: 43px;
+  line-height: 1.18;
+
+  font-weight: 900;
+
+  letter-spacing: -1.5px;
+}
+
+
+/* DESCRIPTION */
+
+.cta-description {
+  margin: 29px 0 0;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 17px;
+  line-height: 1.55;
+
+  font-weight: 400;
+}
+
+
+/* CTA BUTTONS */
+
+.cta-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 17px;
+
+  margin-top: 44px;
+}
+
+
+/* CREATE ACCOUNT */
+
+.cta-primary {
+  width: 100%;
+  min-height: 61px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 13px;
+
+  padding: 0 18px;
+
+  border-radius: 7px;
+
+  background: #f7fae9;
+
+  color: #438000;
+
+  font-size: 16px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+.cta-primary span:last-child {
+  font-size: 21px;
+  font-weight: 400;
+}
+
+
+/* BROWSE */
+
+.cta-secondary {
+  width: 86%;
+  min-height: 62px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: 1px solid rgba(255, 255, 255, 0.35);
+
+  border-radius: 7px;
+
+  color: #fff;
+
+  font-size: 16px;
+  line-height: 1;
+
+  font-weight: 800;
+
+  text-decoration: none;
+}
+
+
+/* CONTACT BUTTONS */
+
+.cta-contact {
+  width: 78%;
+  min-height: 60px;
+
+  box-sizing: border-box;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border: 1px solid rgba(255, 255, 255, 0.28);
+
+  border-radius: 7px;
+
+  color: #fff;
+
+  font-size: 15px;
+  line-height: 1;
+
+  font-weight: 500;
+
+  text-decoration: none;
+}
+
+.cta-contact svg {
+  width: 20px;
+  height: 20px;
+
+  fill: none;
+
+  stroke: currentColor;
+
+  stroke-width: 1.6;
+
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.telegram-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+
+/* =========================================================
+   BUTTON TOUCH FEEDBACK
+========================================================= */
+
+.faq-question:active,
+.cta-primary:active,
+.cta-secondary:active,
+.cta-contact:active {
+  transform: scale(0.98);
+}
+
+
+/* =========================================================
+   SMALL PHONES
+========================================================= */
+
+@media (max-width: 360px) {
+
+  .faq-section {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .faq-heading h2 {
+    font-size: 28px;
+  }
+
+  .faq-list {
+    margin-top: 75px;
+  }
+
+  .faq-question {
+    padding-left: 28px;
+    padding-right: 28px;
+
+    font-size: 16px;
+  }
+
+  .final-cta-section {
+    padding-left: 25px;
+    padding-right: 25px;
+  }
+
+  .final-cta {
+    min-height: 790px;
+  }
+
+  .cta-content {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+  .cta-content h2 {
+    font-size: 39px;
+  }
+
+  .cta-description {
+    font-size: 16px;
+  }
+}
