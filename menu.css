@@ -1,0 +1,401 @@
+/* =====================================================
+   RESET
+===================================================== */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: #ffffff;
+  color: #111111;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+/* =====================================================
+   PAGE
+===================================================== */
+
+.menu-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #ffffff;
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.menu-header {
+  width: 100%;
+  height: 215px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 0 47px;
+
+  border-bottom: 1px solid #dddddd;
+}
+
+
+/* =====================================================
+   LOGO
+===================================================== */
+
+.menu-logo {
+  display: block;
+  width: 285px;
+}
+
+.menu-logo img {
+  display: block;
+
+  width: 285px;
+  height: auto;
+
+  object-fit: contain;
+}
+
+
+/* =====================================================
+   HEADER ICONS
+===================================================== */
+
+.menu-header-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 45px;
+}
+
+
+/* =====================================================
+   THEME
+===================================================== */
+
+.theme-button {
+  width: 48px;
+  height: 48px;
+
+  padding: 0;
+  margin: 0;
+
+  border: 0;
+  background: transparent;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: default;
+}
+
+.theme-button svg {
+  width: 42px;
+  height: 42px;
+
+  fill: none;
+  stroke: #111111;
+
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+
+/* =====================================================
+   CLOSE
+===================================================== */
+
+.close-button {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.close-button svg {
+  width: 43px;
+  height: 43px;
+
+  fill: none;
+  stroke: #111111;
+
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+
+/* =====================================================
+   MENU AREA
+===================================================== */
+
+.menu-section {
+  width: 100%;
+
+  padding-top: 35px;
+  padding-bottom: 43px;
+
+  border-bottom: 1px solid #dddddd;
+}
+
+
+/* =====================================================
+   MENU LINKS
+===================================================== */
+
+.menu-links {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  padding-left: 82px;
+  padding-right: 40px;
+}
+
+
+/*
+   The screenshot has very large vertical
+   spacing between each menu item.
+*/
+
+.menu-links a {
+  display: flex;
+  align-items: center;
+
+  height: 128px;
+
+  font-size: 42px;
+  line-height: 1;
+
+  font-weight: 400;
+  letter-spacing: -1.2px;
+}
+
+
+/* =====================================================
+   ACCOUNT BUTTON AREA
+===================================================== */
+
+.menu-account {
+  width: 100%;
+
+  padding: 38px 47px 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 30px;
+}
+
+
+/* =====================================================
+   SIGN IN
+===================================================== */
+
+.signin-button {
+  width: 100%;
+  height: 108px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #ffffff;
+
+  border: 2px solid #e2e2e2;
+
+  border-radius: 22px;
+
+  font-size: 32px;
+  font-weight: 400;
+
+  color: #111111;
+
+  box-shadow:
+    0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+
+/* =====================================================
+   GET STARTED
+===================================================== */
+
+.get-started-button {
+  width: 100%;
+  height: 105px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #4d8700;
+
+  border-radius: 18px;
+
+  font-size: 32px;
+  font-weight: 400;
+
+  color: #ffffff;
+}
+
+
+/* =====================================================
+   TAP
+===================================================== */
+
+.menu-links a:active,
+.signin-button:active,
+.get-started-button:active,
+.close-button:active {
+  opacity: 0.7;
+}
+
+
+/* =====================================================
+   SMALL MOBILE SCREENS
+===================================================== */
+
+@media (max-width: 500px) {
+
+  .menu-header {
+    height: 122px;
+    padding: 0 26px;
+  }
+
+  .menu-logo {
+    width: 185px;
+  }
+
+  .menu-logo img {
+    width: 185px;
+  }
+
+  .menu-header-actions {
+    gap: 22px;
+  }
+
+  .theme-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .theme-button svg {
+    width: 29px;
+    height: 29px;
+  }
+
+  .close-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .close-button svg {
+    width: 30px;
+    height: 30px;
+  }
+
+  .menu-section {
+    padding-top: 17px;
+    padding-bottom: 25px;
+  }
+
+  .menu-links {
+    padding-left: 46px;
+    padding-right: 25px;
+  }
+
+  .menu-links a {
+    height: 128px;
+
+    font-size: 40px;
+    letter-spacing: -1px;
+  }
+
+  .menu-account {
+    padding: 37px 47px 0;
+    gap: 30px;
+  }
+
+  .signin-button {
+    height: 108px;
+    border-radius: 20px;
+
+    font-size: 31px;
+  }
+
+  .get-started-button {
+    height: 105px;
+    border-radius: 18px;
+
+    font-size: 31px;
+  }
+
+}
+
+
+/* =====================================================
+   VERY SMALL PHONES
+===================================================== */
+
+@media (max-width: 390px) {
+
+  .menu-header {
+    height: 105px;
+    padding: 0 22px;
+  }
+
+  .menu-logo,
+  .menu-logo img {
+    width: 155px;
+  }
+
+  .menu-header-actions {
+    gap: 15px;
+  }
+
+  .menu-links {
+    padding-left: 38px;
+  }
+
+  .menu-links a {
+    height: 105px;
+    font-size: 32px;
+  }
+
+  .menu-account {
+    padding-left: 26px;
+    padding-right: 26px;
+  }
+
+  .signin-button {
+    height: 76px;
+    font-size: 25px;
+  }
+
+  .get-started-button {
+    height: 76px;
+    font-size: 25px;
+  }
+
+}
