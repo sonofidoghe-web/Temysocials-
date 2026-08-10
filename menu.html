@@ -21,7 +21,7 @@
     <header class="menu-header">
 
       <!-- LOGO -->
-      <a href="index.html" class="menu-logo" aria-label="Temmy Social Home">
+      <a href="index.html" class="menu-logo">
         <img src="logo.png.jpg" alt="Temmy Social">
       </a>
 
@@ -29,12 +29,10 @@
       <!-- HEADER ACTIONS -->
       <div class="menu-actions">
 
-        <!-- THEME ICON
-             Disabled intentionally.
-             It does nothing when tapped. -->
+        <!-- THEME ICON - DISABLED -->
         <button
           type="button"
-          class="theme-button"
+          class="menu-theme"
           aria-label="Theme disabled"
           disabled
         >
@@ -107,11 +105,13 @@
 
 
         <!-- CLOSE -->
-        <a
-          href="index.html"
-          class="close-button"
+        <button
+          type="button"
+          class="menu-close"
           aria-label="Close menu"
+          onclick="window.location.href='index.html'"
         >
+
           <svg viewBox="0 0 32 32" aria-hidden="true">
 
             <line
@@ -129,54 +129,56 @@
             ></line>
 
           </svg>
-        </a>
+
+        </button>
 
       </div>
 
     </header>
 
 
-    <!-- DIVIDER -->
-    <div class="header-divider"></div>
-
-
-    <!-- MENU AREA -->
-    <main class="menu-main">
+    <!-- MENU CONTENT -->
+    <main class="menu-content">
 
       <nav class="menu-links">
 
-        <a href="services.html">Services</a>
+        <a href="services.html">
+          Services
+        </a>
 
-        <a href="about.html">About</a>
+        <a href="about.html">
+          About
+        </a>
 
-        <a href="pricing.html">Pricing</a>
+        <a href="pricing.html">
+          Pricing
+        </a>
 
-        <a href="faq.html">FAQ</a>
-
-        <a href="index.html">Home</a>
+        <a href="faq.html">
+          FAQ
+        </a>
 
       </nav>
 
 
-      <!-- ACCOUNT AREA -->
-      <section class="account-area">
+      <!-- ACCOUNT BUTTONS -->
+      <div class="menu-account">
 
         <a
           href="login.html"
-          class="sign-in-button"
+          class="menu-signin"
         >
           Sign in
         </a>
 
-
         <a
           href="signup.html"
-          class="get-started-button"
+          class="menu-get-started"
         >
           Get started free
         </a>
 
-      </section>
+      </div>
 
     </main>
 
