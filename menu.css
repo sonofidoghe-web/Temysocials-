@@ -1,7 +1,3 @@
-/* =====================================================
-   MENU PAGE
-===================================================== */
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -15,246 +11,221 @@ body {
 }
 
 body {
-  background: #fff;
-  color: #111;
+  background: #ffffff;
+  color: #111111;
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
 }
 
+
+/* =========================================
+   MENU PAGE
+========================================= */
+
 .menu-page {
   width: 100%;
   min-height: 100vh;
-  background: #fff;
+  background: #ffffff;
 }
 
 
-/* =====================================================
+/* =========================================
    HEADER
-===================================================== */
+========================================= */
 
 .menu-header {
+  height: 216px;
   width: 100%;
-  height: 215px;
 
   display: flex;
   align-items: center;
   justify-content: space-between;
 
   padding: 0 46px;
+
+  border-bottom: 1px solid #e5e5e5;
 }
+
+
+/* LOGO */
 
 .menu-logo {
   display: block;
   width: 285px;
-  text-decoration: none;
+  line-height: 0;
 }
 
 .menu-logo img {
   display: block;
-  width: 285px;
+  width: 100%;
   height: auto;
 }
 
 
-/* =====================================================
-   HEADER ICONS
-===================================================== */
+/* =========================================
+   HEADER ACTIONS
+========================================= */
 
 .menu-actions {
   display: flex;
   align-items: center;
-  gap: 42px;
+
+  gap: 43px;
 }
 
 
-/* Theme is intentionally disabled */
+/* THEME */
 
-.theme-button {
-  width: 38px;
-  height: 38px;
+.menu-theme,
+.menu-close {
+  width: 44px;
+  height: 44px;
 
   padding: 0;
   border: 0;
-
   background: transparent;
 
   display: flex;
   align-items: center;
   justify-content: center;
+}
 
-  opacity: 1;
+.menu-theme {
   cursor: default;
 }
 
-.theme-button:disabled {
-  opacity: 1;
-}
-
-.theme-button svg {
-  width: 36px;
-  height: 36px;
+.menu-theme svg {
+  width: 38px;
+  height: 38px;
 
   fill: none;
-  stroke: #111;
+  stroke: #111111;
+  stroke-width: 2.3;
+  stroke-linecap: round;
+}
+
+
+/* CLOSE */
+
+.menu-close {
+  cursor: pointer;
+}
+
+.menu-close svg {
+  width: 39px;
+  height: 39px;
+
+  fill: none;
+  stroke: #111111;
   stroke-width: 2.2;
   stroke-linecap: round;
 }
 
 
-/* Close */
+/* =========================================
+   MENU CONTENT
+========================================= */
 
-.close-button {
-  width: 40px;
-  height: 40px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  text-decoration: none;
-}
-
-.close-button svg {
-  width: 40px;
-  height: 40px;
-
-  fill: none;
-  stroke: #111;
-  stroke-width: 2.4;
-  stroke-linecap: round;
-}
-
-
-/* =====================================================
-   HEADER LINE
-===================================================== */
-
-.header-divider {
-  width: 100%;
-  height: 1px;
-  background: #e5e5e5;
-}
-
-
-/* =====================================================
-   MENU LINKS
-===================================================== */
-
-.menu-main {
+.menu-content {
   width: 100%;
 }
+
+
+/* =========================================
+   LINKS
+========================================= */
 
 .menu-links {
+  height: 555px;
+
   padding-left: 82px;
-  padding-right: 40px;
   padding-top: 34px;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .menu-links a {
   display: block;
 
-  width: fit-content;
+  height: 128px;
 
-  color: #111;
+  color: #111111;
   text-decoration: none;
 
-  font-size: 40px;
+  font-size: 41px;
   font-weight: 400;
   line-height: 1;
 
-  margin: 0 0 48px 0;
+  padding-top: 4px;
 }
 
 
-/*
-   Smaller gap after Home because
-   the divider/account section follows it.
-*/
-
-.menu-links a:last-child {
-  margin-bottom: 0;
-}
-
-
-/* =====================================================
+/* =========================================
    ACCOUNT AREA
+========================================= */
 
-   Starts immediately after the menu.
-   This keeps the buttons around the
-   middle of the screen.
-===================================================== */
+.menu-account {
+  border-top: 1px solid #e5e5e5;
 
-.account-area {
-  width: 100%;
-
-  margin-top: 48px;
-
-  padding: 30px 46px 0;
-
-  border-top: 1px solid #e2e2e2;
+  padding: 38px 46px 0;
 }
 
 
-/* =====================================================
-   SIGN IN
-===================================================== */
+/* SIGN IN */
 
-.sign-in-button {
+.menu-signin,
+.menu-get-started {
   width: 100%;
-  height: 74px;
+  height: 108px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background: #fff;
-
-  border: 1.5px solid #dedede;
-  border-radius: 16px;
-
-  color: #111;
   text-decoration: none;
 
-  font-size: 25px;
+  font-size: 32px;
   font-weight: 400;
+
+  border-radius: 18px;
 }
 
 
-/* =====================================================
-   GET STARTED FREE
-===================================================== */
+/* SIGN IN */
 
-.get-started-button {
-  width: 100%;
-  height: 74px;
+.menu-signin {
+  color: #111111;
 
-  margin-top: 16px;
+  background: #ffffff;
 
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 2px solid #e2e2e2;
 
-  background: #4d8700;
-
-  border: 0;
-  border-radius: 16px;
-
-  color: #fff;
-  text-decoration: none;
-
-  font-size: 25px;
-  font-weight: 400;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
 
-/* =====================================================
+/* GET STARTED */
+
+.menu-get-started {
+  margin-top: 30px;
+
+  color: #ffffff;
+
+  background: #478700;
+
+  border: 2px solid #478700;
+}
+
+
+/* =========================================
    MOBILE
-===================================================== */
+========================================= */
 
 @media (max-width: 600px) {
 
   .menu-header {
-    height: 215px;
+    height: 216px;
     padding: 0 46px;
   }
 
@@ -262,41 +233,84 @@ body {
     width: 285px;
   }
 
-  .menu-logo img {
-    width: 285px;
+  .menu-actions {
+    gap: 30px;
   }
 
-  .menu-actions {
-    gap: 42px;
+  .menu-theme,
+  .menu-close {
+    width: 42px;
+    height: 42px;
+  }
+
+  .menu-theme svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .menu-close svg {
+    width: 38px;
+    height: 38px;
   }
 
   .menu-links {
-    padding-top: 34px;
+    height: 555px;
     padding-left: 82px;
-    padding-right: 40px;
+    padding-top: 34px;
   }
 
   .menu-links a {
-    font-size: 40px;
-    line-height: 1;
-    margin-bottom: 48px;
+    height: 128px;
+    font-size: 41px;
   }
 
-  .account-area {
-    margin-top: 48px;
-    padding: 30px 46px 0;
+  .menu-account {
+    padding: 38px 46px 0;
   }
 
-  .sign-in-button {
-    height: 74px;
-    font-size: 25px;
-    border-radius: 16px;
+  .menu-signin,
+  .menu-get-started {
+    height: 108px;
+    font-size: 32px;
+    border-radius: 18px;
   }
 
-  .get-started-button {
-    height: 74px;
-    margin-top: 16px;
-    font-size: 25px;
-    border-radius: 16px;
+  .menu-get-started {
+    margin-top: 30px;
   }
+
+}
+
+
+/* =========================================
+   SMALL PHONES
+========================================= */
+
+@media (max-width: 390px) {
+
+  .menu-header {
+    padding: 0 28px;
+  }
+
+  .menu-logo {
+    width: 230px;
+  }
+
+  .menu-actions {
+    gap: 18px;
+  }
+
+  .menu-links {
+    padding-left: 48px;
+  }
+
+  .menu-links a {
+    font-size: 34px;
+  }
+
+  .menu-account {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
 }
