@@ -8,29 +8,30 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <title>Temmy Social - Menu</title>
+  <title>Menu - Temmy Social</title>
 
   <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
 
-  <main class="menu-page">
+  <div class="menu-page">
 
-    <!-- ================= HEADER ================= -->
-
+    <!-- HEADER -->
     <header class="menu-header">
 
-      <a href="index.html" class="menu-logo">
-        <img
-          src="logo.png.jpg"
-          alt="Temmy Social"
-        >
+      <!-- LOGO -->
+      <a href="index.html" class="menu-logo" aria-label="Temmy Social Home">
+        <img src="logo.png.jpg" alt="Temmy Social">
       </a>
 
-      <div class="menu-header-actions">
 
-        <!-- THEME ICON - DISABLED -->
+      <!-- HEADER ACTIONS -->
+      <div class="menu-actions">
+
+        <!-- THEME ICON
+             Disabled intentionally.
+             It does nothing when tapped. -->
         <button
           type="button"
           class="theme-button"
@@ -135,59 +136,51 @@
     </header>
 
 
-    <!-- ================= MENU ================= -->
+    <!-- DIVIDER -->
+    <div class="header-divider"></div>
 
-    <section class="menu-section">
+
+    <!-- MENU AREA -->
+    <main class="menu-main">
 
       <nav class="menu-links">
 
-        <a href="services.html">
-          Services
-        </a>
+        <a href="services.html">Services</a>
 
-        <a href="about.html">
-          About
-        </a>
+        <a href="about.html">About</a>
 
-        <a href="pricing.html">
-          Pricing
-        </a>
+        <a href="pricing.html">Pricing</a>
 
-        <a href="faq.html">
-          FAQ
-        </a>
+        <a href="faq.html">FAQ</a>
 
-        <a href="index.html">
-          Home
-        </a>
+        <a href="index.html">Home</a>
 
       </nav>
 
-    </section>
+
+      <!-- ACCOUNT AREA -->
+      <section class="account-area">
+
+        <a
+          href="login.html"
+          class="sign-in-button"
+        >
+          Sign in
+        </a>
 
 
-    <!-- ================= ACCOUNT ================= -->
+        <a
+          href="signup.html"
+          class="get-started-button"
+        >
+          Get started free
+        </a>
 
-    <section class="menu-account">
+      </section>
 
-      <a
-        href="login.html"
-        class="signin-button"
-      >
-        Sign in
-      </a>
+    </main>
 
-      <a
-        href="signup.html"
-        class="get-started-button"
-      >
-        Get started free
-      </a>
-
-    </section>
-
-
-  </main>
+  </div>
 
 </body>
 </html>
