@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password - Temmy Social</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      height: 48px;
+      margin-bottom: 48px;
+      display: block;
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #666;
+      text-decoration: none;
+      font-size: 15px;
+      margin-bottom: 32px;
+    }
+
+    .back-link:hover {
+      color: #111;
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 32px;
+      line-height: 1.4;
+    }
+
+    /* Message box */
+    .message {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      margin-bottom: 20px;
+      display: none;
+      line-height: 1.5;
+    }
+
+    .message.success {
+      display: block;
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #ceead6;
+    }
+
+    .message.error {
+      display: block;
+      background: #fce8e6;
+      color: #c5221f;
+      border: 1px solid #f5c6cb;
+    }
+
+    label {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .input-group {
+      margin-bottom: 24px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #3d6b1e;
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 16px;
+      background: #3d6b1e;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: #345c19;
+    }
+
+    .send-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo -->
+    <img src="logo.png" alt="Temmy Social" class="logo">
+
+    <!-- Back link -->
+    <a href="login.html" class="back-link">
+      ← Back to sign in
+    </a>
+
+    <h1>Forgot your password?</h1>
+    <p class="subtitle">Enter your email and we'll send you a reset link</p>
+
+    <!-- Message box (appears before Email) -->
+    <div id="message" class="message"></div>
+
+    <!-- Email -->
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+    </div>
+
+    <!-- Send button -->
+    <button class="send-btn" id="sendBtn">Send reset link</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+    import { getAuth, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      authDomain: "trustsocials-8fc8b.firebaseapp.com",
+      projectId: "trustsocials-8fc8b",
+      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+      messagingSenderId: "675550258010",
+      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+      measurementId: "G-KDVYRV55JD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+
+    const emailInput = document.getElementById('email');
+    const sendBtn = document.getElementById('sendBtn');
+    const messageBox = document.getElementById('message');
+
+    function showMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = `message ${type}`;
+    }
+
+    function hideMessage() {
+      messageBox.className = 'message';
+      messageBox.textContent = '';
+    }
+
+    sendBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+
+      if (!email) {
+        showMessage('Please enter your email address', 'error');
+        return;
+      }
+
+      // Change button text
+      sendBtn.textContent = 'Sending…';
+      sendBtn.disabled = true;
+      hideMessage();
+
+      try {
+        await sendPasswordResetEmail(auth, email);
+
+        // The exact success message you requested
+        showMessage(
+          "Password reset link has been sent to your Gmail. Check your spam message and tap Report not as spam, then check your inbox. Tap the reset link. Future messages from this website will go straight to your inbox.",
+          'success'
+        );
+
+      } catch (error) {
+        let errorMsg = 'Something went wrong. Please try again.';
+
+        if (error.code === 'auth/user-not-found') {
+          errorMsg = 'No account found with this email.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMsg = 'Invalid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMsg = 'Too many requests. Please try again later.';
+        }
+
+        showMessage(errorMsg, 'error');
+      } finally {
+        sendBtn.textContent = 'Send reset link';
+        sendBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
