@@ -6,10 +6,9 @@
 
 :root {
   --green: #438500;
-  --green-dark: #3d7900;
   --black: #050505;
-  --muted: #676767;
-  --line: #e4e4e4;
+  --grey: #666666;
+  --line: #e5e5e5;
 }
 
 html {
@@ -19,15 +18,11 @@ html {
 body {
   width: 100%;
   min-width: 320px;
+  margin: 0;
   background: #ffffff;
   color: var(--black);
   font-family: Arial, Helvetica, sans-serif;
   overflow-x: hidden;
-}
-
-button,
-a {
-  -webkit-tap-highlight-color: transparent;
 }
 
 a {
@@ -35,16 +30,21 @@ a {
   text-decoration: none;
 }
 
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
 
-/* =========================
+
+/* =====================================================
    HEADER
-========================= */
+===================================================== */
 
 .topbar {
   width: 100%;
-  height: 126px;
+  height: 105px;
 
-  padding: 23px 28px 0 28px;
+  padding: 18px 28px 0 28px;
 
   display: flex;
   align-items: flex-start;
@@ -54,84 +54,91 @@ a {
 .brand {
   display: block;
 
-  width: 207px;
-  height: 92px;
+  width: 185px;
+  height: 78px;
 }
 
 .brand img {
-  width: 207px;
-  height: 92px;
+  width: 185px;
+  height: 78px;
+
+  display: block;
 
   object-fit: contain;
   object-position: left top;
-
-  display: block;
 }
 
 .top-actions {
   display: flex;
   align-items: center;
 
-  gap: 24px;
-  padding-top: 24px;
+  gap: 18px;
+
+  padding-top: 20px;
 }
 
 .icon-button {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
 
   border: 0;
   padding: 0;
 
   background: transparent;
 
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   cursor: pointer;
 }
 
 .icon-button svg {
-  width: 31px;
-  height: 31px;
+  width: 26px;
+  height: 26px;
 
   fill: none;
+
   stroke: #111111;
 
-  stroke-width: 2.2;
+  stroke-width: 2.1;
 
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
 .menu-button svg {
-  width: 34px;
-  height: 34px;
+  width: 30px;
+  height: 30px;
 
-  stroke-width: 2.4;
+  stroke-width: 2.3;
 }
 
 
-/* =========================
+/* =====================================================
    HERO
-========================= */
+===================================================== */
 
 .hero {
+  width: 100%;
+
   text-align: center;
 
-  padding: 77px 24px 0;
+  padding: 72px 20px 0;
 }
 
 .hero h1 {
+  margin: 0 auto;
+
   font-family: Arial, Helvetica, sans-serif;
+
+  font-size: clamp(46px, 10.8vw, 68px);
 
   font-weight: 900;
 
-  font-size: 75px;
+  line-height: 0.94;
 
-  line-height: 0.93;
-
-  letter-spacing: -3.8px;
+  letter-spacing: -3px;
 }
 
 .hero h1 span {
@@ -147,81 +154,83 @@ a {
 }
 
 
-/* =========================
-   DESCRIPTION
-========================= */
+/* =====================================================
+   HERO DESCRIPTION
+===================================================== */
 
 .hero-copy {
-  margin: 48px auto 0;
+  width: 100%;
+  max-width: 570px;
 
-  max-width: 585px;
+  margin: 42px auto 0;
 
-  color: #666666;
+  color: var(--grey);
 
-  font-size: 29px;
+  font-size: clamp(19px, 4.1vw, 26px);
 
-  line-height: 1.58;
+  line-height: 1.7;
 
   font-weight: 400;
 }
 
 
-/* =========================
-   HERO BUTTONS
-========================= */
+/* =====================================================
+   BUTTONS
+===================================================== */
 
 .hero-buttons {
-  margin: 54px auto 0;
-
   width: 345px;
+  max-width: calc(100% - 100px);
+
+  margin: 43px auto 0;
 
   display: flex;
   flex-direction: column;
 
-  gap: 22px;
+  gap: 20px;
 }
 
 .primary-button,
 .secondary-button {
   width: 100%;
-  height: 78px;
+  height: 76px;
 
-  border-radius: 11px;
+  border-radius: 10px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  font-size: 23px;
+
   font-weight: 800;
 
-  font-size: 25px;
-
-  letter-spacing: 0.2px;
+  letter-spacing: 0;
 }
 
 
 /* GET STARTED */
 
 .primary-button {
+  background: var(--green);
+
   color: #ffffff;
 
-  background: var(--green);
+  gap: 13px;
 
   box-shadow:
     0 2px 4px rgba(0, 0, 0, 0.14);
-
-  gap: 14px;
 }
 
 .primary-button svg {
-  width: 28px;
-  height: 28px;
+  width: 25px;
+  height: 25px;
 
   fill: none;
 
   stroke: currentColor;
 
-  stroke-width: 2.2;
+  stroke-width: 2.1;
 
   stroke-linecap: round;
   stroke-linejoin: round;
@@ -231,33 +240,34 @@ a {
 /* BROWSE SERVICES */
 
 .secondary-button {
-  color: #090909;
-
   background: #ffffff;
+
+  color: #090909;
 
   border: 2px solid #e4e4e4;
 
   box-shadow:
-    0 2px 4px rgba(0, 0, 0, 0.07);
+    0 2px 4px rgba(0, 0, 0, 0.06);
 }
 
 
-/* =========================
-   SERVICES MARQUEE
-========================= */
+/* =====================================================
+   SERVICES MOVING BAR
+===================================================== */
 
 .service-marquee {
-  margin-top: 205px;
-
   width: 100%;
-  height: 108px;
+
+  height: 82px;
+
+  margin-top: 205px;
 
   background: var(--green);
 
-  overflow: hidden;
-
   display: flex;
   align-items: center;
+
+  overflow: hidden;
 
   white-space: nowrap;
 }
@@ -266,33 +276,36 @@ a {
   display: inline-flex;
   align-items: center;
 
-  gap: 74px;
-
-  padding-left: 38px;
-
   min-width: max-content;
 
-  animation: marquee 18s linear infinite;
+  padding-left: 37px;
+
+  gap: 66px;
 
   color: #ffffff;
+
+  animation: marquee 18s linear infinite;
 }
 
 .marquee-track span {
-  font-size: 29px;
+  font-size: 25px;
+
+  line-height: 1;
 
   font-weight: 800;
 
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
 }
 
 .marquee-track b {
-  font-size: 32px;
+  font-size: 28px;
+
+  line-height: 1;
 
   font-weight: 400;
 }
 
 @keyframes marquee {
-
   from {
     transform: translateX(0);
   }
@@ -300,18 +313,17 @@ a {
   to {
     transform: translateX(-45%);
   }
-
 }
 
 
-/* =========================
+/* =====================================================
    STATISTICS
-========================= */
+===================================================== */
 
 .stats {
   width: calc(100% - 64px);
 
-  margin: 104px auto 100px;
+  margin: 104px auto 72px;
 
   display: grid;
 
@@ -321,7 +333,7 @@ a {
 }
 
 .stat {
-  min-height: 265px;
+  min-height: 235px;
 
   display: flex;
 
@@ -339,114 +351,264 @@ a {
   border-right: 1px solid var(--line);
 }
 
+
+/* STAT NUMBER */
+
 .stat strong {
+  display: block;
+
   color: var(--green);
 
-  font-size: 51px;
+  font-size: 44px;
 
   line-height: 1;
 
   font-weight: 900;
 
-  letter-spacing: -2px;
+  letter-spacing: -1.8px;
 }
 
+
+/* STAT DESCRIPTION */
+
 .stat span {
-  margin-top: 20px;
+  display: block;
+
+  margin-top: 17px;
 
   color: #777777;
 
-  font-size: 22px;
+  font-size: 19px;
 
-  line-height: 1.38;
+  line-height: 1.42;
 
   font-weight: 400;
 
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
 }
 
 
-/* =========================
+/* =====================================================
    MOBILE
-========================= */
+===================================================== */
 
 @media (max-width: 600px) {
 
-  .topbar {
-    height: 112px;
+  /* HEADER */
 
-    padding: 20px 24px 0 25px;
+  .topbar {
+    height: 100px;
+
+    padding: 17px 24px 0 25px;
   }
 
   .brand,
   .brand img {
-    width: 185px;
-    height: 82px;
+    width: 178px;
+    height: 75px;
   }
 
   .top-actions {
-    gap: 19px;
+    gap: 17px;
 
-    padding-top: 19px;
+    padding-top: 18px;
   }
 
   .icon-button {
+    width: 27px;
+    height: 27px;
+  }
+
+  .icon-button svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .menu-button svg {
     width: 29px;
     height: 29px;
   }
 
+
+  /* HERO */
+
   .hero {
-    padding-top: 69px;
+    padding: 76px 18px 0;
   }
 
   .hero h1 {
-    font-size: clamp(
-      48px,
-      12.2vw,
-      75px
-    );
+    font-size: clamp(43px, 10.7vw, 66px);
 
-    letter-spacing: -2.7px;
+    line-height: 0.94;
+
+    letter-spacing: -2.8px;
   }
+
+
+  /* DESCRIPTION */
 
   .hero-copy {
-    margin-top: 43px;
+    margin-top: 41px;
 
-    font-size: clamp(
-      20px,
-      4.7vw,
-      29px
-    );
+    font-size: clamp(18px, 4vw, 25px);
 
-    line-height: 1.58;
+    line-height: 1.7;
   }
 
-  .hero-buttons {
-    width: min(
-      345px,
-      calc(100vw - 80px)
-    );
 
-    margin-top: 50px;
+  /* BUTTONS */
+
+  .hero-buttons {
+    width: 345px;
+
+    max-width: calc(100% - 80px);
+
+    margin-top: 42px;
 
     gap: 20px;
   }
 
   .primary-button,
   .secondary-button {
-    height: 78px;
+    height: 76px;
 
-    font-size: 24px;
+    font-size: 23px;
+
+    border-radius: 10px;
   }
+
+
+  /* GREEN BAR */
 
   .service-marquee {
+    height: 82px;
+
     margin-top: 205px;
   }
+
+  .marquee-track {
+    padding-left: 37px;
+
+    gap: 66px;
+  }
+
+  .marquee-track span {
+    font-size: 25px;
+  }
+
+  .marquee-track b {
+    font-size: 28px;
+  }
+
+
+  /* STATS */
 
   .stats {
     width: calc(100% - 64px);
 
     margin-top: 104px;
+
+    margin-bottom: 70px;
   }
 
+  .stat {
+    min-height: 235px;
+  }
+
+  .stat strong {
+    font-size: 44px;
+  }
+
+  .stat span {
+    margin-top: 17px;
+
+    font-size: 19px;
+
+    line-height: 1.42;
+  }
+}
+
+
+/* =====================================================
+   SMALL PHONES
+===================================================== */
+
+@media (max-width: 390px) {
+
+  .topbar {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .brand,
+  .brand img {
+    width: 165px;
+    height: 70px;
+  }
+
+  .top-actions {
+    gap: 14px;
+  }
+
+  .hero {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+
+    letter-spacing: -2.4px;
+  }
+
+  .hero-copy {
+    font-size: 18px;
+
+    line-height: 1.65;
+  }
+
+  .hero-buttons {
+    max-width: calc(100% - 55px);
+  }
+
+  .primary-button,
+  .secondary-button {
+    height: 70px;
+
+    font-size: 21px;
+  }
+
+  .service-marquee {
+    margin-top: 190px;
+
+    height: 76px;
+  }
+
+  .marquee-track span {
+    font-size: 22px;
+  }
+
+  .marquee-track b {
+    font-size: 25px;
+  }
+
+  .stats {
+    width: calc(100% - 42px);
+
+    margin-top: 90px;
+  }
+
+  .stat {
+    min-height: 210px;
+  }
+
+  .stat strong {
+    font-size: 38px;
+  }
+
+  .stat span {
+    font-size: 17px;
+
+    margin-top: 14px;
+  }
 }
