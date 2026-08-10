@@ -25,6 +25,14 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .menu.hidden {
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none;
+      display: none; /* fully removes it after animation if you prefer */
     }
 
     /* Header */
@@ -126,7 +134,7 @@
     }
 
     .btn-solid {
-      background: #3d6b1e;       /* matches the green in your design */
+      background: #3d6b1e;
       color: #fff;
       border: none;
     }
@@ -137,7 +145,7 @@
   </style>
 </head>
 <body>
-  <div class="menu">
+  <div class="menu" id="menu">
     <!-- Header -->
     <div class="header">
       <!-- Replace logo.png with your actual logo file -->
@@ -152,8 +160,8 @@
           </svg>
         </button>
 
-        <!-- Close (X) -->
-        <button class="icon-btn" aria-label="Close menu">
+        <!-- Close (X) button -->
+        <button class="icon-btn" id="closeBtn" aria-label="Close menu">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 6L6 18M6 6l12 12"/>
           </svg>
@@ -163,7 +171,7 @@
 
     <!-- Menu links -->
     <nav>
-      <a href="services.html">Services</a>
+      <a href="service.html">Services</a>
       <a href="about.html">About</a>
       <a href="pricing.html">Pricing</a>
       <a href="faq.html">FAQ</a>
@@ -173,9 +181,23 @@
 
     <!-- Action buttons -->
     <div class="buttons">
-      <a href="#signin" class="btn btn-outline">Sign in</a>
-      <a href="#get-started" class="btn btn-solid">Get started free</a>
+      <a href="login.html" class="btn btn-outline">Sign in</a>
+      <a href="login.html" class="btn btn-solid">Get started free</a>
     </div>
   </div>
+
+  <script>
+    const menu = document.getElementById('menu');
+    const closeBtn = document.getElementById('closeBtn');
+
+    closeBtn.addEventListener('click', () => {
+      menu.classList.add('hidden');
+      
+      // Optional: completely remove the menu from the page after the animation
+      setTimeout(() => {
+        menu.style.display = 'none';
+      }, 300);
+    });
+  </script>
 </body>
 </html>
