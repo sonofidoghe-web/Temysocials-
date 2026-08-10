@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in - Temmy Social</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .logo {
+      height: 48px;
+      margin-bottom: 48px;
+      display: block;
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 16px;
+      margin-bottom: 32px;
+    }
+
+    /* Google button */
+    .google-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 14px 16px;
+      background: #fff;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.2s;
+    }
+
+    .google-btn:hover {
+      background: #f8f8f8;
+    }
+
+    .google-btn img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .last-used {
+      position: absolute;
+      right: 12px;
+      background: #f0f0f0;
+      color: #666;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 20px;
+    }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 28px 0;
+      color: #999;
+      font-size: 14px;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #e5e5e5;
+    }
+
+    .divider span {
+      padding: 0 16px;
+    }
+
+    /* Message box (same size as inputs) */
+    .message {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .message.success {
+      display: block;
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #ceead6;
+    }
+
+    .message.error {
+      display: block;
+      background: #fce8e6;
+      color: #c5221f;
+      border: 1px solid #f5c6cb;
+    }
+
+    /* Form labels & inputs */
+    label {
+      display: block;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 8px;
+    }
+
+    .input-group {
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .password-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .password-header label {
+      margin-bottom: 0;
+    }
+
+    .forgot {
+      color: #3d6b1e;
+      font-size: 14px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot:hover {
+      text-decoration: underline;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    input:focus {
+      border-color: #3d6b1e;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      padding: 4px;
+    }
+
+    .toggle-password svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Sign in button */
+    .signin-btn {
+      width: 100%;
+      padding: 16px;
+      background: #3d6b1e;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 17px;
+      font-weight: 500;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
+    }
+
+    .signin-btn:hover:not(:disabled) {
+      background: #345c19;
+    }
+
+    .signin-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Bottom link */
+    .bottom-text {
+      text-align: center;
+      margin-top: 28px;
+      font-size: 15px;
+      color: #666;
+    }
+
+    .bottom-text a {
+      color: #3d6b1e;
+      font-weight: 500;
+      text-decoration: none;
+    }
+
+    .bottom-text a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Logo -->
+    <img src="logo.png.jpg" alt="Temmy Social" class="logo">
+
+    <h1>Welcome back</h1>
+    <p class="subtitle">Sign in to your TemmySocials account</p>
+
+    <!-- Google button -->
+    <button class="google-btn" id="googleBtn">
+      <svg width="20" height="20" viewBox="0 0 24 24">
+        <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+        <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+        <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+        <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+      </svg>
+      Continue with Google
+      <span class="last-used">Last used</span>
+    </button>
+
+    <div class="divider">
+      <span>or continue with email</span>
+    </div>
+
+    <!-- Message box (appears before Email) -->
+    <div id="message" class="message"></div>
+
+    <!-- Email -->
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="you@example.com" required>
+    </div>
+
+    <!-- Password -->
+    <div class="input-group">
+      <div class="password-header">
+        <label for="password">Password</label>
+        <a href="#" class="forgot">Forgot password?</a>
+      </div>
+      <div class="password-wrapper">
+        <input type="password" id="password" placeholder="••••••••" required>
+        <button type="button" class="toggle-password" id="togglePassword">
+          <!-- Eye icon -->
+          <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Sign in button -->
+    <button class="signin-btn" id="signinBtn">Sign in</button>
+
+    <p class="bottom-text">
+      No account? <a href="signup.html">Create one free</a>
+    </p>
+  </div>
+
+  <script type="module">
+    // Your Firebase config
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+    import { 
+      getAuth, 
+      signInWithEmailAndPassword, 
+      GoogleAuthProvider, 
+      signInWithPopup 
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      authDomain: "trustsocials-8fc8b.firebaseapp.com",
+      projectId: "trustsocials-8fc8b",
+      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+      messagingSenderId: "675550258010",
+      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+      measurementId: "G-KDVYRV55JD"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    // Elements
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const signinBtn = document.getElementById('signinBtn');
+    const googleBtn = document.getElementById('googleBtn');
+    const messageBox = document.getElementById('message');
+    const togglePassword = document.getElementById('togglePassword');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    // Show message (green or red)
+    function showMessage(text, type) {
+      messageBox.textContent = text;
+      messageBox.className = `message ${type}`;
+    }
+
+    function hideMessage() {
+      messageBox.className = 'message';
+      messageBox.textContent = '';
+    }
+
+    // Toggle password visibility
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      
+      // Simple icon change (you can improve the SVG if you want)
+      if (type === 'text') {
+        eyeIcon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        `;
+      } else {
+        eyeIcon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
+      }
+    });
+
+    // Email + Password Sign In
+    signinBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      const password = passwordInput.value;
+
+      if (!email || !password) {
+        showMessage('Please enter both email and password', 'error');
+        return;
+      }
+
+      // Change button text
+      signinBtn.textContent = 'Signing in…';
+      signinBtn.disabled = true;
+      hideMessage();
+
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+        showMessage('Signed in successfully!', 'success');
+        
+        // Optional: redirect after success
+        // setTimeout(() => window.location.href = 'dashboard.html', 1500);
+      } catch (error) {
+        let errorMsg = 'Something went wrong. Please try again.';
+        
+        if (error.code === 'auth/user-not-found') {
+          errorMsg = 'No account found with this email.';
+        } else if (error.code === 'auth/wrong-password') {
+          errorMsg = 'Incorrect password.';
+        } else if (error.code === 'auth/invalid-email') {
+          errorMsg = 'Invalid email address.';
+        } else if (error.code === 'auth/too-many-requests') {
+          errorMsg = 'Too many attempts. Please try again later.';
+        } else if (error.code === 'auth/invalid-credential') {
+          errorMsg = 'Invalid email or password.';
+        }
+
+        showMessage(errorMsg, 'error');
+      } finally {
+        signinBtn.textContent = 'Sign in';
+        signinBtn.disabled = false;
+      }
+    });
+
+    // Google Sign In
+    googleBtn.addEventListener('click', async () => {
+      hideMessage();
+      try {
+        await signInWithPopup(auth, googleProvider);
+        showMessage('Signed in with Google successfully!', 'success');
+        
+        // Optional: redirect
+        // setTimeout(() => window.location.href = 'dashboard.html', 1500);
+      } catch (error) {
+        showMessage('Google sign-in failed. Please try again.', 'error');
+        console.error(error);
+      }
+    });
+  </script>
+</body>
+</html>
