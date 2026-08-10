@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -10,47 +8,36 @@
     content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
   >
 
-  <title>Menu - TemmySocials</title>
+  <title>Temmy Social - Menu</title>
 
-  <!-- GLOBAL THEME -->
-  <link rel="stylesheet" href="theme.css">
-
-  <!-- MENU DESIGN -->
-  <link rel="stylesheet" href="home.css">
-
+  <link rel="stylesheet" href="menu.css">
 </head>
 
 <body>
 
-  <!-- MOBILE MENU -->
-  <div class="mobile-menu">
+  <main class="menu-page">
 
-    <!-- MENU HEADER -->
-    <header class="mobile-menu-header">
+    <!-- ================= HEADER ================= -->
 
-      <!-- LOGO -->
-      <a href="index.html" class="mobile-menu-logo">
+    <header class="menu-header">
+
+      <a href="index.html" class="menu-logo">
         <img
           src="logo.png.jpg"
           alt="Temmy Social"
         >
       </a>
 
+      <div class="menu-header-actions">
 
-      <!-- HEADER ACTIONS -->
-      <div class="mobile-menu-actions">
-
-        <!-- THEME -->
+        <!-- THEME ICON - DISABLED -->
         <button
           type="button"
-          class="mobile-theme-button theme-button"
-          aria-label="Toggle theme"
+          class="theme-button"
+          aria-label="Theme disabled"
+          disabled
         >
-
-          <svg
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 32 32" aria-hidden="true">
 
             <circle
               cx="16"
@@ -115,21 +102,16 @@
             ></line>
 
           </svg>
-
         </button>
 
 
         <!-- CLOSE -->
         <a
           href="index.html"
-          class="mobile-close-button"
+          class="close-button"
           aria-label="Close menu"
         >
-
-          <svg
-            viewBox="0 0 32 32"
-            aria-hidden="true"
-          >
+          <svg viewBox="0 0 32 32" aria-hidden="true">
 
             <line
               x1="6"
@@ -146,7 +128,6 @@
             ></line>
 
           </svg>
-
         </a>
 
       </div>
@@ -154,12 +135,11 @@
     </header>
 
 
-    <!-- MENU CONTENT -->
-    <main class="mobile-menu-content">
+    <!-- ================= MENU ================= -->
 
+    <section class="menu-section">
 
-      <!-- NAVIGATION -->
-      <nav class="mobile-menu-links">
+      <nav class="menu-links">
 
         <a href="services.html">
           Services
@@ -183,34 +163,31 @@
 
       </nav>
 
-
-      <!-- ACCOUNT -->
-      <div class="mobile-menu-account">
-
-        <a
-          href="login.html"
-          class="menu-signin"
-        >
-          Sign in
-        </a>
-
-        <a
-          href="signup.html"
-          class="menu-register"
-        >
-          Get started free
-        </a>
-
-      </div>
-
-    </main>
-
-  </div>
+    </section>
 
 
-  <!-- GLOBAL THEME -->
-  <script src="theme.js"></script>
+    <!-- ================= ACCOUNT ================= -->
+
+    <section class="menu-account">
+
+      <a
+        href="login.html"
+        class="signin-button"
+      >
+        Sign in
+      </a>
+
+      <a
+        href="signup.html"
+        class="get-started-button"
+      >
+        Get started free
+      </a>
+
+    </section>
+
+
+  </main>
 
 </body>
-
 </html>
