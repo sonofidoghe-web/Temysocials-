@@ -18,17 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
 
-  /*
-    THEME BUTTON
-
-    This is currently prepared for the
-    theme functionality we can build later.
-  */
-  themeButton.addEventListener("click", () => {
-    document.body.classList.toggle("dark-preview");
-  });
-
-});
 /* =====================================================
    FAQ ACCORDION
 ===================================================== */
