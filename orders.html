@@ -72,6 +72,60 @@
     h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
     .subtitle { color: #666; font-size: 15px; margin-bottom: 24px; }
 
+    .order-card {
+      background: white;
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 14px;
+      border: 1px solid #f0f0f0;
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .order-title {
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .order-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: #3d6b1e;
+      white-space: nowrap;
+    }
+
+    .order-meta {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 14px;
+    }
+
+    .credential-label {
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #333;
+    }
+
+    .credential-box {
+      background: #f8f9fa;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-family: monospace;
+      font-size: 13px;
+      word-break: break-all;
+      line-height: 1.5;
+      white-space: pre-wrap;
+    }
+
     .empty-state {
       background: white;
       border-radius: 16px;
@@ -94,15 +148,6 @@
       font-size: 14px;
       color: #888;
       line-height: 1.4;
-    }
-
-    /* Order item (for later when there are orders) */
-    .order-item {
-      background: white;
-      border-radius: 14px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border: 1px solid #f0f0f0;
     }
   </style>
 </head>
@@ -131,7 +176,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
         Orders
       </a>
-      <a href="#" class="menu-item">
+      <a href="transactions.html" class="menu-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
         Transactions
       </a>
@@ -139,7 +184,7 @@
 
     <div class="menu-section">
       <div class="menu-section-title">Store</div>
-      <a href="#" class="menu-item">
+      <a href="logs-store.html" class="menu-item">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
         Logs Store
       </a>
@@ -209,11 +254,10 @@
 
   <div class="container">
     <h1>Orders</h1>
-    <p class="subtitle">Your purchase history</p>
+    <p class="subtitle">Your purchase history & credentials</p>
 
     <div id="ordersContainer">
-      <!-- Empty state (will be replaced when there are orders) -->
-      <div class="empty-state">
+      <div class="empty-state" id="emptyState">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
           <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
@@ -284,40 +328,56 @@
       const displayName = user.displayName || user.email.split('@')[0];
       const names = displayName.trim().split(' ');
       let initials = names[0].charAt(0).toUpperCase();
-      if (names.length > 1) initials += names[names.length-1].charAt(0).toUpperCase();
+      if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
       document.getElementById('userAvatar').textContent = initials;
 
-      // Load orders from Firebase
+      // Load all orders (Logs Store + Tools Store)
       try {
         const q = query(
           collection(db, 'orders'),
           where('userId', '==', user.uid),
           orderBy('createdAt', 'desc')
         );
+
         const snapshot = await getDocs(q);
         const container = document.getElementById('ordersContainer');
+        const emptyState = document.getElementById('emptyState');
 
         if (snapshot.empty) {
-          // Keep the empty state (already in HTML)
+          emptyState.style.display = 'block';
           return;
         }
 
-        // If there are orders, we will show them here later
-        // (when you start selling products we will expand this)
+        emptyState.style.display = 'none';
+
         let html = '';
-        snapshot.forEach(doc => {
-          const order = doc.data();
+        snapshot.forEach(docSnap => {
+          const order = docSnap.data();
+          const dateStr = order.createdAt?.toDate 
+            ? order.createdAt.toDate().toLocaleString('en-GB', {
+                day: 'numeric', month: 'short', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+              })
+            : '';
+
           html += `
-            <div class="order-item">
-              <strong>${order.productName || 'Product'}</strong><br>
-              <small>${order.status || ''} · ₦${(order.amount || 0).toLocaleString()}</small>
+            <div class="order-card">
+              <div class="order-header">
+                <div class="order-title">${order.productName || 'Product'}</div>
+                <div class="order-price">₦${Number(order.amount || 0).toLocaleString()}</div>
+              </div>
+              <div class="order-meta">${dateStr} · ${order.status || 'completed'}</div>
+              
+              <div class="credential-label">Secret Credential:</div>
+              <div class="credential-box">${order.credential || 'No credential available'}</div>
             </div>
           `;
         });
+
         container.innerHTML = html;
 
       } catch (err) {
-        console.log('No orders yet or index needed:', err.message);
+        console.error('Error loading orders:', err);
       }
     });
   </script>
