@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logs Store - Temmy Social</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8f9fa;
+      color: #111;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* ===== FIXED TOP ===== */
+    .fixed-top {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: #ffffff;
+      transition: background 0.3s ease;
+    }
+    .fixed-top.scrolled {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .menu-toggle { background: none; border: none; cursor: pointer; padding: 4px; color: #333; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .badge-no { background: #f0f0f0; color: #555; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+    .icon-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #444; }
+    .avatar {
+      width: 36px; height: 36px; background: #3d6b1e; color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 14px;
+    }
+
+    .title-area { padding: 20px 16px 12px; }
+    .title-area h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .title-area p { color: #666; font-size: 15px; line-height: 1.4; }
+
+    .listings-bar {
+      padding: 0 16px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .listings-info h2 { font-size: 17px; font-weight: 600; margin-bottom: 2px; }
+    .listings-info .count { font-size: 13px; color: #666; }
+    .filter-btn {
+      width: 42px; height: 42px; border: 1.5px solid #e0e0e0; border-radius: 12px;
+      background: white; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    /* ===== SIDEBAR (left) ===== */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 300px; height: 100%;
+      background: white; z-index: 300; transform: translateX(-100%);
+      transition: transform 0.3s ease; overflow-y: auto; padding: 20px 0 30px;
+    }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #eee; }
+    .sidebar-logo img { height: 40px; }
+    .menu-section { padding: 20px 12px 8px; }
+    .menu-section-title {
+      font-size: 13px; color: #888; font-weight: 500; padding: 0 12px 10px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .menu-item {
+      display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+      border-radius: 12px; color: #333; text-decoration: none; font-size: 15px;
+      font-weight: 500; margin-bottom: 2px;
+    }
+    .menu-item:hover { background: #f5f5f5; }
+    .menu-item.active { background: #f0f7eb; color: #3d6b1e; }
+    .menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .soon-badge { margin-left: auto; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+    .signout-item { color: #d32f2f !important; margin-top: 10px; }
+    .signout-item:hover { background: #ffebee !important; }
+
+    /* ===== FILTER PANEL (slides from RIGHT) ===== */
+    .filter-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 400;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .filter-overlay.active { opacity: 1; visibility: visible; }
+
+    .filter-panel {
+      position: fixed; top: 0; right: 0; width: 85%; max-width: 360px; height: 100%;
+      background: white; z-index: 500; transform: translateX(100%);
+      transition: transform 0.3s ease; overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .filter-panel.active { transform: translateX(0); }
+
+    .filter-header {
+      padding: 20px 20px 16px;
+      border-bottom: 1px solid #eee;
+      position: relative;
+    }
+    .filter-header h2 { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .filter-header p { font-size: 14px; color: #666; line-height: 1.4; }
+    .filter-close {
+      position: absolute; top: 18px; right: 18px;
+      background: none; border: none; font-size: 24px; cursor: pointer; color: #666;
+    }
+
+    .filter-search {
+      padding: 16px 20px;
+      border-bottom: 1px solid #eee;
+    }
+    .filter-search input {
+      width: 100%; padding: 12px 16px 12px 42px; border: 1.5px solid #e0e0e0;
+      border-radius: 12px; font-size: 15px; outline: none;
+    }
+    .filter-search { position: relative; }
+    .filter-search svg {
+      position: absolute; left: 34px; top: 50%; transform: translateY(-50%); color: #999;
+    }
+
+    .filter-list { padding: 16px 20px; flex: 1; }
+
+    .filter-all {
+      background: #3d6b1e; color: white; border-radius: 14px; padding: 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; font-weight: 600; font-size: 15px; cursor: pointer;
+    }
+    .filter-all .count {
+      background: white; color: #3d6b1e; font-size: 13px; font-weight: 600;
+      padding: 3px 10px; border-radius: 20px;
+    }
+
+    .category-item {
+      background: white; border: 1.5px solid #eee; border-radius: 14px;
+      padding: 14px 16px; margin-bottom: 10px; cursor: pointer;
+      display: flex; justify-content: space-between; align-items: center;
+      transition: border-color 0.2s;
+    }
+    .category-item:hover { border-color: #3d6b1e; }
+    .category-item.active { border-color: #3d6b1e; background: #f0f7eb; }
+
+    .cat-info h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .cat-info p { font-size: 12px; color: #777; }
+    .cat-count {
+      background: #f0f0f0; color: #555; font-size: 13px; font-weight: 500;
+      width: 28px; height: 28px; border-radius: 50%; display: flex;
+      align-items: center; justify-content: center;
+    }
+
+    /* ===== PRODUCT LIST ===== */
+    .container { max-width: 480px; margin: 0 auto; padding: 8px 16px 40px; }
+    .desc-text { font-size: 14px; color: #666; line-height: 1.5; margin-bottom: 20px; padding: 0 4px; }
+
+    .product-card {
+      background: white; border-radius: 16px; padding: 16px; margin-bottom: 14px;
+      border: 1px solid #f0f0f0; display: flex; gap: 14px;
+    }
+    .product-icon {
+      width: 56px; height: 56px; border-radius: 14px; object-fit: cover; flex-shrink: 0;
+      background: #3d6b1e;
+    }
+    .product-info { flex: 1; min-width: 0; }
+    .product-top { display: flex; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+    .product-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .product-sku { font-size: 12px; background: #f0f0f0; color: #555; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+    .product-price { font-size: 17px; font-weight: 700; color: #3d6b1e; margin: 4px 0; }
+    .product-desc {
+      font-size: 13px; color: #666; line-height: 1.4; margin-bottom: 12px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .product-actions { display: flex; gap: 8px; justify-content: flex-end; }
+    .preview-btn, .buy-btn {
+      border: none; border-radius: 24px; padding: 9px 16px; font-size: 13px;
+      font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .preview-btn { background: #f0f0f0; color: #333; }
+    .buy-btn { background: #3d6b1e; color: white; }
+
+    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+
+    /* ===== POPUPS ===== */
+    .popup-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; visibility: hidden; transition: all 0.25s ease;
+    }
+    .popup-overlay.active { opacity: 1; visibility: visible; }
+
+    .popup {
+      background: white; width: 100%; max-width: 380px; border-radius: 18px;
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    /* Warning (orange) */
+    .warning-header {
+      background: #fff3e0; padding: 18px 20px; border-bottom: 1px solid #ffe0b2;
+    }
+    .warning-header h3 {
+      font-size: 17px; font-weight: 700; color: #e65100;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .warning-body { padding: 20px; font-size: 14px; line-height: 1.55; color: #333; }
+    .warning-actions { padding: 0 20px 20px; display: flex; gap: 10px; }
+    .warning-btn {
+      flex: 1; padding: 13px; border-radius: 12px; font-size: 15px;
+      font-weight: 600; cursor: pointer; border: none;
+    }
+    .btn-cancel { background: #f0f0f0; color: #333; }
+    .btn-continue { background: #e65100; color: white; }
+
+    /* Product confirm + Credential popup */
+    .confirm-header { padding: 20px 20px 10px; }
+    .confirm-header h3 { font-size: 18px; font-weight: 700; }
+    .confirm-body { padding: 10px 20px 20px; }
+    .confirm-price { font-size: 22px; font-weight: 700; color: #3d6b1e; margin: 8px 0; }
+    .credential-box {
+      background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 12px;
+      padding: 14px; margin: 16px 0; font-family: monospace; font-size: 14px;
+      word-break: break-all; line-height: 1.5;
+    }
+    .confirm-actions { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-primary {
+      background: #3d6b1e; color: white; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+    }
+    .btn-secondary {
+      background: #f0f0f0; color: #333; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+    }
+
+    /* Preview popup */
+    .preview-img {
+      width: 100%; border-radius: 12px; margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- LEFT SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- LEFT SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="logo.png" alt="Temmy Social">
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Main</div>
+      <a href="dashboard.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="wallet.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M22 10H2"/><path d="M6 14h.01"/></svg>
+        Wallet
+      </a>
+      <a href="orders.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Orders
+      </a>
+      <a href="transactions.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Transactions
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Store</div>
+      <a href="logs.html" class="menu-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Logs Store
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Tools Store
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        SMS Numbers <span class="soon-badge">Soon</span>
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        SME Boosting <span class="soon-badge">Soon</span>
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Account</div>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        Support
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notification
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </div>
+
+    <div class="menu-section" style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
+      <a href="#" class="menu-item signout-item" id="signOutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </div>
+
+  <!-- FILTER PANEL (RIGHT) -->
+  <div class="filter-overlay" id="filterOverlay"></div>
+  <div class="filter-panel" id="filterPanel">
+    <div class="filter-header">
+      <h2>Browse categories</h2>
+      <p>Switch between listings and jump straight into the category you want.</p>
+      <button class="filter-close" id="closeFilter">×</button>
+    </div>
+
+    <div class="filter-search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="categorySearch" placeholder="Search categories...">
+    </div>
+
+    <div class="filter-list" id="categoryList">
+      <!-- Categories will be loaded here -->
+    </div>
+  </div>
+
+  <!-- FIXED TOP -->
+  <div class="fixed-top" id="fixedTop">
+    <header class="header">
+      <button class="menu-toggle" id="menuToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </button>
+      <div class="header-right">
+        <span class="badge-no">No</span>
+        <button class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        </button>
+        <button class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+        <div class="avatar" id="userAvatar">--</div>
+      </div>
+    </header>
+
+    <div class="title-area">
+      <h1>Logs Store</h1>
+      <p>Browse and purchase verified social media accounts</p>
+    </div>
+
+    <div class="listings-bar">
+      <div class="listings-info">
+        <h2>All listings</h2>
+        <div class="count" id="listingsCount">0 accounts available</div>
+      </div>
+      <button class="filter-btn" id="filterBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="6" x2="20" y2="6"/>
+          <line x1="8" y1="12" x2="16" y2="12"/>
+          <line x1="11" y1="18" x2="13" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <p class="desc-text">
+      Browse available verified social media accounts and buy instantly from your wallet.
+    </p>
+    <div id="productsList">
+      <div class="empty-state">Loading products...</div>
+    </div>
+  </div>
+
+  <!-- WARNING POPUP -->
+  <div class="popup-overlay" id="warningPopup">
+    <div class="popup">
+      <div class="warning-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Important Notice
+        </h3>
+      </div>
+      <div class="warning-body">
+        Everything sold on this website should not be used for impersonation, fraud, or any other illegal activities. 
+        You are fully responsible for how you use anything you purchase from us.
+      </div>
+      <div class="warning-actions">
+        <button class="warning-btn btn-cancel" id="cancelWarning">Cancel</button>
+        <button class="warning-btn btn-continue" id="continueWarning">I Understand</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM / CREDENTIAL POPUP -->
+  <div class="popup-overlay" id="confirmPopup">
+    <div class="popup">
+      <div class="confirm-header">
+        <h3 id="confirmTitle">Product</h3>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-price" id="confirmPrice">₦0</div>
+        <div id="confirmDesc" style="font-size:14px;color:#555;margin-bottom:12px;"></div>
+        
+        <div id="credentialSection" style="display:none;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Your Credentials:</div>
+          <div class="credential-box" id="credentialBox"></div>
+        </div>
+      </div>
+      <div class="confirm-actions" id="confirmActions">
+        <button class="btn-primary" id="finalBuyBtn">Buy Now</button>
+        <button class="btn-secondary" id="closeConfirm">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREVIEW POPUP -->
+  <div class="popup-overlay" id="previewPopup">
+    <div class="popup">
+      <div class="confirm-header">
+        <h3>Product Preview</h3>
+      </div>
+      <div class="confirm-body" id="previewContent"></div>
+      <div class="confirm-actions">
+        <button class="btn-secondary" id="closePreview">Close</button>
+      </div>
+    </div>
+  </div>
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, query, where, getDocs, doc, getDoc, 
+      updateDoc, addDoc, increment, serverTimestamp, orderBy 
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      authDomain: "trustsocials-8fc8b.firebaseapp.com",
+      projectId: "trustsocials-8fc8b",
+      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+      messagingSenderId: "675550258010",
+      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+      measurementId: "G-KDVYRV55JD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // ========== ELEMENTS ==========
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const filterPanel = document.getElementById('filterPanel');
+    const filterOverlay = document.getElementById('filterOverlay');
+    const fixedTop = document.getElementById('fixedTop');
+
+    let currentUser = null;
+    let selectedProduct = null;
+    let allProducts = [];
+    let allCategories = [];
+
+    // ========== SIDEBAR ==========
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      sidebar.classList.add('active');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    sidebarOverlay.addEventListener('click', closeSidebar);
+    function closeSidebar() {
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ========== FILTER PANEL (RIGHT) ==========
+    document.getElementById('filterBtn').addEventListener('click', () => {
+      filterPanel.classList.add('active');
+      filterOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    document.getElementById('closeFilter').addEventListener('click', closeFilter);
+    filterOverlay.addEventListener('click', closeFilter);
+    function closeFilter() {
+      filterPanel.classList.remove('active');
+      filterOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // ========== SCROLL TRANSPARENCY ==========
+    window.addEventListener('scroll', () => {
+      fixedTop.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // ========== SIGN OUT ==========
+    document.getElementById('signOutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signOut(auth);
+      window.location.href = 'login.html';
+    });
+
+    // ========== WARNING POPUP ==========
+    document.getElementById('cancelWarning').addEventListener('click', () => {
+      document.getElementById('warningPopup').classList.remove('active');
+      selectedProduct = null;
+    });
+
+    document.getElementById('continueWarning').addEventListener('click', () => {
+      document.getElementById('warningPopup').classList.remove('active');
+      if (selectedProduct) openConfirmPopup(selectedProduct);
+    });
+
+    // ========== CONFIRM / BUY POPUP ==========
+    document.getElementById('closeConfirm').addEventListener('click', () => {
+      document.getElementById('confirmPopup').classList.remove('active');
+    });
+
+    document.getElementById('finalBuyBtn').addEventListener('click', async () => {
+      if (!selectedProduct || !currentUser) return;
+      await processPurchase(selectedProduct);
+    });
+
+    // ========== PREVIEW POPUP ==========
+    document.getElementById('closePreview').addEventListener('click', () => {
+      document.getElementById('previewPopup').classList.remove('active');
+    });
+
+    // ========== MAIN AUTH ==========
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+
+      // Avatar
+      const displayName = user.displayName || user.email.split('@')[0];
+      const names = displayName.trim().split(' ');
+      let initials = names[0].charAt(0).toUpperCase();
+      if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
+      document.getElementById('userAvatar').textContent = initials;
+
+      await loadCategories();
+      await loadProducts();
+    });
+
+    // ========== LOAD CATEGORIES ==========
+    async function loadCategories() {
+      try {
+        const snap = await getDocs(query(collection(db, 'categories'), orderBy('order', 'asc')));
+        allCategories = [];
+        snap.forEach(d => allCategories.push({ id: d.id, ...d.data() }));
+
+        // Also calculate real counts from products
+        const productSnap = await getDocs(query(collection(db, 'products'), where('category', '==', 'logs'), where('stock', '>', 0)));
+        const countMap = {};
+        productSnap.forEach(p => {
+          const cat = p.data().categoryName || 'Uncategorized';
+          countMap[cat] = (countMap[cat] || 0) + 1;
+        });
+
+        renderCategories(countMap);
+      } catch (err) {
+        console.error('Categories error:', err);
+        // fallback - still show All listings
+        renderCategories({});
+      }
+    }
+
+    function renderCategories(countMap) {
+      const list = document.getElementById('categoryList');
+      let total = Object.values(countMap).reduce((a, b) => a + b, 0);
+
+      let html = `
+        <div class="filter-all" onclick="filterByCategory('all')">
+          All listings
+          <span class="count">${total}</span>
+        </div>
+      `;
+
+      allCategories.forEach(cat => {
+        const count = countMap[cat.name] || 0;
+        html += `
+          <div class="category-item" onclick="filterByCategory('${cat.name}')">
+            <div class="cat-info">
+              <h4>${cat.flag || ''} ${cat.name}</h4>
+              <p>${cat.description || ''}</p>
+            </div>
+            <div class="cat-count">${count}</div>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html;
+      document.getElementById('listingsCount').textContent = `${total} accounts available`;
+    }
+
+    // ========== LOAD PRODUCTS ==========
+    async function loadProducts(categoryFilter = 'all') {
+      const list = document.getElementById('productsList');
+      list.innerHTML = `<div class="empty-state">Loading products...</div>`;
+
+      try {
+        let q = query(
+          collection(db, 'products'),
+          where('category', '==', 'logs'),
+          where('stock', '>', 0)
+        );
+
+        const snap = await getDocs(q);
+        allProducts = [];
+        snap.forEach(d => allProducts.push({ id: d.id, ...d.data() }));
+
+        let filtered = allProducts;
+        if (categoryFilter !== 'all') {
+          filtered = allProducts.filter(p => p.categoryName === categoryFilter);
+        }
+
+        if (filtered.length === 0) {
+          list.innerHTML = `<div class="empty-state">No products available in this category</div>`;
+          return;
+        }
+
+        let html = '';
+        filtered.forEach(p => {
+          const icon = p.iconUrl 
+            ? `<img src="${p.iconUrl}" class="product-icon" alt="">`
+            : `<div class="product-icon" style="display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:13px;">${(p.shortName || 'LOG').substring(0,6)}</div>`;
+
+          html += `
+            <div class="product-card">
+              ${icon}
+              <div class="product-info">
+                <div class="product-top">
+                  <div class="product-title">${p.title || 'Product'}</div>
+                  <div class="product-sku">${p.sku || '#' + p.id.slice(0,6)}</div>
+                </div>
+                <div class="product-price">₦${Number(p.price || 0).toLocaleString()}</div>
+                <div class="product-desc">${p.description || ''}</div>
+                <div class="product-actions">
+                  <button class="preview-btn" onclick="openPreview('${p.id}')">Preview</button>
+                  <button class="buy-btn" onclick="startBuy('${p.id}')">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
+                      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+                    </svg>
+                    Buy
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+        });
+        list.innerHTML = html;
+
+      } catch (err) {
+        console.error(err);
+        list.innerHTML = `<div class="empty-state">Unable to load products</div>`;
+      }
+    }
+
+    // ========== FILTER BY CATEGORY ==========
+    window.filterByCategory = function(catName) {
+      closeFilter();
+      loadProducts(catName);
+      document.querySelector('.listings-info h2').textContent = catName === 'all' ? 'All listings' : catName;
+    };
+
+    // ========== PREVIEW ==========
+    window.openPreview = function(productId) {
+      const p = allProducts.find(x => x.id === productId);
+      if (!p) return;
+
+      const content = document.getElementById('previewContent');
+      let html = `<p style="margin-bottom:12px;font-size:15px;font-weight:600;">${p.title}</p>`;
+
+      if (p.previewUrls && p.previewUrls.length > 0) {
+        p.previewUrls.forEach(url => {
+          html += `<img src="${url}" class="preview-img" alt="Preview">`;
+        });
+      } else {
+        html += `<p style="color:#888;">No preview available for this product.</p>`;
+      }
+
+      content.innerHTML = html;
+      document.getElementById('previewPopup').classList.add('active');
+    };
+
+    // ========== START BUY (WARNING) ==========
+    window.startBuy = function(productId) {
+      selectedProduct = allProducts.find(x => x.id === productId);
+      if (!selectedProduct) return;
+      document.getElementById('warningPopup').classList.add('active');
+    };
+
+    // ========== CONFIRM POPUP ==========
+    function openConfirmPopup(p) {
+      document.getElementById('confirmTitle').textContent = p.title;
+      document.getElementById('confirmPrice').textContent = `₦${Number(p.price).toLocaleString()}`;
+      document.getElementById('confirmDesc').textContent = p.description || '';
+      document.getElementById('credentialSection').style.display = 'none';
+      document.getElementById('credentialBox').textContent = '';
+      
+      document.getElementById('finalBuyBtn').style.display = 'block';
+      document.getElementById('finalBuyBtn').textContent = 'Buy Now';
+      document.getElementById('closeConfirm').textContent = 'Cancel';
+
+      // Remove old "View Orders" button if exists
+      const oldBtn = document.getElementById('viewOrdersBtn');
+      if (oldBtn) oldBtn.remove();
+
+      document.getElementById('confirmPopup').classList.add('active');
+    }
+
+    // ========== PROCESS PURCHASE ==========
+    async function processPurchase(p) {
+      const btn = document.getElementById('finalBuyBtn');
+      btn.textContent = 'Processing...';
+      btn.disabled = true;
+
+      try {
+        // 1. Get user balance
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        const balance = userSnap.exists() ? (userSnap.data().balance || 0) : 0;
+
+        if (balance < p.price) {
+          alert('Insufficient balance. Please top up your wallet.');
+          btn.textContent = 'Buy Now';
+          btn.disabled = false;
+          return;
+        }
+
+        // 2. Deduct balance
+        await updateDoc(userRef, {
+          balance: increment(-p.price),
+          totalPurchases: increment(1)
+        });
+
+        // 3. Reduce stock
+        const productRef = doc(db, 'products', p.id);
+        await updateDoc(productRef, {
+          stock: increment(-1)
+        });
+
+        // 4. Create Order (with secret credential)
+        await addDoc(collection(db, 'orders'), {
+          userId: currentUser.uid,
+          productId: p.id,
+          productName: p.title,
+          amount: p.price,
+          credential: p.credential || 'No credential provided',
+          status: 'completed',
+          createdAt: serverTimestamp()
+        });
+
+        // 5. Create Transaction (negative)
+        await addDoc(collection(db, 'transactions'), {
+          userId: currentUser.uid,
+          type: 'purchase',
+          productName: p.title,
+          amount: -p.price,
+          status: 'completed',
+          reference: 'ORD-' + Date.now().toString(36).toUpperCase(),
+          createdAt: serverTimestamp()
+        });
+
+        // 6. Simple notification
+        await addDoc(collection(db, 'notifications'), {
+          userId: currentUser.uid,
+          title: 'Purchase Successful',
+          message: `You successfully purchased: ${p.title}`,
+          read: false,
+          createdAt: serverTimestamp()
+        });
+
+        // 7. Show credential
+        document.getElementById('credentialSection').style.display = 'block';
+        document.getElementById('credentialBox').textContent = p.credential || 'No credential available';
+
+        btn.style.display = 'none';
+
+        // Add "View Orders" button
+        const actions = document.getElementById('confirmActions');
+        const viewBtn = document.createElement('button');
+        viewBtn.id = 'viewOrdersBtn';
+        viewBtn.className = 'btn-primary';
+        viewBtn.textContent = 'View all purchased credentials in Orders page';
+        viewBtn.onclick = () => window.location.href = 'orders.html';
+        actions.insertBefore(viewBtn, actions.firstChild);
+
+        document.getElementById('closeConfirm').textContent = 'Close';
+
+        // Refresh product list
+        loadProducts();
+
+      } catch (err) {
+        console.error(err);
+        alert('Purchase failed. Please try again.');
+        btn.textContent = 'Buy Now';
+        btn.disabled = false;
+      }
+    }
+
+    // Category search
+    document.getElementById('categorySearch').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      document.querySelectorAll('.category-item').forEach(item => {
+        const text = item.innerText.toLowerCase();
+        item.style.display = text.includes(term) ? 'flex' : 'none';
+      });
+    });
+  </script>
+</body>
+</html>
