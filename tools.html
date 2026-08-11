@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools Store - Temmy Social</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8f9fa;
+      color: #111;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    /* ===== FIXED TOP ===== */
+    .fixed-top {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: #ffffff;
+      transition: background 0.3s ease;
+    }
+    .fixed-top.scrolled {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .header {
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .menu-toggle { background: none; border: none; cursor: pointer; padding: 4px; color: #333; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .badge-no { background: #f0f0f0; color: #555; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
+    .icon-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #444; }
+    .avatar {
+      width: 36px; height: 36px; background: #3d6b1e; color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 14px;
+    }
+
+    .title-area { padding: 20px 16px 12px; }
+    .title-area h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
+    .title-area p { color: #666; font-size: 15px; }
+
+    /* Search */
+    .search-box {
+      padding: 0 16px 16px;
+      position: relative;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 13px 16px 13px 44px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 14px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+    }
+    .search-box input:focus { border-color: #3d6b1e; }
+    .search-box svg {
+      position: absolute;
+      left: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #999;
+    }
+
+    .count-text {
+      padding: 0 16px 12px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Category pills */
+    .categories {
+      padding: 0 16px 16px;
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .categories::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      padding: 9px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #e0e0e0;
+      background: white;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .cat-pill.active {
+      background: #3d6b1e;
+      color: white;
+      border-color: #3d6b1e;
+    }
+    .cat-pill .badge {
+      background: rgba(0,0,0,0.1);
+      font-size: 12px;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+    .cat-pill.active .badge {
+      background: rgba(255,255,255,0.25);
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 300px; height: 100%;
+      background: white; z-index: 300; transform: translateX(-100%);
+      transition: transform 0.3s ease; overflow-y: auto; padding: 20px 0 30px;
+    }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #eee; }
+    .sidebar-logo img { height: 40px; }
+    .menu-section { padding: 20px 12px 8px; }
+    .menu-section-title {
+      font-size: 13px; color: #888; font-weight: 500; padding: 0 12px 10px;
+      text-transform: uppercase; letter-spacing: 0.3px;
+    }
+    .menu-item {
+      display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+      border-radius: 12px; color: #333; text-decoration: none; font-size: 15px;
+      font-weight: 500; margin-bottom: 2px;
+    }
+    .menu-item:hover { background: #f5f5f5; }
+    .menu-item.active { background: #f0f7eb; color: #3d6b1e; }
+    .menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
+    .soon-badge { margin-left: auto; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
+    .signout-item { color: #d32f2f !important; margin-top: 10px; }
+    .signout-item:hover { background: #ffebee !important; }
+
+    /* ===== PRODUCTS ===== */
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 8px 16px 40px;
+    }
+
+    .product-card {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      margin-bottom: 16px;
+      border: 1px solid #f0f0f0;
+    }
+
+    .product-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      display: block;
+      background: #f0f0f0;
+    }
+
+    .product-body {
+      padding: 14px 16px 16px;
+    }
+
+    .product-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+
+    .product-desc {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .product-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .product-price {
+      font-size: 18px;
+      font-weight: 700;
+      color: #3d6b1e;
+    }
+
+    .buy-btn {
+      background: #3d6b1e;
+      color: white;
+      border: none;
+      border-radius: 24px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+    }
+
+    /* ===== POPUPS (same as Logs Store) ===== */
+    .popup-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; visibility: hidden; transition: all 0.25s ease;
+    }
+    .popup-overlay.active { opacity: 1; visibility: visible; }
+
+    .popup {
+      background: white; width: 100%; max-width: 380px; border-radius: 18px;
+      max-height: 90vh; overflow-y: auto;
+    }
+
+    .warning-header {
+      background: #fff3e0; padding: 18px 20px; border-bottom: 1px solid #ffe0b2;
+    }
+    .warning-header h3 {
+      font-size: 17px; font-weight: 700; color: #e65100;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .warning-body { padding: 20px; font-size: 14px; line-height: 1.55; color: #333; }
+    .warning-actions { padding: 0 20px 20px; display: flex; gap: 10px; }
+    .warning-btn {
+      flex: 1; padding: 13px; border-radius: 12px; font-size: 15px;
+      font-weight: 600; cursor: pointer; border: none;
+    }
+    .btn-cancel { background: #f0f0f0; color: #333; }
+    .btn-continue { background: #e65100; color: white; }
+
+    .confirm-header { padding: 20px 20px 10px; }
+    .confirm-header h3 { font-size: 18px; font-weight: 700; }
+    .confirm-body { padding: 10px 20px 20px; }
+    .confirm-price { font-size: 22px; font-weight: 700; color: #3d6b1e; margin: 8px 0; }
+    .credential-box {
+      background: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 12px;
+      padding: 14px; margin: 16px 0; font-family: monospace; font-size: 14px;
+      word-break: break-all; line-height: 1.5; white-space: pre-wrap;
+    }
+    .confirm-actions { padding: 0 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .btn-primary {
+      background: #3d6b1e; color: white; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+    }
+    .btn-secondary {
+      background: #f0f0f0; color: #333; border: none; border-radius: 12px;
+      padding: 14px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SIDEBAR OVERLAY -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="logo.png" alt="Temmy Social">
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Main</div>
+      <a href="dashboard.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+      </a>
+      <a href="wallet.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M22 10H2"/><path d="M6 14h.01"/></svg>
+        Wallet
+      </a>
+      <a href="orders.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        Orders
+      </a>
+      <a href="transactions.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        Transactions
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Store</div>
+      <a href="logs.html" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        Logs Store
+      </a>
+      <a href="tools.html" class="menu-item active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        Tools Store
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        SMS Numbers <span class="soon-badge">Soon</span>
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        SME Boosting <span class="soon-badge">Soon</span>
+      </a>
+    </div>
+
+    <div class="menu-section">
+      <div class="menu-section-title">Account</div>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/></svg>
+        Support
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        Notification
+      </a>
+      <a href="#" class="menu-item">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 0v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+    </div>
+
+    <div class="menu-section" style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
+      <a href="#" class="menu-item signout-item" id="signOutBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign out
+      </a>
+    </div>
+  </div>
+
+  <!-- FIXED TOP -->
+  <div class="fixed-top" id="fixedTop">
+    <header class="header">
+      <button class="menu-toggle" id="menuToggle">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
+      </button>
+      <div class="header-right">
+        <span class="badge-no">No</span>
+        <button class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+        </button>
+        <button class="icon-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+        </button>
+        <div class="avatar" id="userAvatar">--</div>
+      </div>
+    </header>
+
+    <div class="title-area">
+      <h1>Tools Store</h1>
+      <p>Updates, picture sets, and more</p>
+    </div>
+
+    <div class="search-box">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="searchInput" placeholder="Search tools...">
+    </div>
+
+    <div class="count-text" id="toolsCount">0 tools available</div>
+
+    <div class="categories" id="categoryPills">
+      <div class="cat-pill active" data-cat="all">All</div>
+      <div class="cat-pill" data-cat="working-pictures">Working pictures <span class="badge" id="countPictures">0</span></div>
+      <div class="cat-pill" data-cat="working-tools">Working tools <span class="badge" id="countTools">0</span></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div id="productsList">
+      <div class="empty-state">Loading tools...</div>
+    </div>
+  </div>
+
+  <!-- WARNING POPUP -->
+  <div class="popup-overlay" id="warningPopup">
+    <div class="popup">
+      <div class="warning-header">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+          Important Notice
+        </h3>
+      </div>
+      <div class="warning-body">
+        Everything sold on this website should not be used for impersonation, fraud, or any other illegal activities. 
+        You are fully responsible for how you use anything you purchase from us.
+      </div>
+      <div class="warning-actions">
+        <button class="warning-btn btn-cancel" id="cancelWarning">Cancel</button>
+        <button class="warning-btn btn-continue" id="continueWarning">I Understand</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONFIRM / CREDENTIAL POPUP -->
+  <div class="popup-overlay" id="confirmPopup">
+    <div class="popup">
+      <div class="confirm-header">
+        <h3 id="confirmTitle">Product</h3>
+      </div>
+      <div class="confirm-body">
+        <div class="confirm-price" id="confirmPrice">₦0</div>
+        <div id="confirmDesc" style="font-size:14px;color:#555;margin-bottom:12px;"></div>
+        
+        <div id="credentialSection" style="display:none;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:6px;">Your Credentials:</div>
+          <div class="credential-box" id="credentialBox"></div>
+        </div>
+      </div>
+      <div class="confirm-actions" id="confirmActions">
+        <button class="btn-primary" id="finalBuyBtn">Buy Now</button>
+        <button class="btn-secondary" id="closeConfirm">Cancel</button>
+      </div>
+    </div>
+  </div>
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, query, where, getDocs, doc, getDoc, 
+      updateDoc, addDoc, increment, serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      authDomain: "trustsocials-8fc8b.firebaseapp.com",
+      projectId: "trustsocials-8fc8b",
+      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+      messagingSenderId: "675550258010",
+      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+      measurementId: "G-KDVYRV55JD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    // Elements
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const fixedTop = document.getElementById('fixedTop');
+
+    let currentUser = null;
+    let selectedProduct = null;
+    let allProducts = [];
+    let currentCategory = 'all';
+
+    // Sidebar
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      sidebar.classList.add('active');
+      sidebarOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    });
+    sidebarOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      sidebarOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    });
+
+    // Fixed top transparency
+    window.addEventListener('scroll', () => {
+      fixedTop.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Sign out
+    document.getElementById('signOutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signOut(auth);
+      window.location.href = 'login.html';
+    });
+
+    // Category pills
+    document.querySelectorAll('.cat-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        currentCategory = pill.dataset.cat;
+        renderProducts();
+      });
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', () => {
+      renderProducts();
+    });
+
+    // Warning popup
+    document.getElementById('cancelWarning').addEventListener('click', () => {
+      document.getElementById('warningPopup').classList.remove('active');
+      selectedProduct = null;
+    });
+
+    document.getElementById('continueWarning').addEventListener('click', () => {
+      document.getElementById('warningPopup').classList.remove('active');
+      if (selectedProduct) openConfirmPopup(selectedProduct);
+    });
+
+    // Confirm popup
+    document.getElementById('closeConfirm').addEventListener('click', () => {
+      document.getElementById('confirmPopup').classList.remove('active');
+    });
+
+    document.getElementById('finalBuyBtn').addEventListener('click', async () => {
+      if (!selectedProduct || !currentUser) return;
+      await processPurchase(selectedProduct);
+    });
+
+    // Auth
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      currentUser = user;
+
+      // Avatar
+      const displayName = user.displayName || user.email.split('@')[0];
+      const names = displayName.trim().split(' ');
+      let initials = names[0].charAt(0).toUpperCase();
+      if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
+      document.getElementById('userAvatar').textContent = initials;
+
+      await loadProducts();
+    });
+
+    // Load products
+    async function loadProducts() {
+      try {
+        const q = query(
+          collection(db, 'products'),
+          where('category', '==', 'tools'),
+          where('stock', '>', 0)
+        );
+        const snapshot = await getDocs(q);
+
+        allProducts = [];
+        snapshot.forEach(doc => {
+          allProducts.push({ id: doc.id, ...doc.data() });
+        });
+
+        // Update counts
+        const picturesCount = allProducts.filter(p => p.subCategory === 'working-pictures').length;
+        const toolsCount = allProducts.filter(p => p.subCategory === 'working-tools').length;
+
+        document.getElementById('countPictures').textContent = picturesCount;
+        document.getElementById('countTools').textContent = toolsCount;
+        document.getElementById('toolsCount').textContent = `${allProducts.length} tools available`;
+
+        renderProducts();
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById('productsList').innerHTML = `<div class="empty-state">Unable to load tools</div>`;
+      }
+    }
+
+    // Render products
+    function renderProducts() {
+      const list = document.getElementById('productsList');
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+
+      let filtered = allProducts;
+
+      // Filter by category
+      if (currentCategory === 'working-pictures') {
+        filtered = filtered.filter(p => p.subCategory === 'working-pictures');
+      } else if (currentCategory === 'working-tools') {
+        filtered = filtered.filter(p => p.subCategory === 'working-tools');
+      }
+
+      // Filter by search
+      if (searchTerm) {
+        filtered = filtered.filter(p => 
+          (p.title || '').toLowerCase().includes(searchTerm) ||
+          (p.description || '').toLowerCase().includes(searchTerm)
+        );
+      }
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<div class="empty-state">No tools found</div>`;
+        return;
+      }
+
+      let html = '';
+      filtered.forEach(p => {
+        const image = p.imageUrl 
+          ? `<img src="${p.imageUrl}" class="product-image" alt="">`
+          : `<div class="product-image" style="display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>`;
+
+        html += `
+          <div class="product-card">
+            ${image}
+            <div class="product-body">
+              <div class="product-title">${p.title || 'Tool'}</div>
+              <div class="product-desc">${p.description || ''}</div>
+              <div class="product-footer">
+                <div class="product-price">₦${Number(p.price || 0).toLocaleString()}</div>
+                <button class="buy-btn" onclick="startBuy('${p.id}')">Buy</button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+
+      list.innerHTML = html;
+    }
+
+    // Start Buy
+    window.startBuy = function(productId) {
+      selectedProduct = allProducts.find(p => p.id === productId);
+      if (!selectedProduct) return;
+      document.getElementById('warningPopup').classList.add('active');
+    };
+
+    // Open confirm popup
+    function openConfirmPopup(p) {
+      document.getElementById('confirmTitle').textContent = p.title;
+      document.getElementById('confirmPrice').textContent = `₦${Number(p.price).toLocaleString()}`;
+      document.getElementById('confirmDesc').textContent = p.description || '';
+      document.getElementById('credentialSection').style.display = 'none';
+      document.getElementById('credentialBox').textContent = '';
+
+      document.getElementById('finalBuyBtn').style.display = 'block';
+      document.getElementById('finalBuyBtn').textContent = 'Buy Now';
+      document.getElementById('closeConfirm').textContent = 'Cancel';
+
+      const oldBtn = document.getElementById('viewOrdersBtn');
+      if (oldBtn) oldBtn.remove();
+
+      document.getElementById('confirmPopup').classList.add('active');
+    }
+
+    // Process purchase
+    async function processPurchase(p) {
+      const btn = document.getElementById('finalBuyBtn');
+      btn.textContent = 'Processing...';
+      btn.disabled = true;
+
+      try {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        const balance = userSnap.exists() ? (userSnap.data().balance || 0) : 0;
+
+        if (balance < p.price) {
+          alert('Insufficient balance. Please top up your wallet.');
+          btn.textContent = 'Buy Now';
+          btn.disabled = false;
+          return;
+        }
+
+        // Deduct balance
+        await updateDoc(userRef, {
+          balance: increment(-p.price),
+          totalPurchases: increment(1)
+        });
+
+        // Reduce stock
+        await updateDoc(doc(db, 'products', p.id), {
+          stock: increment(-1)
+        });
+
+        // Create Order (with credential)
+        await addDoc(collection(db, 'orders'), {
+          userId: currentUser.uid,
+          productId: p.id,
+          productName: p.title,
+          amount: p.price,
+          credential: p.credential || 'No credential provided',
+          status: 'completed',
+          type: 'tools',
+          createdAt: serverTimestamp()
+        });
+
+        // Create Transaction
+        await addDoc(collection(db, 'transactions'), {
+          userId: currentUser.uid,
+          type: 'purchase',
+          productName: p.title,
+          amount: -p.price,
+          status: 'completed',
+          reference: 'ORD-' + Date.now().toString(36).toUpperCase(),
+          createdAt: serverTimestamp()
+        });
+
+        // Notification
+        await addDoc(collection(db, 'notifications'), {
+          userId: currentUser.uid,
+          title: 'Purchase Successful',
+          message: `You successfully purchased: ${p.title}`,
+          read: false,
+          createdAt: serverTimestamp()
+        });
+
+        // Show credential
+        document.getElementById('credentialSection').style.display = 'block';
+        document.getElementById('credentialBox').textContent = p.credential || 'No credential available';
+
+        btn.style.display = 'none';
+
+        const actions = document.getElementById('confirmActions');
+        const viewBtn = document.createElement('button');
+        viewBtn.id = 'viewOrdersBtn';
+        viewBtn.className = 'btn-primary';
+        viewBtn.textContent = 'View all purchased credentials in Orders page';
+        viewBtn.onclick = () => window.location.href = 'orders.html';
+        actions.insertBefore(viewBtn, actions.firstChild);
+
+        document.getElementById('closeConfirm').textContent = 'Close';
+
+        // Refresh list
+        loadProducts();
+
+      } catch (err) {
+        console.error(err);
+        alert('Purchase failed. Please try again.');
+        btn.textContent = 'Buy Now';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
