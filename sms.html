@@ -532,18 +532,12 @@
 
         // Redirect after short delay
         setTimeout(() => {
-          const message = `Hi, I want to buy a temporary ${selectedApp} number for ${selectedCountry}.`;
-          const url = `https://wa.me/2349117412352?text=${encodeURIComponent(message)}`;
-          window.open(url, '_blank');
-
-          // Close chat after redirect
-          setTimeout(() => {
-            chatOverlay.classList.remove('active');
-          }, 1000);
-        }, 1500);
-
-      }, 5600);
-    }
+  const message = `Hi, I want to buy a temporary ${selectedApp} number for ${selectedCountry}.`;
+  const url = `https://wa.me/2349117412352?text=${encodeURIComponent(message)}`;
+  
+  window.location.href = url;   // ← Changed this line
+}, 1500);
+      }
 
     function showTyping() {
       const typing = document.createElement('div');
