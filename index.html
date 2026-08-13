@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Temmy Social – Premium Social Assets</title>
+  <title>Trust Social – Premium Social Assets</title>
   <style>
     * {
       margin: 0;
@@ -519,7 +519,604 @@
       .service-card {
         padding: 22px;
       }
-    }
+    
+}
+    /* ========== SIMPLE PROCESS ========== */
+.process {
+  background: #f7f7f2;
+  padding: 80px 24px;
+}
+
+body.dark .process {
+  background: #141414;
+}
+
+.process-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.process .section-label {
+  color: var(--green);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.process h2 {
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+}
+
+.process-card {
+  background: white;
+  border-radius: 18px;
+  padding: 32px 28px;
+  text-align: left;
+  margin-bottom: 20px;
+  position: relative;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+}
+
+body.dark .process-card {
+  background: #1c1c1c;
+}
+
+.process-card:last-child {
+  margin-bottom: 0;
+}
+
+.process-icon {
+  width: 48px;
+  height: 48px;
+  background: #e8f0e0;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+body.dark .process-icon {
+  background: #2a3a22;
+}
+
+.process-icon svg {
+  width: 24px;
+  height: 24px;
+  color: var(--green);
+}
+
+.process-number {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #e5e5e5;
+  line-height: 1;
+}
+
+body.dark .process-number {
+  color: #2a2a2a;
+}
+
+.process-card h3 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.process-card p {
+  color: var(--text-gray);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+  /* ========== TESTIMONIALS ========== */
+.testimonials {
+  padding: 80px 24px;
+  background: var(--bg);
+}
+
+.testimonials-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.testimonials .section-label {
+  color: var(--green);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.testimonials h2 {
+  font-size: clamp(1.8rem, 5vw, 2.5rem);
+  font-weight: 900;
+  line-height: 1.2;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+}
+
+.testimonial-card {
+  background: white;
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 28px 24px;
+  text-align: left;
+  margin-bottom: 18px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+body.dark .testimonial-card {
+  background: #1c1c1c;
+  border-color: #333;
+}
+
+.stars {
+  display: flex;
+  gap: 3px;
+  margin-bottom: 16px;
+}
+
+.stars svg {
+  width: 18px;
+  height: 18px;
+  color: #fbbc04; /* Google yellow */
+}
+
+.testimonial-card p {
+  color: var(--text-dark);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  margin-bottom: 20px;
+}
+
+.testimonial-author {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.google-g {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+  background: conic-gradient(
+    from -45deg,
+    #ea4335 0deg 90deg,
+    #fbbc05 90deg 180deg,
+    #34a853 180deg 270deg,
+    #4285f4 270deg 360deg
+  );
+  position: relative;
+}
+
+.google-g::after {
+  content: "G";
+  position: absolute;
+  font-family: Arial, sans-serif;
+  font-weight: 700;
+  color: white;
+  font-size: 15px;
+}
+
+.author-name {
+  font-weight: 600;
+  font-size: 0.98rem;
+  color: var(--text-dark);
+}
+ /* ========== BUILT FOR EFFICIENCY ========== */
+.efficiency {
+  padding: 80px 24px 100px;
+  background: var(--bg);
+}
+
+.efficiency-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.efficiency h2 {
+  font-size: clamp(2.1rem, 5.5vw, 2.9rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 18px;
+  letter-spacing: -0.8px;
+}
+
+.efficiency h2 .green {
+  color: var(--green);
+}
+
+.efficiency > .efficiency-inner > p {
+  color: var(--text-gray);
+  font-size: 1.12rem;
+  line-height: 1.65;
+  margin-bottom: 32px;
+  max-width: 520px;
+}
+
+.efficiency .btn-primary {
+  display: inline-flex;
+  margin-bottom: 48px;
+  min-width: auto;
+  padding: 14px 32px;
+  border-radius: 50px;
+}
+
+.features-list {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  background: white;
+}
+
+body.dark .features-list {
+  background: #1c1c1c;
+}
+
+.feature-item {
+  padding: 26px 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.feature-item:last-child {
+  border-bottom: none;
+}
+
+.feature-item h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.feature-item p {
+  color: var(--text-gray);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+  /* ========== FAQ ========== */
+.faq {
+  background: #f7f7f2;
+  padding: 80px 24px 60px;
+}
+
+body.dark .faq {
+  background: #141414;
+}
+
+.faq-inner {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.faq .section-label {
+  color: var(--green);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1.5px;
+  margin-bottom: 14px;
+}
+
+.faq h2 {
+  font-size: clamp(2rem, 5vw, 2.7rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 48px;
+  letter-spacing: -0.5px;
+}
+
+.faq-list {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  text-align: left;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+}
+
+body.dark .faq-list {
+  background: #1c1c1c;
+}
+
+.faq-item {
+  border-bottom: 1px solid var(--border);
+}
+
+.faq-item:last-child {
+  border-bottom: none;
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 22px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 1.08rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  text-align: left;
+  transition: background 0.2s;
+}
+
+.faq-question:hover {
+  background: rgba(0,0,0,0.02);
+}
+
+body.dark .faq-question:hover {
+  background: rgba(255,255,255,0.03);
+}
+
+.faq-icon {
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text-gray);
+  transition: transform 0.3s;
+}
+
+.faq-item.active .faq-icon {
+  transform: rotate(45deg);
+}
+
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease, padding 0.35s ease;
+  padding: 0 24px;
+}
+
+.faq-item.active .faq-answer {
+  max-height: 300px;
+  padding: 0 24px 22px;
+}
+
+.faq-answer p {
+  color: var(--text-gray);
+  font-size: 1.02rem;
+  line-height: 1.65;
+}
+
+/* ========== FINAL CTA ========== */
+.final-cta {
+  padding: 40px 24px 80px;
+  background: #f7f7f2;
+}
+
+body.dark .final-cta {
+  background: #141414;
+}
+
+.cta-box {
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--green);
+  border-radius: 28px;
+  padding: 48px 32px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-box::before {
+  content: "";
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 50%;
+  top: -80px;
+  right: -80px;
+}
+
+.cta-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+.cta-box h2 {
+  font-size: clamp(1.8rem, 5vw, 2.4rem);
+  font-weight: 900;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  color: #f0f7e8;
+}
+
+.cta-box p {
+  font-size: 1.05rem;
+  opacity: 0.9;
+  margin-bottom: 32px;
+  line-height: 1.6;
+}
+
+.cta-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #f0f7e8;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 16px 32px;
+  border-radius: 50px;
+  text-decoration: none;
+  margin-bottom: 14px;
+  transition: transform 0.2s, background 0.2s;
+}
+
+.cta-btn-primary:hover {
+  transform: translateY(-2px);
+  background: white;
+}
+
+.cta-btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 280px;
+  padding: 14px 24px;
+  border: 1.5px solid rgba(255,255,255,0.4);
+  border-radius: 50px;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+  margin-bottom: 12px;
+  transition: background 0.2s, border-color 0.2s;
+}
+
+.cta-btn-outline:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: white;
+}
+
+.cta-social {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.cta-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  padding: 10px 20px;
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 50px;
+  transition: all 0.2s;
+}
+
+.cta-social a:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+ /* ========== FOOTER ========== */
+footer {
+  background: var(--bg);
+  padding: 70px 24px 50px;
+  border-top: 1px solid var(--border);
+}
+
+.footer-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.footer-brand {
+  margin-bottom: 40px;
+}
+
+.footer-brand .logo {
+  margin-bottom: 16px;
+  display: inline-flex;
+}
+
+.footer-brand p {
+  color: var(--text-gray);
+  font-size: 1.02rem;
+  line-height: 1.65;
+  margin-bottom: 18px;
+  max-width: 420px;
+}
+
+.copyright {
+  color: #999;
+  font-size: 0.9rem;
+  margin-bottom: 28px;
+}
+
+.footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 50px;
+}
+
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 1.5px solid var(--border);
+  border-radius: 50px;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.footer-social a:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.footer-social svg {
+  width: 16px;
+  height: 16px;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px 30px;
+}
+
+@media (min-width: 600px) {
+  .footer-links {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.footer-col h4 {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  color: #999;
+  margin-bottom: 18px;
+  text-transform: uppercase;
+}
+
+.footer-col a {
+  display: block;
+  color: var(--text-dark);
+  text-decoration: none;
+  font-size: 1.02rem;
+  margin-bottom: 14px;
+  transition: color 0.2s;
+}
+
+.footer-col a:hover {
+  color: var(--green);
+}
   </style>
 </head>
 <body>
@@ -712,7 +1309,397 @@
       </a>
     </div>
   </section>
+  <!-- ========== SIMPLE PROCESS ========== -->
+  <section class="process" id="process">
+    <div class="process-inner">
+      <div class="section-label">SIMPLE PROCESS</div>
+      <h2>THREE STEPS.<br>THAT'S ALL.</h2>
 
+      <!-- Step 01 -->
+      <div class="process-card">
+        <div class="process-number">01</div>
+        <div class="process-icon">
+          <!-- Wallet icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            <circle cx="16" cy="14" r="1.5" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3>Top up your wallet</h3>
+        <p>
+          Fund your TrustSocials wallet using Flutterwave -card or bank transfer. Credits reflect instantly. No charges on deposits.
+        </p>
+      </div>
+
+      <!-- Step 02 -->
+      <div class="process-card">
+        <div class="process-number">02</div>
+        <div class="process-icon">
+          <!-- Shopping bag icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <path d="M16 10a4 4 0 0 1-8 0"/>
+          </svg>
+        </div>
+        <h3>Browse and pick</h3>
+        <p>
+          Browse by category -logs, tools, SMS numbers, or boosting. Filter by platform, price, or type. Pick exactly what you need.
+        </p>
+      </div>
+
+      <!-- Step 03 -->
+      <div class="process-card">
+        <div class="process-number">03</div>
+        <div class="process-icon">
+          <!-- Lightning / Zap icon -->
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <h3>Instant delivery</h3>
+        <p>
+          Purchase and your item is delivered immediately on screen and to your email. No waiting, no manual processing, no back and forth.
+        </p>
+      </div>
+    </div>
+  </section>
+   <!-- ========== TESTIMONIALS ========== -->
+  <section class="testimonials" id="testimonials">
+    <div class="testimonials-inner">
+      <div class="section-label">WHAT THEY SAY</div>
+      <h2>TRUSTED BY DIGITAL<br>ENTREPRENEURS</h2>
+
+      <!-- Review 1 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>trustsocials eliminated our sourcing bottlenecks. The instant delivery and unified wallet system saves us hours every week.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">Michael K.</span>
+        </div>
+      </div>
+
+      <!-- Review 2 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>The quality of the working tools here is unmatched. We've moved our entire procurement flow to their platform.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">Sarah R.</span>
+        </div>
+      </div>
+
+      <!-- Review 3 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>Finally a marketplace that understands efficiency. The UI is sharp, and the assets are exactly as described.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">James T.</span>
+        </div>
+      </div>
+
+      <!-- Review 4 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>Best platform I've used for social assets. The quality is consistently high and the prices are very competitive.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">Amanda D.</span>
+        </div>
+      </div>
+
+      <!-- Review 5 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>We rely on trustsocials for all our SMS verification needs. The API was incredibly easy to integrate.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">Robert B.</span>
+        </div>
+      </div>
+
+      <!-- Review 6 -->
+      <div class="testimonial-card">
+        <div class="stars">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        </div>
+        <p>Customer support actually responds and helps. That alone makes this my go-to marketplace.</p>
+        <div class="testimonial-author">
+          <div class="google-g"></div>
+          <span class="author-name">Lilliana Graham</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+   <!-- ========== BUILT FOR EFFICIENCY ========== -->
+  <section class="efficiency" id="efficiency">
+    <div class="efficiency-inner">
+      <h2>
+        BUILT FOR<br>
+        <span class="green">EFFICIENCY.</span>
+      </h2>
+
+      <p>
+        trustsocials is engineered to provide a frictionless marketplace experience, prioritizing speed, security, and quality.
+      </p>
+
+      <a href="#get-started" class="btn btn-primary">GET STARTED</a>
+
+      <div class="features-list">
+        <div class="feature-item">
+          <h3>Instant Delivery</h3>
+          <p>Automated fulfillment ensures you receive your purchases the second your transaction clears.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Wallet System</h3>
+          <p>Manage all your purchases through a single, secure centralized balance without repeated checkouts.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Verified Inventory</h3>
+          <p>Every asset and tool undergoes strict quality assurance before being listed on the platform.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Reseller Friendly</h3>
+          <p>Wholesale pricing tiers and API access designed specifically to support digital resellers.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>Global Coverage</h3>
+          <p>Assets and numbers spanning multiple regions and demographics for targeted operational needs.</p>
+        </div>
+
+        <div class="feature-item">
+          <h3>24/7 Support</h3>
+          <p>Dedicated technical support team ready to assist with deployment and troubleshooting.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+   <!-- ========== FAQ ========== -->
+  <section class="faq" id="faq">
+    <div class="faq-inner">
+      <div class="section-label">QUESTIONS</div>
+      <h2>GOT QUESTIONS?<br>WE HAVE<br>ANSWERS.</h2>
+
+      <div class="faq-list">
+
+        <div class="faq-item">
+          <button class="faq-question">
+            How does the wallet work?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>You fund your Temmy Social wallet using Flutterwave (card or bank transfer). Credits appear instantly with zero deposit fees. All purchases are then paid directly from your wallet balance — no repeated checkouts needed.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Are the social media accounts safe to use?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. All accounts are aged, verified, and undergo strict quality checks before listing. We only provide accounts that are ready for immediate use. We also offer replacement support if any account has issues within the warranty period.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            How fast is delivery after purchase?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Delivery is instant. Once your payment clears, the account details, tools, or SMS number appear immediately on your screen and are also sent to your email. Average delivery time is under 10 seconds.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What countries are available for SMS numbers?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>We currently support virtual numbers from 200+ countries. You can filter by country when browsing SMS numbers. Popular options include USA, UK, Canada, Nigeria, India, Germany, and many more.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            What happens if an account doesn't work?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>We offer a replacement guarantee. If an account fails to work as described within the warranty window, simply contact support with the order details and we will replace it free of charge or issue a wallet credit.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question">
+            Can I resell these services?
+            <span class="faq-icon">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes. Trust Social is fully reseller-friendly. We offer wholesale pricing tiers and API access so you can integrate our services into your own platform or sell to your clients at a markup.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FINAL CTA ========== -->
+  <section class="final-cta">
+    <div class="cta-box">
+      <div class="cta-label">READY TO GET STARTED?</div>
+      <h2>YOUR<br>ACCOUNTS<br>ARE WAITING.</h2>
+      <p>Create your account, top up your wallet, and start buying premium digital assets in under 3 minutes.</p>
+
+      <a href="login.html" class="cta-btn-primary">
+        CREATE FREE ACCOUNT →
+      </a>
+
+      <a href="#services" class="cta-btn-outline">
+        BROWSE SERVICES
+      </a>
+
+      <div class="cta-social">
+        <a href="https://wa.me/2349117412352" target="_blank">
+          <!-- WhatsApp icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+          </svg>
+          Chat on WhatsApp
+        </a>
+
+        <a href="https://t.me/+Xbt-w6-TwsozYjY0" target="_blank">
+          <!-- Telegram icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.834.941z"/>
+          </svg>
+          Join Telegram
+        </a>
+      </div>
+    </div>
+  </section>
+    <!-- ========== FOOTER ========== -->
+  <footer>
+    <div class="footer-inner">
+
+      <div class="footer-brand">
+        <a href="/" class="logo">
+          <div class="logo-icon">T</div>
+          <div>
+            <span class="emmy">emmy</span> Social»
+          </div>
+        </a>
+
+        <p>
+          Your goto platform for premium social media accounts, working tools, virtual SMS numbers, and SME boosting services.
+        </p>
+
+        <div class="copyright">
+          © 2026 TrustSocials. All rights reserved.
+        </div>
+
+        <div class="footer-social">
+          <a href="https://wa.me/2349117412352" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.435 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+            </svg>
+            WhatsApp
+          </a>
+
+          <a href="https://t.me/+Xbt-w6-TwsozYjY0" target="_blank">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.834.941z"/>
+            </svg>
+            Telegram
+          </a>
+
+          <a href="mailto:support@trustsocial.com">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+              <polyline points="22,6 12,13 2,6"/>
+            </svg>
+            Email
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Services</h4>
+          <a href="#services">Social Media Logs</a>
+          <a href="#services">Working Tools</a>
+          <a href="#services">SMS Numbers</a>
+          <a href="#services">SME Boosting</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <a href="#pricing">Pricing</a>
+          <a href="#faq">FAQ</a>
+          <a href="#about">About us</a>
+          <a href="#support">Support</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a href="#terms">Terms of service</a>
+          <a href="#privacy">Privacy policy</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="#signin">Sign in</a>
+          <a href="#register">Register</a>
+          <a href="#da">Dashboard</a>
+        </div>
+      </div>
+
+    </div>
+  </footer>
   <!-- SLIDE MENU OVERLAY -->
   <div class="menu-overlay" id="menuOverlay"></div>
 
@@ -815,6 +1802,23 @@
     if (localStorage.getItem('theme') === 'dark') {
       body.classList.add('dark');
     }
+  // FAQ Accordion
+document.querySelectorAll('.faq-question').forEach(button => {
+  button.addEventListener('click', () => {
+    const item = button.parentElement;
+    const isActive = item.classList.contains('active');
+
+    // Close all
+    document.querySelectorAll('.faq-item').forEach(i => {
+      i.classList.remove('active');
+    });
+
+    // Open clicked one (if it wasn't already open)
+    if (!isActive) {
+      item.classList.add('active');
+    }
+  });
+});
   </script>
 </body>
 </html>
