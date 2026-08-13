@@ -1,1195 +1,800 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-  >
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temmy Social – Premium Social Assets</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-  <title>Trust Social</title>
-  <link rel="stylesheet" href="home.css">
+    :root {
+      --green: #4a7c23;
+      --green-dark: #3d6a1c;
+      --text-dark: #111111;
+      --text-gray: #555555;
+      --bg: #ffffff;
+      --card-bg: #ffffff;
+      --border: #e5e5e5;
+      --light-bg: #f8f9fa;
+    }
+
+    body.dark {
+      --bg: #0f0f0f;
+      --card-bg: #1a1a1a;
+      --text-dark: #f5f5f5;
+      --text-gray: #aaaaaa;
+      --border: #333333;
+      --light-bg: #161616;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      line-height: 1.5;
+      transition: background 0.3s ease, color 0.3s ease;
+      overflow-x: hidden;
+    }
+
+    /* ========== FIXED HEADER ========== */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--bg);
+      transition: background 0.35s ease, backdrop-filter 0.35s ease;
+    }
+
+    header.scrolled {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 1px 12px rgba(0,0,0,0.06);
+    }
+
+    body.dark header.scrolled {
+      background: rgba(15, 15, 15, 0.9);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 1.35rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 800;
+    }
+
+    .logo-icon::after {
+      content: "✓";
+      position: absolute;
+      font-size: 0.6rem;
+      bottom: 4px;
+      right: 5px;
+      background: white;
+      color: var(--green);
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .logo .emmy {
+      color: var(--green);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-dark);
+      transition: background 0.2s;
+    }
+
+    .icon-btn:hover {
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+    body.dark .icon-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    /* Spacer so content doesn't go under fixed header */
+    .header-spacer {
+      height: 76px;
+    }
+
+    /* ========== HERO ========== */
+    .hero {
+      text-align: center;
+      padding: 40px 24px 70px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.3rem, 6vw, 3.7rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 .green {
+      color: var(--green);
+    }
+
+    .hero p {
+      font-size: 1.12rem;
+      color: var(--text-gray);
+      max-width: 560px;
+      margin: 0 auto 38px;
+      line-height: 1.65;
+    }
+
+    .buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 15px 34px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 1rem;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 230px;
+    }
+
+    .btn-primary {
+      background: var(--green);
+      color: white;
+      border: none;
+    }
+
+    .btn-primary:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-dark);
+      border: 2px solid var(--border);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ========== BANNER ========== */
+    .banner {
+      background: var(--green);
+      color: white;
+      text-align: center;
+      padding: 13px 20px;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 1.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    .banner span {
+      opacity: 0.65;
+      font-size: 1.1rem;
+    }
+
+    /* ========== STATS ========== */
+    .stats {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 45px 24px 70px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .stat {
+      background: var(--card-bg);
+      padding: 38px 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.35rem;
+      font-weight: 800;
+      color: var(--green);
+      margin-bottom: 8px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.82rem;
+      color: var(--text-gray);
+      font-weight: 600;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    /* ========== SERVICES SECTION ========== */
+    .services {
+      padding: 70px 24px 90px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      color: var(--green);
+      font-weight: 700;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .services h2 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+
+    .services > p {
+      color: var(--text-gray);
+      font-size: 1.1rem;
+      margin-bottom: 50px;
+      max-width: 480px;
+    }
+
+    .service-card {
+      background: var(--light-bg);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .service-card .number {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #999;
+    }
+
+    .service-image {
+      width: 100%;
+      height: 200px;
+      border-radius: 14px;
+      margin-bottom: 24px;
+      background: #e0e0e0;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Placeholder backgrounds for the 4 images */
+    .img-01 { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
+    .img-02 { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
+    .img-03 { background: linear-gradient(135deg, #0f766e, #14b8a6); }
+    .img-04 { background: linear-gradient(135deg, #4b5563, #9ca3af); }
+
+    .service-card h3 {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .service-card p {
+      color: var(--text-gray);
+      font-size: 1.02rem;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+
+    .tag {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+      color: var(--text-dark);
+    }
+
+    body.dark .tag {
+      background: #222;
+    }
+
+    .get-started-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border-bottom: 2px solid var(--green);
+      padding-bottom: 2px;
+      transition: color 0.2s;
+    }
+
+    .get-started-link:hover {
+      color: var(--green);
+    }
+
+    .get-started-link svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* ========== SLIDE MENU ========== */
+    .menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+      z-index: 90;
+    }
+
+    .menu-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .slide-menu {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 100%;
+      max-width: 380px;
+      height: 100%;
+      background: var(--bg);
+      z-index: 100;
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      padding: 18px 24px 30px;
+    }
+
+    .slide-menu.open {
+      transform: translateX(0);
+    }
+
+    .menu-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 50px;
+    }
+
+    .menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      flex: 1;
+    }
+
+    .menu-links a {
+      text-decoration: none;
+      color: var(--text-dark);
+      font-size: 1.45rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .menu-links a:hover {
+      color: var(--green);
+    }
+
+    .menu-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 30px 0 28px;
+    }
+
+    .menu-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 15px;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.05rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .menu-btn-outline {
+      background: transparent;
+      color: var(--text-dark);
+      border: 1.5px solid var(--border);
+    }
+
+    .menu-btn-outline:hover {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    .menu-btn-primary {
+      background: var(--green);
+      color: white;
+      border: none;
+    }
+
+    .menu-btn-primary:hover {
+      background: var(--green-dark);
+    }
+
+    /* Responsive */
+    @media (max-width: 600px) {
+      .hero h1 {
+        font-size: 2.15rem;
+      }
+      .stat-number {
+        font-size: 1.95rem;
+      }
+      .slide-menu {
+        max-width: 100%;
+      }
+      .service-card {
+        padding: 22px;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-  <!-- HEADER -->
-  <header class="topbar">
-
-    <a href="index.html" class="brand" aria-label="Home">
-      <img src="logo.png.jpg" alt="Temy Social">
+  <!-- FIXED HEADER -->
+  <header id="mainHeader">
+    <a href="/" class="logo">
+      <div class="logo-icon">T</div>
+      <div>
+        <span class="urst">urst</span> Social»
+      </div>
     </a>
 
-    <div class="top-actions">
-
-      <!-- Theme Icon -->
-      <button
-        class="icon-button theme-button"
-        type="button"
-        aria-label="Toggle theme"
-      >
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <circle cx="16" cy="16" r="5.2"></circle>
-
-          <line x1="16" y1="2.8" x2="16" y2="7"></line>
-          <line x1="16" y1="25" x2="16" y2="29.2"></line>
-
-          <line x1="2.8" y1="16" x2="7" y2="16"></line>
-          <line x1="25" y1="16" x2="29.2" y2="16"></line>
-
-          <line x1="6.6" y1="6.6" x2="9.6" y2="9.6"></line>
-          <line x1="22.4" y1="22.4" x2="25.4" y2="25.4"></line>
-
-          <line x1="22.4" y1="9.6" x2="25.4" y2="6.6"></line>
-          <line x1="6.6" y1="25.4" x2="9.6" y2="22.4"></line>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeToggle" title="Toggle theme">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
       </button>
 
-      <!-- Menu Icon -->
-      <button
-        class="icon-button menu-button"
-        type="button"
-        aria-label="Open menu"
-      onclick="window.location.href='menu.html'"
-        >
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <line x1="4" y1="7" x2="28" y2="7"></line>
-          <line x1="4" y1="16" x2="28" y2="16"></line>
-          <line x1="4" y1="25" x2="28" y2="25"></line>
+      <button class="icon-btn" id="menuBtn" title="Open menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="4" y1="7" x2="20" y2="7"></line>
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="17" x2="20" y2="17"></line>
         </svg>
       </button>
-
     </div>
-
   </header>
 
-
-  <!-- MAIN -->
-  <main>
-
-    <!-- HERO -->
-    <section class="hero">
-
-      <h1>
-        <span>PREMIUM</span>
-        <span><em>SOCIAL</em> ASSETS</span>
-        <span>DELIVERED</span>
-        <span>FAST</span>
-      </h1>
-
-      <p class="hero-copy">
-        Buy aged social media accounts, working<br>
-        tools, virtual SMS numbers, and SME<br>
-        boosting services plus all in one platform,<br>
-        paid from your wallet.
-      </p>
-
-
-      <!-- BUTTONS -->
-      <div class="hero-buttons">
-
-        <a
-          href="login.html"
-          class="primary-button"
-        >
-          <span>GET STARTED</span>
-
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <line x1="4" y1="12" x2="19" y2="12"></line>
-            <polyline points="13,6 19,12 13,18"></polyline>
-          </svg>
-        </a>
-
-
-        <a
-          href="services.html"
-          class="secondary-button"
-        >
-          BROWSE SERVICES
-        </a>
-
-      </div>
-
-    </section>
-
-
-    <!-- MOVING SERVICES BAR -->
-    <section
-      class="service-marquee"
-      aria-label="Services"
-    >
-
-      <div class="marquee-track">
-
-        <span>FACEBOOK ACCOUNTS</span>
-        <b>*</b>
-
-        <span>INSTAGRAM ACCOUNTS</span>
-        <b>*</b>
-
-        <span>SMS NUMBERS</span>
-        <b>*</b>
-
-        <span>WORKING TOOLS</span>
-        <b>*</b>
-
-        <span>SME BOOSTING</span>
-        <b>*</b>
-
-      </div>
-
-    </section>
-
-
-    <!-- STATISTICS -->
-    <section class="stats">
-
-      <a href="services.html" class="stat">
-        <strong>10K+</strong>
-        <span>
-          ACCOUNTS IN<br>
-          STOCK
-        </span>
-      </a>
-
-
-      <a href="sms-numbers.html" class="stat">
-        <strong>200+</strong>
-        <span>
-          COUNTRIES FOR<br>
-          SMS
-        </span>
-      </a>
-
-
-      <a href="delivery.html" class="stat">
-        <strong>&lt; 10s</strong>
-        <span>
-          AVG DELIVERY<br>
-          TIME
-        </span>
-      </a>
-
-
-      <a href="status.html" class="stat">
-        <strong>24/7</strong>
-        <span>
-          PLATFORM<br>
-          UPTIME
-        </span>
-      </a>
-
-    </section>
-<!-- SERVICES SECTION -->
-<section class="services-section">
-
-  <div class="services-intro">
-
-    <p class="section-label">WHAT WE OFFER</p>
-
-    <h2>
-      FOUR SERVICES,<br>
-      ONE PLATFORM.
-    </h2>
-
-    <p class="section-description">
-      Everything a digital entrepreneur needs to run
-      campaigns, grow accounts, and verify
-      identities.
-    </p>
-
-  </div>
-
-
-  <!-- SERVICE 01 -->
-  <article class="service-card">
-
-    <div class="service-number">01</div>
-
-    <img
-      src="social-media-logs.jpeg.jpg"
-      alt="Social Media Logs"
-      class="service-image"
-    >
-
-    <div class="service-content">
-
-      <h3>Social Media Logs</h3>
-
-      <p class="service-description">
-        Aged and verified accounts for
-        Facebook, Instagram, TikTok, X
-        (Twitter), and LinkedIn. Ready to use
-        instantly after purchase.
-      </p>
-
-      <div class="service-tags">
-        <span>Facebook</span>
-        <span>Instagram</span>
-        <span>TikTok</span>
-        <span>X</span>
-        <span>LinkedIn</span>
-      </div>
-
-      <a href="social-media-logs.html" class="service-link">
-        <span>Get started</span>
-        <span class="service-arrow">↗</span>
-      </a>
-
-    </div>
-
-  </article>
-
-
-  <!-- SERVICE 02 -->
-  <article class="service-card">
-
-    <div class="service-number">02</div>
-
-    <img
-      src="working-tools.jpeg.jpg"
-      alt="Working Tools"
-      class="service-image"
-    >
-
-    <div class="service-content">
-
-      <h3>Working Tools</h3>
-
-      <p class="service-description">
-        Updates, working pictures and
-        working tools. Downloaded instantly
-        as a secure file the moment your
-        purchase is confirmed.
-      </p>
-
-      <div class="service-tags">
-        <span>Updates</span>
-        <span>Working Pictures</span>
-        <span>Working Tools</span>
-      </div>
-
-      <a href="working-tools.html" class="service-link">
-        <span>Get started</span>
-        <span class="service-arrow">↗</span>
-      </a>
-
-    </div>
-
-  </article>
-
-
-  <!-- SERVICE 03 -->
-  <article class="service-card">
-
-    <div class="service-number">03</div>
-
-    <img
-      src="sms-virtual-numbers.jpeg.jpg"
-      alt="SMS Virtual Numbers"
-      class="service-image"
-    >
-
-    <div class="service-content">
-
-      <h3>SMS Virtual Numbers</h3>
-
-      <p class="service-description">
-        Reliable virtual numbers for account
-        verification and digital services
-        across multiple countries.
-      </p>
-
-      <div class="service-tags">
-        <span>SMS</span>
-        <span>Virtual Numbers</span>
-        <span>Verification</span>
-      </div>
-
-      <a href="sms-virtual-numbers.html" class="service-link">
-        <span>Get started</span>
-        <span class="service-arrow">↗</span>
-      </a>
-
-    </div>
-
-  </article>
-
-
-  <!-- SERVICE 04 -->
-  <article class="service-card">
-
-    <div class="service-number">04</div>
-
-    <img
-      src="sme-boosting.jpeg.jpg"
-      alt="SME Boosting"
-      class="service-image"
-    >
-
-    <div class="service-content">
-
-      <h3>SME Boosting</h3>
-
-      <p class="service-description">
-        Boost your social presence with
-        reliable services designed for
-        growing digital businesses.
-      </p>
-
-      <div class="service-tags">
-        <span>Facebook</span>
-        <span>Instagram</span>
-        <span>TikTok</span>
-      </div>
-
-      <a href="sme-boosting.html" class="service-link">
-        <span>Get started</span>
-        <span class="service-arrow">↗</span>
-      </a>
-
-    </div>
-
-  </article>
-
-</section>
- <!-- =====================================================
-     SIMPLE PROCESS SECTION
-===================================================== -->
-
-<section class="process-section">
-
-  <div class="process-heading">
-
-    <p class="process-label">
-      SIMPLE PROCESS
-    </p>
-
-    <h2>
-      THREE STEPS.<br>
-      THAT'S ALL.
-    </h2>
-
-  </div>
-
-
-  <div class="process-card">
-
-    <!-- STEP 01 -->
-    <article class="process-step">
-
-      <div class="process-top">
-
-        <div class="process-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7.5h14.5A1.5 1.5 0 0 1 20 9v8.5A1.5 1.5 0 0 1 18.5 19H5.5A1.5 1.5 0 0 1 4 17.5z"/>
-            <path d="M4 7.5V5.8A1.8 1.8 0 0 1 5.8 4H17"/>
-            <path d="M15 12h5v4h-5a2 2 0 0 1 0-4z"/>
-          </svg>
-        </div>
-
-        <span class="process-number">01</span>
-
-      </div>
-
-      <h3>Top up your wallet</h3>
-
-      <p>
-        Fund your TemmySocials wallet using
-        Flutterwave -card or bank transfer.
-        Credits reflect instantly. No charges on
-        deposits.
-      </p>
-
-    </article>
-
-
-    <!-- STEP 02 -->
-    <article class="process-step">
-
-      <div class="process-top">
-
-        <div class="process-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 8h14v11H5z"/>
-            <path d="M7 8V6h10v2"/>
-            <path d="M9 12h6"/>
-            <path d="M9 15h4"/>
-          </svg>
-        </div>
-
-        <span class="process-number">02</span>
-
-      </div>
-
-      <h3>Browse and pick</h3>
-
-      <p>
-        Browse by category -logs, tools, SMS
-        numbers, or boosting. Filter by
-        platform, price, or type. Pick exactly
-        what you need.
-      </p>
-
-    </article>
-
-
-    <!-- STEP 03 -->
-    <article class="process-step">
-
-      <div class="process-top">
-
-        <div class="process-icon">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M13 2L4 13h7l-1 9 9-12h-7z"/>
-          </svg>
-        </div>
-
-        <span class="process-number">03</span>
-
-      </div>
-
-      <h3>Instant delivery</h3>
-
-      <p>
-        Purchase and your item is delivered
-        immediately on screen and to your
-        email. No waiting, no manual
-        processing, no back and forth.
-      </p>
-
-    </article>
-
-  </div>
-
-</section>
-<!-- =====================================================
-     BUILT FOR EFFICIENCY SECTION
-===================================================== -->
-
-<section class="efficiency-section">
-
-  <div class="efficiency-intro">
-
-    <h2>
-      BUILT FOR<br>
-      <span>EFFICIENCY.</span>
-    </h2>
+  <div class="header-spacer"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <h1>
+      PREMIUM<br>
+      <span class="green">SOCIAL ASSETS</span><br>
+      DELIVERED<br>
+      FAST
+    </h1>
 
     <p>
-      TemySocials was built specifically for digital
-      entrepreneurs, ad agencies, social media
-      managers, and resellers who need premium
-      assets fast.
+      Buy aged social media accounts, working tools, virtual SMS numbers, and SME boosting services plus all in one platform, paid from your wallet.
     </p>
 
-    <a href="services.html" class="efficiency-button">
-      <span>EXPLORE SERVICES</span>
-      <span class="efficiency-button-arrow">→</span>
-    </a>
+    <div class="buttons">
+      <a href="login.html" class="btn btn-primary">GET STARTED →</a>
+      <a href="#services" class="btn btn-outline">BROWSE SERVICES</a>
+    </div>
+  </section>
 
+  <!-- BANNER -->
+  <div class="banner">
+    <span>*</span>
+    INSTAGRAM ACCOUNTS
+    <span>*</span>
   </div>
 
-
-  <div class="efficiency-features">
-
-    <!-- 01 -->
-    <article class="efficiency-feature">
-
-      <h3>Instant Delivery</h3>
-
-      <p>
-        Credentials and files land in your account and
-        email the moment you purchase. No waiting,
-        no manual processing.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
-
-    <!-- 02 -->
-    <article class="efficiency-feature">
-
-      <h3>Wallet System</h3>
-
-      <p>
-        Top up once, buy multiple times. Your balance
-        stays ready so you never have to re-enter
-        payment details.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
-
-    <!-- 03 -->
-    <article class="efficiency-feature">
-
-      <h3>Verified Inventory</h3>
-
-      <p>
-        Every account in our catalog is tested and
-        verified before listing. What you see is what
-        you get.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
-
-    <!-- 04 -->
-    <article class="efficiency-feature">
-
-      <h3>Reseller Friendly</h3>
-
-      <p>
-        Our pricing is built for resellers. Buy wholesale,
-        set your own rates, keep the margin.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
-
-    <!-- 05 -->
-    <article class="efficiency-feature">
-
-      <h3>200+ Countries</h3>
-
-      <p>
-        SMS virtual numbers from over 200 countries.
-        US, UK, Canada, Germany, Nigeria -whatever
-        service needs.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
-
-    <!-- 06 -->
-    <article class="efficiency-feature">
-
-      <h3>24/7 Support</h3>
-
-      <p>
-        Open a ticket anytime. Our team responds fast
-        and resolves every valid issue -replacement or
-        refund.
-      </p>
-
-      <a href="login.html" class="efficiency-link">
-        <span>Get started</span>
-        <span>↗</span>
-      </a>
-
-    </article>
-
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-number">10K+</div>
+      <div class="stat-label">Accounts in Stock</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">200+</div>
+      <div class="stat-label">Countries for SMS</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">&lt; 10s</div>
+      <div class="stat-label">Avg Delivery Time</div>
+    </div>
+    <div class="stat">
+      <div class="stat-number">24/7</div>
+      <div class="stat-label">Platform Uptime</div>
+    </div>
   </div>
 
-</section>
-  <!-- =====================================================
-     TESTIMONIALS / WHAT THEY SAY
-===================================================== -->
+  <!-- ========== SERVICES SECTION ========== -->
+  <section class="services" id="services">
+    <div class="section-label">OUR SERVICES</div>
+    <h2>FOUR SERVICES,<br>ONE PLATFORM.</h2>
+    <p>Everything you need to scale your digital presence.</p>
 
-<section class="testimonials-section">
-
-  <div class="testimonials-heading">
-
-    <p class="testimonials-label">
-      WHAT THEY SAY
-    </p>
-
-    <h2>
-      TRUSTED BY DIGITAL<br>
-      ENTREPRENEURS
-    </h2>
-
-  </div>
-
-
-  <div class="testimonials-list">
-
-    <!-- TESTIMONIAL 01 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
+    <!-- Service 01 -->
+    <div class="service-card">
+      <div class="number">01</div>
+      <div class="service-image img-01"></div>
+      <h3>Social Media Logs</h3>
+      <p>Aged and verified accounts for Facebook, Instagram, TikTok, X (Twitter), and LinkedIn. Ready to use instantly after purchase.</p>
+      <div class="tags">
+        <span class="tag">FACEBOOK</span>
+        <span class="tag">INSTAGRAM</span>
+        <span class="tag">TIKTOK</span>
+        <span class="tag">X</span>
+        <span class="tag">LINKEDIN</span>
       </div>
-
-      <p class="testimonial-text">
-        Trustsocials eliminated our
-        sourcing bottlenecks. The instant
-        delivery and unified wallet system
-        saves us hours every week.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path
-              fill="#FFC107"
-              d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"
-            />
-
-            <path
-              fill="#FF3D00"
-              d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
-            />
-
-            <path
-              fill="#4CAF50"
-              d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"
-            />
-
-            <path
-              fill="#1976D2"
-              d="M43.6 20H42V20H24v8h11.3c-1.1 3.1-3.7 5.5-6.2 6.7l6.1 5.2C39 36.5 43.6 31.1 43.6 24c0-1.3-.1-2.7-.4-4z"
-            />
-          </svg>
-        </div>
-
-        <span>Michael K.</span>
-
-      </div>
-
-    </article>
-
-
-    <!-- TESTIMONIAL 02 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
-      </div>
-
-      <p class="testimonial-text">
-        The quality of the working tools
-        here is unmatched. We've moved
-        our entire procurement flow to their
-        platform.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path
-              fill="#FFC107"
-              d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"
-            />
-            <path
-              fill="#FF3D00"
-              d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"
-            />
-            <path
-              fill="#4CAF50"
-              d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"
-            />
-            <path
-              fill="#1976D2"
-              d="M43.6 20H42V20H24v8h11.3c-1.1 3.1-3.7 5.5-6.2 6.7l6.1 5.2C39 36.5 43.6 31.1 43.6 24c0-1.3-.1-2.7-.4-4z"
-            />
-          </svg>
-        </div>
-
-        <span>Sarah R.</span>
-
-      </div>
-
-    </article>
-
-
-    <!-- TESTIMONIAL 03 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
-      </div>
-
-      <p class="testimonial-text">
-        Finally a marketplace that
-        understands efficiency. The UI is
-        sharp, and the assets are exactly as
-        described.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20H42V20H24v8h11.3c-1.1 3.1-3.7 5.5-6.2 6.7l6.1 5.2C39 36.5 43.6 31.1 43.6 24c0-1.3-.1-2.7-.4-4z"/>
-          </svg>
-        </div>
-
-        <span>James T.</span>
-
-      </div>
-
-    </article>
-
-
-    <!-- TESTIMONIAL 04 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
-      </div>
-
-      <p class="testimonial-text">
-        Best platform I've used for social
-        assets. The quality is consistently
-        high and the prices are very
-        competitive.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20H42V20H24v8h11.3c0-1.3-.1-2.7-.4-4z"/>
-          </svg>
-        </div>
-
-        <span>Amanda D.</span>
-
-      </div>
-
-    </article>
-
-
-    <!-- TESTIMONIAL 05 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
-      </div>
-
-      <p class="testimonial-text">
-        We rely on Trustsocials for all
-        our SMS verification needs. The API
-        was incredibly easy to integrate.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20H42V20H24v8h11.3c0-1.3-.1-2.7-.4-4z"/>
-          </svg>
-        </div>
-
-        <span>Robert B.</span>
-
-      </div>
-
-    </article>
-
-
-    <!-- TESTIMONIAL 06 -->
-    <article class="testimonial-card">
-
-      <div class="testimonial-stars">
-        ★★★★★
-      </div>
-
-      <p class="testimonial-text">
-        Customer support actually
-        responds and helps. That alone
-        makes this my go-to marketplace.
-      </p>
-
-      <div class="testimonial-user">
-
-        <div class="google-icon" aria-hidden="true">
-          <svg viewBox="0 0 48 48">
-            <path fill="#FFC107" d="M43.6 20H42V20H24v8h11.3C33.7 32.6 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 13 4 4 13 4 24s9 20 20 20 19.6-9 19.6-20c0-1.3-.1-2.7-.4-4z"/>
-            <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 16.1 19 12 24 12c3 0 5.7 1.1 7.8 3l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/>
-            <path fill="#4CAF50" d="M24 44c5.1 0 9.7-1.9 13.2-5.1l-6.1-5.2C29.1 35.1 26.7 36 24 36c-5.3 0-9.7-3.4-11.3-8l-6.6 5.1C9.4 39.3 16.1 44 24 44z"/>
-            <path fill="#1976D2" d="M43.6 20H42V20H24v8h11.3c0-1.3-.1-2.7-.4-4z"/>
-          </svg>
-        </div>
-
-        <span>Liliana Graham</span>
-
-      </div>
-
-    </article>
-
-  </div>
-
-</section>
-  <!-- =====================================================
-     FAQ SECTION
-===================================================== -->
-
-<section class="faq-section">
-
-  <div class="faq-heading">
-
-    <p class="faq-label">QUESTIONS</p>
-
-    <h2>
-      GOT QUESTIONS?<br>
-      WE HAVE<br>
-      ANSWERS.
-    </h2>
-
-  </div>
-
-
-  <div class="faq-list">
-
-    <!-- FAQ 01 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>How does the wallet work?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          Top up your wallet and use your available
-          balance to purchase services on the platform.
-        </p>
-      </div>
-
-    </div>
-
-
-    <!-- FAQ 02 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>Are the social media accounts safe to use?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          Our listed accounts are checked before they
-          are made available for purchase.
-        </p>
-      </div>
-
-    </div>
-
-
-    <!-- FAQ 03 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>How fast is delivery after purchase?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          Most digital assets are delivered immediately
-          after your purchase is successfully completed.
-        </p>
-      </div>
-
-    </div>
-
-
-    <!-- FAQ 04 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>What countries are available for SMS numbers?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          SMS numbers are available across many
-          countries. Available countries depend on
-          the current inventory.
-        </p>
-      </div>
-
-    </div>
-
-
-    <!-- FAQ 05 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>What happens if an account doesn't work?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          Contact support with your order details and
-          our team will review the issue and assist you.
-        </p>
-      </div>
-
-    </div>
-
-
-    <!-- FAQ 06 -->
-    <div class="faq-item">
-
-      <button class="faq-question" type="button">
-        <span>Can I resell these services?</span>
-        <span class="faq-plus">+</span>
-      </button>
-
-      <div class="faq-answer">
-        <p>
-          Yes. Our platform is designed to support
-          customers who purchase services for resale.
-        </p>
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- =====================================================
-     FINAL CTA
-===================================================== -->
-
-<section class="final-cta-section">
-
-  <div class="final-cta">
-
-    <div class="cta-circle cta-circle-one"></div>
-    <div class="cta-circle cta-circle-two"></div>
-
-    <div class="cta-content">
-
-      <p class="cta-label">
-        READY TO GET STARTED?
-      </p>
-
-      <h2>
-        YOUR<br>
-        ACCOUNTS<br>
-        ARE WAITING.
-      </h2>
-
-      <p class="cta-description">
-        Create your account, top up your
-        wallet, and start buying premium
-        digital assets in under 3 minutes.
-      </p>
-
-
-      <div class="cta-buttons">
-
-        <a
-          href="signup.html"
-          class="cta-primary"
-        >
-          <span>CREATE FREE ACCOUNT</span>
-          <span>→</span>
-        </a>
-
-
-        <a
-          href="services.html"
-          class="cta-secondary"
-        >
-          BROWSE SERVICES
-        </a>
-
-
-        <a
-          href="https://wa.me/2349117412352"
-          class="cta-contact"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.6-4A8 8 0 1 1 20 11.5z"></path>
-            <path d="M8.2 8.2c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.2 0 .4-.1.6l-.5.6c-.1.1-.1.3 0 .4.4.8 1.1 1.5 1.9 1.9.2.1.3.1.4 0l.6-.5c.2-.1.4-.2.6-.1l1.7.7c.2.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.4.2-1.1.3-1.7.1-1.1-.3-2.4-1-3.5-2.1-1.1-1.1-1.8-2.4-2.1-3.5-.2-.5-.1-1.2.1-1.6z"></path>
-          </svg>
-
-          <span>Chat on WhatsApp</span>
-        </a>
-
-
-        <a
-          href="https://t.me/+Xbt-w6-TwsozYjY0"
-          class="cta-contact telegram-button"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M21 3L3.7 10.1c-.8.3-.8 1.4 0 1.7l4.5 1.5 1.7 5.3c.2.7 1.1.9 1.6.4l2.5-2.4 4.5 3.3c.6.4 1.4.1 1.6-.6L22 4.2c.2-.8-.3-1.5-1-1.2z"></path>
-            <path d="M8.5 13.1L18 7.2l-6.8 7.1"></path>
-          </svg>
-
-          <span>Join Telegram</span>
-        </a>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</section>
-  <!-- FOOTER -->
-<footer class="site-footer">
-
-  <div class="footer-main">
-
-    <!-- LOGO + DESCRIPTION -->
-    <div class="footer-brand">
-
-      <a href="index.html" class="footer-logo">
-        <img src="logo.png.jpg" alt="Temmy Social">
-      </a>
-
-      <p class="footer-description">
-        Your goto platform for premium social media
-        accounts, working tools, virtual SMS numbers,
-        and SME boosting services.
-      </p>
-
-      <p class="footer-copyright">
-        © 2026 TrustSocials. All rights reserved.
-      </p>
-
-    </div>
-
-
-    <!-- CONTACT BUTTONS -->
-    <div class="footer-contact">
-
-      <a
-        href="https://wa.me/2349117412352"
-        class="contact-button whatsapp"
-        target="_blank"
-        rel="noopener"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M20 11.5a8 8 0 0 1-11.8 7L4 20l1.5-4A8 8 0 1 1 20 11.5z"></path>
-          <path d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.2.1.4-.1.6l-.5.6c.5 1 1.3 1.8 2.3 2.3l.6-.5c.2-.2.4-.2.6-.1l1.7.7c.3.1.4.3.4.5v.5c0 .3 0 .5-.4.7-.5.3-1.1.4-1.7.2-2.1-.6-4.8-3.3-5.4-5.4-.2-.6-.1-1.2.1-1.8z"></path>
+      <a href="login.html" class="get-started-link">
+        GET STARTED
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M7 17L17 7M17 7H7M17 7V17"/>
         </svg>
-        <span>WhatsApp</span>
       </a>
-
-      <a
-        href="https://t.me/+Xbt-w6-TwsozYjY0"
-        class="contact-button telegram"
-        target="_blank"
-        rel="noopener"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 4L3.8 10.6c-.8.3-.8 1.4 0 1.7l4.4 1.5 1.7 5.2c.2.6 1 .8 1.4.3l2.5-2.9 4.5 3.3c.5.4 1.2.1 1.4-.5L22 5c.2-.7-.3-1.3-1-1z"></path>
-          <path d="M8.4 13.8L18.8 7l-7.9 7.8"></path>
-        </svg>
-        <span>Telegram</span>
-      </a>
-
-      <a
-        href="mailto:"
-        class="contact-button email"
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect x="3" y="5" width="18" height="14" rx="2"></rect>
-          <polyline points="4,7 12,13 20,7"></polyline>
-        </svg>
-        <span>Email</span>
-      </a>
-
     </div>
 
-
-    <!-- SERVICES -->
-    <div class="footer-column">
-
-      <h3>SERVICES</h3>
-
-      <a href="social-media-logs.html">Social Media Logs</a>
-      <a href="working-tools.html">Working Tools</a>
-      <a href="sms-virtual-numbers.html">SMS Numbers</a>
-      <a href="sme-boosting.html">SME Boosting</a>
-
+    <!-- Service 02 -->
+    <div class="service-card">
+      <div class="number">02</div>
+      <div class="service-image img-02"></div>
+      <h3>Working Tools</h3>
+      <p>Updates, working pictures and working tools. Downloaded instantly as a secure file the moment your purchase is confirmed.</p>
+      <div class="tags">
+        <span class="tag">UPDATES</span>
+        <span class="tag">WORKING PICTURES</span>
+        <span class="tag">WORKING TOOLS</span>
+      </div>
+      <a href="login.html" class="get-started-link">
+        GET STARTED
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M7 17L17 7M17 7H7M17 7V17"/>
+        </svg>
+      </a>
     </div>
 
+    <!-- Service 03 -->
+    <div class="service-card">
+      <div class="number">03</div>
+      <div class="service-image img-03"></div>
+      <h3>SMS Virtual Numbers</h3>
+      <p>Rent real virtual phone numbers from 200+ countries. Receive OTP codes for WhatsApp, Telegram, Instagram, and more in seconds.</p>
+      <div class="tags">
+        <span class="tag">200+ COUNTRIES</span>
+        <span class="tag">INSTANT OTP</span>
+        <span class="tag">WHATSAPP</span>
+        <span class="tag">TELEGRAM</span>
+      </div>
+      <a href="login.html" class="get-started-link">
+        GET STARTED
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M7 17L17 7M17 7H7M17 7V17"/>
+        </svg>
+      </a>
+    </div>
 
-    <!-- PLATFORM -->
-    <div class="footer-column">
+    <!-- Service 04 -->
+    <div class="service-card">
+      <div class="number">04</div>
+      <div class="service-image img-04"></div>
+      <h3>SME Boosting</h3>
+      <p>Followers, likes, views, and comments for Instagram, TikTok, YouTube, Facebook, and Telegram. Orders fulfilled automatically.</p>
+      <div class="tags">
+        <span class="tag">FOLLOWERS</span>
+        <span class="tag">LIKES</span>
+        <span class="tag">VIEWS</span>
+        <span class="tag">COMMENTS</span>
+      </div>
+      <a href="login.html" class="get-started-link">
+        GET STARTED
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M7 17L17 7M17 7H7M17 7V17"/>
+        </svg>
+      </a>
+    </div>
+  </section>
 
-      <h3>PLATFORM</h3>
+  <!-- SLIDE MENU OVERLAY -->
+  <div class="menu-overlay" id="menuOverlay"></div>
 
+  <!-- SLIDE MENU -->
+  <div class="slide-menu" id="slideMenu">
+    <div class="menu-header">
+      <a href="/" class="logo">
+        <div class="logo-icon">T</div>
+        <div>
+          <span class="rust">rust</span> Social»
+        </div>
+      </a>
+
+      <div style="display: flex; gap: 8px;">
+        <button class="icon-btn" id="themeToggleMenu" title="Toggle theme">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+
+        <button class="icon-btn" id="closeMenu" title="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <nav class="menu-links">
+      <a href="services.html">Services</a>
+      <a href="about.html">About</a>
       <a href="pricing.html">Pricing</a>
       <a href="faq.html">FAQ</a>
-      <a href="about.html">About us</a>
-      <a href="support.html">Support</a>
+    </nav>
 
+    <div class="menu-divider"></div>
+
+    <div class="menu-buttons">
+      <a href="#login.html" class="menu-btn menu-btn-outline">Sign in</a>
+      <a href="#login.html" class="menu-btn menu-btn-primary">Get started free</a>
     </div>
-
-
-    <!-- LEGAL -->
-    <div class="footer-column">
-
-      <h3>LEGAL</h3>
-
-      <a href="terms.html">Terms of service</a>
-      <a href="privacy.html">Privacy policy</a>
-
-    </div>
-
-
-    <!-- ACCOUNT -->
-    <div class="footer-column">
-
-      <h3>ACCOUNT</h3>
-
-      <a href="login.html">Sign in</a>
-      <a href="signup.html">Register</a>
-      <a href="login.html">Dashboard</a>
-
-    </div>
-
   </div>
 
-</footer>
-  </main>
+  <script>
+    // Fixed header transparency on scroll
+    const header = document.getElementById('mainHeader');
+    
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 40) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
 
-  <script src="home.js"></script>
+    // Menu
+    const menuBtn = document.getElementById('menuBtn');
+    const closeMenu = document.getElementById('closeMenu');
+    const slideMenu = document.getElementById('slideMenu');
+    const menuOverlay = document.getElementById('menuOverlay');
 
+    function openMenu() {
+      slideMenu.classList.add('open');
+      menuOverlay.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenuFunc() {
+      slideMenu.classList.remove('open');
+      menuOverlay.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    menuBtn.addEventListener('click', openMenu);
+    closeMenu.addEventListener('click', closeMenuFunc);
+    menuOverlay.addEventListener('click', closeMenuFunc);
+
+    // Theme
+    const body = document.body;
+    const themeToggle = document.getElementById('themeToggle');
+    const themeToggleMenu = document.getElementById('themeToggleMenu');
+
+    function toggleTheme() {
+      body.classList.toggle('dark');
+      localStorage.setItem('theme', body.classList.contains('dark') ? 'dark' : 'light');
+    }
+
+    themeToggle.addEventListener('click', toggleTheme);
+    themeToggleMenu.addEventListener('click', toggleTheme);
+
+    if (localStorage.getItem('theme') === 'dark') {
+      body.classList.add('dark');
+    }
+  </script>
 </body>
 </html>
