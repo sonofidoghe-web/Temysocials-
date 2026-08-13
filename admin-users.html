@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Users - Admin</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: #f8f9fa;
+      color: #111;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    .header {
+      position: sticky; top: 0; z-index: 100;
+      background: #fff; padding: 12px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+    .menu-toggle { background: none; border: none; cursor: pointer; padding: 4px; }
+    .header-right { display: flex; align-items: center; gap: 12px; }
+    .admin-badge {
+      background: #3d6b1e; color: white; font-size: 12px;
+      padding: 4px 10px; border-radius: 20px; font-weight: 500;
+    }
+    .avatar {
+      width: 36px; height: 36px; background: #3d6b1e; color: white;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: 600; font-size: 14px;
+    }
+
+    .sidebar-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
+      opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .sidebar-overlay.active { opacity: 1; visibility: visible; }
+    .sidebar {
+      position: fixed; top: 0; left: 0; width: 300px; height: 100%;
+      background: white; z-index: 300; transform: translateX(-100%);
+      transition: transform 0.3s ease; overflow-y: auto; padding: 20px 0 30px;
+    }
+    .sidebar.active { transform: translateX(0); }
+    .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #eee; }
+    .sidebar-logo img { height: 40px; }
+    .menu-section { padding: 20px 12px 8px; }
+    .menu-section-title {
+      font-size: 13px; color: #888; font-weight: 500; padding: 0 12px 10px;
+      text-transform: uppercase;
+    }
+    .menu-item {
+      display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+      border-radius: 12px; color: #333; text-decoration: none; font-size: 15px;
+      font-weight: 500; margin-bottom: 2px;
+    }
+    .menu-item:hover { background: #f5f5f5; }
+    .menu-item.active { background: #f0f7eb; color: #3d6b1e; }
+    .signout-item { color: #d32f2f !important; }
+
+    .container { max-width: 480px; margin: 0 auto; padding: 24px 16px; }
+    h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 14px; margin-bottom: 20px; }
+
+    .search-box {
+      margin-bottom: 20px;
+    }
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .user-card {
+      background: white;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid #f0f0f0;
+    }
+    .user-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .user-name { font-size: 16px; font-weight: 600; }
+    .user-email { font-size: 13px; color: #666; }
+    .user-balance {
+      font-size: 15px;
+      font-weight: 700;
+      color: #3d6b1e;
+    }
+    .user-status {
+      display: inline-block;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+    .status-active { background: #e6f4ea; color: #137333; }
+    .status-suspended { background: #fce8e6; color: #c5221f; }
+
+    .user-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+    .action-btn {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .btn-balance { background: #e8f5e9; color: #2e7d32; }
+    .btn-suspend { background: #fff3e0; color: #ef6c00; }
+    .btn-unsuspend { background: #e3f2fd; color: #1565c0; }
+    .btn-view { background: #f0f0f0; color: #333; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; visibility: hidden; transition: all 0.25s;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal {
+      background: white; width: 100%; max-width: 360px;
+      border-radius: 16px; padding: 20px;
+    }
+    .modal h3 { font-size: 18px; margin-bottom: 16px; }
+    .modal input {
+      width: 100%; padding: 12px; border: 1.5px solid #e0e0e0;
+      border-radius: 10px; margin-bottom: 12px; font-size: 15px;
+    }
+    .modal-actions { display: flex; gap: 10px; }
+    .modal-btn {
+      flex: 1; padding: 12px; border-radius: 10px; border: none;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+    }
+    .btn-confirm { background: #3d6b1e; color: white; }
+    .btn-cancel { background: #f0f0f0; color: #333; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="logo.png" alt="Temmy Social">
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">Admin</div>
+      <a href="admin.html" class="menu-item">Dashboard</a>
+      <a href="admin-users.html" class="menu-item active">Users</a>
+      <a href="admin-deposits.html" class="menu-item">Deposits</a>
+      <a href="admin-products.html" class="menu-item">Products</a>
+      <a href="admin-orders.html" class="menu-item">Orders</a>
+    </div>
+    <div class="menu-section">
+      <div class="menu-section-title">Main Site</div>
+      <a href="dashboard.html" class="menu-item">User Dashboard</a>
+    </div>
+    <div class="menu-section" style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
+      <a href="#" class="menu-item signout-item" id="signOutBtn">Sign out</a>
+    </div>
+  </div>
+
+  <header class="header">
+    <button class="menu-toggle" id="menuToggle">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+      </svg>
+    </button>
+    <div class="header-right">
+      <span class="admin-badge">Admin</span>
+      <div class="avatar">AD</div>
+    </div>
+  </header>
+
+  <div class="container">
+    <h1>Manage Users</h1>
+    <p class="subtitle">View, update balance & suspend users</p>
+
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search by email or name...">
+    </div>
+
+    <div id="usersList">
+      <p style="text-align:center;color:#888;padding:40px 0">Loading users...</p>
+    </div>
+  </div>
+
+  <!-- Balance Modal -->
+  <div class="modal-overlay" id="balanceModal">
+    <div class="modal">
+      <h3>Update Balance</h3>
+      <p id="modalUserEmail" style="font-size:13px;color:#666;margin-bottom:12px"></p>
+      <input type="number" id="balanceAmount" placeholder="Amount (e.g. 5000 or -2000)">
+      <div class="modal-actions">
+        <button class="modal-btn btn-cancel" onclick="closeBalanceModal()">Cancel</button>
+        <button class="modal-btn btn-confirm" id="confirmBalanceBtn">Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+    import { 
+      getFirestore, collection, getDocs, doc, updateDoc, increment, getDoc 
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      authDomain: "trustsocials-8fc8b.firebaseapp.com",
+      projectId: "trustsocials-8fc8b",
+      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+      messagingSenderId: "675550258010",
+      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+      measurementId: "G-KDVYRV55JD"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const ADMIN_EMAIL = "danielidoghe@gmail.com";
+
+    let allUsers = [];
+    let selectedUserId = null;
+
+    // Sidebar
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    document.getElementById('menuToggle').addEventListener('click', () => {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+    });
+    overlay.addEventListener('click', () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', async (e) => {
+      e.preventDefault();
+      await signOut(auth);
+      window.location.href = 'login.html';
+    });
+
+    // Search
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      const term = e.target.value.toLowerCase();
+      const filtered = allUsers.filter(u => 
+        (u.email || '').toLowerCase().includes(term) ||
+        (u.displayName || '').toLowerCase().includes(term)
+      );
+      renderUsers(filtered);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = 'login.html';
+        return;
+      }
+      if (user.email !== ADMIN_EMAIL) {
+        alert('Access denied');
+        window.location.href = 'dashboard.html';
+        return;
+      }
+
+      loadUsers();
+    });
+
+    async function loadUsers() {
+      try {
+        const snap = await getDocs(collection(db, 'users'));
+        allUsers = [];
+        snap.forEach(doc => {
+          allUsers.push({ id: doc.id, ...doc.data() });
+        });
+        renderUsers(allUsers);
+      } catch (err) {
+        console.error(err);
+        document.getElementById('usersList').innerHTML = '<p style="text-align:center;color:#c5221f">Failed to load users</p>';
+      }
+    }
+
+    function renderUsers(users) {
+      const list = document.getElementById('usersList');
+      if (users.length === 0) {
+        list.innerHTML = '<p style="text-align:center;color:#888;padding:40px 0">No users found</p>';
+        return;
+      }
+
+      let html = '';
+      users.forEach(user => {
+        const isSuspended = user.suspendedUntil && user.suspendedUntil.toDate() > new Date();
+        const statusClass = isSuspended ? 'status-suspended' : 'status-active';
+        const statusText = isSuspended ? 'Suspended' : 'Active';
+
+        html += `
+          <div class="user-card">
+            <div class="user-header">
+              <div>
+                <div class="user-name">${user.displayName || 'No Name'}</div>
+                <div class="user-email">${user.email || user.id}</div>
+                <span class="user-status ${statusClass}">${statusText}</span>
+              </div>
+              <div class="user-balance">₦${Number(user.balance || 0).toLocaleString()}</div>
+            </div>
+            <div class="user-actions">
+              <button class="action-btn btn-balance" onclick="openBalanceModal('${user.id}', '${user.email}')">Balance</button>
+              ${isSuspended 
+                ? `<button class="action-btn btn-unsuspend" onclick="unsuspendUser('${user.id}')">Unsuspend</button>`
+                : `<button class="action-btn btn-suspend" onclick="suspendUser('${user.id}')">Suspend 7 days</button>`
+              }
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    }
+
+    // Balance Modal
+    window.openBalanceModal = function(userId, email) {
+      selectedUserId = userId;
+      document.getElementById('modalUserEmail').textContent = email;
+      document.getElementById('balanceAmount').value = '';
+      document.getElementById('balanceModal').classList.add('active');
+    };
+
+    window.closeBalanceModal = function() {
+      document.getElementById('balanceModal').classList.remove('active');
+    };
+
+    document.getElementById('confirmBalanceBtn').addEventListener('click', async () => {
+      const amount = Number(document.getElementById('balanceAmount').value);
+      if (!amount) {
+        alert('Enter a valid amount');
+        return;
+      }
+
+      try {
+        await updateDoc(doc(db, 'users', selectedUserId), {
+          balance: increment(amount)
+        });
+        alert('Balance updated');
+        closeBalanceModal();
+        loadUsers();
+      } catch (err) {
+        alert('Failed to update balance');
+      }
+    });
+
+    // Suspend
+    window.suspendUser = async function(userId) {
+      if (!confirm('Suspend this user for 7 days?')) return;
+
+      const until = new Date();
+      until.setDate(until.getDate() + 7);
+
+      try {
+        await updateDoc(doc(db, 'users', userId), {
+          suspendedUntil: until,
+          suspended: true
+        });
+        alert('User suspended for 7 days');
+        loadUsers();
+      } catch (err) {
+        alert('Failed to suspend user');
+      }
+    };
+
+    // Unsuspend
+    window.unsuspendUser = async function(userId) {
+      try {
+        await updateDoc(doc(db, 'users', userId), {
+          suspendedUntil: null,
+          suspended: false
+        });
+        alert('User unsuspended');
+        loadUsers();
+      } catch (err) {
+        alert('Failed to unsuspend');
+      }
+    };
+  </script>
+</body>
+</html>
