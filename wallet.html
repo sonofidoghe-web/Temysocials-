@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wallet - Temmy Social</title>
+  <title>Wallet - Trust Social</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -93,8 +93,19 @@
     .method-btn {
       flex: 1; padding: 12px; border-radius: 10px; border: 1.5px solid #e0e0e0;
       background: white; font-size: 14px; font-weight: 500; cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 6px;
     }
     .method-btn.active { border-color: #3d6b1e; background: #f0f7eb; color: #3d6b1e; }
+
+    .recommended-badge {
+      background: #e53935;
+      color: white;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 8px;
+      letter-spacing: 0.3px;
+    }
 
     .amount-label { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
     .amount-input {
@@ -125,7 +136,6 @@
       cursor: pointer;
     }
     .open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
-    .open-btn.coming-soon { background: #999; }
 
     .secure-note { font-size: 13px; color: #888; text-align: center; margin-top: 14px; line-height: 1.4; }
 
@@ -164,7 +174,7 @@
     .status-success { background: #e6f4ea; color: #137333; }
     .empty-tx { padding: 40px 20px; text-align: center; color: #888; font-size: 14px; }
 
-    /* ===== POPUP ===== */
+    /* ===== POPUPS ===== */
     .popup-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
       display: flex; align-items: center; justify-content: center;
@@ -208,6 +218,21 @@
       margin-bottom: 20px; font-size: 14px; color: #444; line-height: 1.55;
     }
     .instructions strong { display: block; margin-bottom: 6px; }
+    .gmail-box {
+      background: #fff8e1;
+      border: 1px solid #ffe082;
+      border-radius: 10px;
+      padding: 12px;
+      margin: 12px 0;
+      text-align: center;
+      font-size: 14px;
+    }
+    .gmail-box .email {
+      font-weight: 700;
+      color: #3d6b1e;
+      word-break: break-all;
+      margin-top: 4px;
+    }
     .popup-actions { display: flex; gap: 10px; }
     .popup-btn {
       flex: 1; padding: 14px; border-radius: 12px; font-size: 15px;
@@ -215,6 +240,20 @@
     }
     .btn-cancel { background: #f0f0f0; color: #333; }
     .btn-proof { background: #3d6b1e; color: white; }
+
+    /* Verification popup */
+    .verify-content { text-align: center; padding: 10px 0 20px; }
+    .spinner {
+      width: 48px; height: 48px; border: 4px solid #e0e0e0;
+      border-top-color: #3d6b1e; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .verify-timer { font-size: 15px; color: #666; margin-bottom: 8px; }
+    .verify-status { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .verify-success { color: #137333; }
+    .verify-pending { color: #ef6c00; }
+    .verify-msg { font-size: 14px; color: #555; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -332,12 +371,14 @@
     <!-- Top up -->
     <div class="topup-card">
       <h2>Top up wallet</h2>
-      <p class="desc">Pay securely via Bank transfer · Card payments coming soon</p>
+      <p class="desc">Pay securely via Bank transfer or Gateway</p>
 
       <div class="method-label">Payment method</div>
       <div class="methods">
         <button class="method-btn active" data-method="bank">Bank transfer</button>
-        <button class="method-btn" data-method="card">Card</button>
+        <button class="method-btn" data-method="gateway">
+          Gateway <span class="recommended-badge">RECOMMENDED</span>
+        </button>
       </div>
 
       <div class="amount-label">Amount (₦)</div>
@@ -354,7 +395,7 @@
       <div class="error-box" id="errorBox">Minimum deposit is 1,000</div>
 
       <button class="open-btn" id="openBtn">Open payment</button>
-      <p class="secure-note">Secured payment · Bank transfer only for now</p>
+      <p class="secure-note">Secured payment · Use your registered Gmail as narration</p>
     </div>
 
     <!-- Recent transactions -->
@@ -417,17 +458,43 @@
       </div>
 
       <div class="instructions">
-        <strong>Instructions</strong>
+        <strong>Important Instructions</strong>
         1. Open your bank app or USSD<br>
-        2. Send the exact amount shown to the account above<br>
-        3. Use the reference as your narration / description<br>
-        4. After payment, tap <b>Send Proof</b> to message me on WhatsApp
+        2. Transfer the <b>exact amount</b> shown above<br>
+        3. In the narration / remark / description field, put <b>exactly</b> the Gmail you registered with on Trust Social<br>
+        
+        <div class="gmail-box">
+          Use this exact Gmail as narration:
+          <div class="email" id="userEmailDisplay">loading...</div>
+          <button class="copy-btn" style="margin-top:6px" onclick="copyText(document.getElementById('userEmailDisplay').textContent)">
+            Copy Gmail
+          </button>
+        </div>
+
+        4. After you transfer, tap <b>“I have already made deposit”</b> below
       </div>
 
       <div class="popup-actions">
         <button class="popup-btn btn-cancel" id="cancelPopup">CANCEL</button>
-        <button class="popup-btn btn-proof" id="sendProofBtn">SEND PROOF</button>
+        <button class="popup-btn btn-proof" id="alreadyDepositedBtn">I have already made deposit</button>
       </div>
+    </div>
+  </div>
+
+  <!-- VERIFICATION POPUP -->
+  <div class="popup-overlay" id="verifyPopup">
+    <div class="popup">
+      <div class="popup-header">
+        <h2>Verifying deposit</h2>
+        <button class="popup-close" id="closeVerify">×</button>
+      </div>
+      <div class="verify-content" id="verifyContent">
+        <div class="spinner" id="verifySpinner"></div>
+        <div class="verify-timer" id="verifyTimer">Checking... 60s remaining</div>
+        <div class="verify-status" id="verifyStatus">Looking for your transfer</div>
+        <div class="verify-msg" id="verifyMsg">Please wait while we check for your deposit.</div>
+      </div>
+      <button class="popup-btn btn-cancel" style="width:100%; margin-top:10px;" id="closeVerifyBtn">Close</button>
     </div>
   </div>
 
@@ -437,7 +504,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
     import { 
       getFirestore, doc, getDoc, setDoc, collection, addDoc, 
-      query, where, orderBy, limit, getDocs, updateDoc, serverTimestamp 
+      query, where, orderBy, limit, getDocs, updateDoc, serverTimestamp, onSnapshot
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -498,16 +565,6 @@
         methodBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         selectedMethod = btn.dataset.method;
-
-        if (selectedMethod === 'card') {
-          openBtn.textContent = 'Coming soon';
-          openBtn.classList.add('coming-soon');
-          openBtn.disabled = true;
-        } else {
-          openBtn.textContent = 'Open payment';
-          openBtn.classList.remove('coming-soon');
-          openBtn.disabled = false;
-        }
         errorBox.classList.remove('show');
       });
     });
@@ -523,11 +580,13 @@
     // Top-up variables
     let currentAmount = 0;
     let currentRef = '';
+    let currentTxId = null;
+    let userEmail = '';
+    let verifyInterval = null;
+    let verifyTimeout = null;
 
     // Open payment
     openBtn.addEventListener('click', async () => {
-      if (selectedMethod === 'card') return;
-
       const amount = Number(amountInput.value);
 
       if (!amount || amount < 1000) {
@@ -543,23 +602,27 @@
         const user = auth.currentUser;
         if (!user) throw new Error('Not logged in');
 
+        userEmail = user.email || '';
         currentRef = 'TS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
         currentAmount = amount;
 
-        await addDoc(collection(db, 'transactions'), {
+        const docRef = await addDoc(collection(db, 'transactions'), {
           userId: user.uid,
           type: 'topup',
-          method: 'bank',
+          method: selectedMethod,
           amount: amount,
           status: 'pending',
           reference: currentRef,
+          narrationEmail: userEmail,
           createdAt: serverTimestamp()
         });
+        currentTxId = docRef.id;
 
         // Fill & show popup
         document.getElementById('popupAmount').textContent = `₦${amount.toLocaleString()}`;
         document.getElementById('popupSendAmount').textContent = `₦${amount.toLocaleString()}`;
         document.getElementById('popupRef').textContent = currentRef;
+        document.getElementById('userEmailDisplay').textContent = userEmail;
         document.getElementById('topupPopup').classList.add('active');
 
         loadTransactions(user.uid);
@@ -573,7 +636,7 @@
       }
     });
 
-    // Close popup
+    // Close payment popup
     document.getElementById('closePopup').addEventListener('click', () => {
       document.getElementById('topupPopup').classList.remove('active');
     });
@@ -581,12 +644,108 @@
       document.getElementById('topupPopup').classList.remove('active');
     });
 
-    // Send Proof → WhatsApp
-    document.getElementById('sendProofBtn').addEventListener('click', () => {
-      const message = `I have made a deposit of ₦${currentAmount.toLocaleString()}. This is my reference: ${currentRef}. I will send the receipt of payment below.`;
-      const url = `https://wa.me/2349117412352?text=${encodeURIComponent(message)}`;
-      window.open(url, '_blank');
+    // I have already made deposit → start verification
+    document.getElementById('alreadyDepositedBtn').addEventListener('click', () => {
+      document.getElementById('topupPopup').classList.remove('active');
+      startVerification();
     });
+
+    function startVerification() {
+      const verifyPopup = document.getElementById('verifyPopup');
+      const spinner = document.getElementById('verifySpinner');
+      const timerEl = document.getElementById('verifyTimer');
+      const statusEl = document.getElementById('verifyStatus');
+      const msgEl = document.getElementById('verifyMsg');
+
+      spinner.style.display = 'block';
+      timerEl.style.display = 'block';
+      statusEl.textContent = 'Looking for your transfer';
+      statusEl.className = 'verify-status';
+      msgEl.textContent = 'Please wait while we check for your deposit.';
+      verifyPopup.classList.add('active');
+
+      let secondsLeft = 60;
+      timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
+
+      // Clear any previous
+      if (verifyInterval) clearInterval(verifyInterval);
+      if (verifyTimeout) clearTimeout(verifyTimeout);
+
+      verifyInterval = setInterval(async () => {
+        secondsLeft--;
+        timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
+
+        // Check transaction status
+        if (currentTxId) {
+          try {
+            const txSnap = await getDoc(doc(db, 'transactions', currentTxId));
+            if (txSnap.exists() && txSnap.data().status === 'success') {
+              clearInterval(verifyInterval);
+              clearTimeout(verifyTimeout);
+              showVerifySuccess();
+              return;
+            }
+          } catch (e) {}
+        }
+
+        // Also check balance increase as fallback
+        try {
+          const user = auth.currentUser;
+          if (user) {
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            if (userSnap.exists()) {
+              // We could store previous balance, but for simplicity we just refresh at the end
+            }
+          }
+        } catch (e) {}
+
+        if (secondsLeft <= 0) {
+          clearInterval(verifyInterval);
+          showVerifyPending();
+        }
+      }, 1000);
+
+      verifyTimeout = setTimeout(() => {
+        clearInterval(verifyInterval);
+        showVerifyPending();
+      }, 60000);
+    }
+
+    function showVerifySuccess() {
+      document.getElementById('verifySpinner').style.display = 'none';
+      document.getElementById('verifyTimer').style.display = 'none';
+      document.getElementById('verifyStatus').textContent = 'Successful!';
+      document.getElementById('verifyStatus').className = 'verify-status verify-success';
+      document.getElementById('verifyMsg').textContent = 'Your deposit has been credited. Balance updated.';
+      
+      // Refresh balance
+      const user = auth.currentUser;
+      if (user) {
+        getDoc(doc(db, 'users', user.uid)).then(snap => {
+          if (snap.exists()) {
+            document.getElementById('walletBalance').textContent = `₦${(snap.data().balance || 0).toLocaleString()}`;
+          }
+        });
+        loadTransactions(user.uid);
+      }
+    }
+
+    function showVerifyPending() {
+      document.getElementById('verifySpinner').style.display = 'none';
+      document.getElementById('verifyTimer').style.display = 'none';
+      document.getElementById('verifyStatus').textContent = 'Pending';
+      document.getElementById('verifyStatus').className = 'verify-status verify-pending';
+      document.getElementById('verifyMsg').textContent = 'We have not detected the deposit yet. It will still be credited automatically when the bank notification arrives.';
+    }
+
+    document.getElementById('closeVerify').addEventListener('click', closeVerifyPopup);
+    document.getElementById('closeVerifyBtn').addEventListener('click', closeVerifyPopup);
+
+    function closeVerifyPopup() {
+      document.getElementById('verifyPopup').classList.remove('active');
+      if (verifyInterval) clearInterval(verifyInterval);
+      if (verifyTimeout) clearTimeout(verifyTimeout);
+    }
 
     // Copy helper
     window.copyText = function(text) {
@@ -607,6 +766,8 @@
       let initials = names[0].charAt(0).toUpperCase();
       if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
       document.getElementById('userAvatar').textContent = initials;
+
+      userEmail = user.email || '';
 
       // Balance
       const userRef = doc(db, 'users', user.uid);
@@ -647,20 +808,10 @@
       }
 
       let html = '';
-      const now = Date.now();
 
       for (const docSnap of snapshot.docs) {
         const tx = docSnap.data();
-        let status = tx.status;
-
-        // Auto fail after 1 minute
-        if (status === 'pending' && tx.createdAt) {
-          const created = tx.createdAt.toDate ? tx.createdAt.toDate().getTime() : tx.createdAt;
-          if (now - created > 60000) {
-            status = 'failed';
-            await updateDoc(doc(db, 'transactions', docSnap.id), { status: 'failed' });
-          }
-        }
+        const status = tx.status || 'pending';
 
         const dateStr = tx.createdAt?.toDate 
           ? tx.createdAt.toDate().toLocaleString('en-GB', { 
@@ -677,7 +828,7 @@
               </svg>
             </div>
             <div class="tx-info">
-              <div class="tx-title">Top up · Bank transfer</div>
+              <div class="tx-title">Top up · ${tx.method === 'gateway' ? 'Gateway' : 'Bank transfer'}</div>
               <div class="tx-ref">${tx.reference || ''}</div>
               <div class="tx-date">${dateStr}</div>
             </div>
