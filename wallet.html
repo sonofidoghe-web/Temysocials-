@@ -135,7 +135,7 @@
       border: none; border-radius: 12px; font-size: 16px; font-weight: 500;
       cursor: pointer;
     }
-    .open-btn:disabled { opacity: 0.7; cursor: not-allowed; }
+    .open-btn:disabled { opacity: 0.55; cursor: not-allowed; }
 
     .secure-note { font-size: 13px; color: #888; text-align: center; margin-top: 14px; line-height: 1.4; }
 
@@ -218,21 +218,6 @@
       margin-bottom: 20px; font-size: 14px; color: #444; line-height: 1.55;
     }
     .instructions strong { display: block; margin-bottom: 6px; }
-    .gmail-box {
-      background: #fff8e1;
-      border: 1px solid #ffe082;
-      border-radius: 10px;
-      padding: 12px;
-      margin: 12px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-    .gmail-box .email {
-      font-weight: 700;
-      color: #3d6b1e;
-      word-break: break-all;
-      margin-top: 4px;
-    }
     .popup-actions { display: flex; gap: 10px; }
     .popup-btn {
       flex: 1; padding: 14px; border-radius: 12px; font-size: 15px;
@@ -392,10 +377,18 @@
         <button class="quick-btn" data-amount="10000">₦10,000</button>
       </div>
 
+      <!-- NEW: Account Name field -->
+      <div class="amount-label" style="margin-top: 8px;">Account Name</div>
+      <input type="text" class="amount-input" id="accountNameInput" placeholder="Enter the full name on your bank account" autocomplete="off">
+      <div class="min-note">
+        Enter the full account name you will use to make this deposit.<br>
+        Make sure the name matches the name on your bank account.
+      </div>
+
       <div class="error-box" id="errorBox">Minimum deposit is 1,000</div>
 
-      <button class="open-btn" id="openBtn">Open payment</button>
-      <p class="secure-note">Secured payment · Use your registered Gmail as narration</p>
+      <button class="open-btn" id="openBtn" disabled>Open payment</button>
+      <p class="secure-note">Secured payment · Account name must match the sender name on the receipt</p>
     </div>
 
     <!-- Recent transactions -->
@@ -408,7 +401,7 @@
     </div>
   </div>
 
-  <!-- TOP-UP POPUP -->
+  <!-- TOP-UP POPUP (same as before) -->
   <div class="popup-overlay" id="topupPopup">
     <div class="popup">
       <div class="popup-header">
@@ -459,19 +452,9 @@
 
       <div class="instructions">
         <strong>Important Instructions</strong>
-        1. Open your bank app or USSD<br>
-        2. Transfer the <b>exact amount</b> shown above<br>
-        3. In the narration / remark / description field, put <b>exactly</b> the Gmail you registered with on Trust Social<br>
-        
-        <div class="gmail-box">
-          Use this exact Gmail as narration:
-          <div class="email" id="userEmailDisplay">loading...</div>
-          <button class="copy-btn" style="margin-top:6px" onclick="copyText(document.getElementById('userEmailDisplay').textContent)">
-            Copy Gmail
-          </button>
-        </div>
-
-        4. After you transfer, tap <b>“I have already made deposit”</b> below
+        1. Transfer the exact amount shown above<br>
+        2. Use the account name you entered earlier<br>
+        3. After transferring, tap <b>“I have already made deposit”</b>
       </div>
 
       <div class="popup-actions">
@@ -504,7 +487,7 @@
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
     import { 
       getFirestore, doc, getDoc, setDoc, collection, addDoc, 
-      query, where, orderBy, limit, getDocs, updateDoc, serverTimestamp, onSnapshot
+      query, where, orderBy, limit, getDocs, updateDoc, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -559,13 +542,14 @@
     const openBtn = document.getElementById('openBtn');
     const errorBox = document.getElementById('errorBox');
     const amountInput = document.getElementById('amountInput');
+    const accountNameInput = document.getElementById('accountNameInput');
 
     methodBtns.forEach(btn => {
       btn.addEventListener('click', () => {
         methodBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
         selectedMethod = btn.dataset.method;
-        errorBox.classList.remove('show');
+        checkFormValidity();
       });
     });
 
@@ -573,28 +557,51 @@
     document.querySelectorAll('.quick-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         amountInput.value = btn.dataset.amount;
-        errorBox.classList.remove('show');
+        checkFormValidity();
       });
     });
+
+    // Live validation
+    amountInput.addEventListener('input', checkFormValidity);
+    accountNameInput.addEventListener('input', checkFormValidity);
+
+    function checkFormValidity() {
+      const amount = Number(amountInput.value);
+      const accountName = accountNameInput.value.trim();
+
+      if (amount >= 1000 && accountName.length >= 3) {
+        openBtn.disabled = false;
+        errorBox.classList.remove('show');
+      } else {
+        openBtn.disabled = true;
+      }
+    }
 
     // Top-up variables
     let currentAmount = 0;
     let currentRef = '';
     let currentTxId = null;
-    let userEmail = '';
     let verifyInterval = null;
     let verifyTimeout = null;
 
     // Open payment
     openBtn.addEventListener('click', async () => {
       const amount = Number(amountInput.value);
+      const accountName = accountNameInput.value.trim();
 
       if (!amount || amount < 1000) {
+        errorBox.textContent = 'Minimum deposit is 1,000';
         errorBox.classList.add('show');
         return;
       }
-      errorBox.classList.remove('show');
 
+      if (!accountName || accountName.length < 3) {
+        errorBox.textContent = 'Please enter your account name before continuing.';
+        errorBox.classList.add('show');
+        return;
+      }
+
+      errorBox.classList.remove('show');
       openBtn.textContent = 'Opening payment…';
       openBtn.disabled = true;
 
@@ -602,9 +609,11 @@
         const user = auth.currentUser;
         if (!user) throw new Error('Not logged in');
 
-        userEmail = user.email || '';
         currentRef = 'TS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
         currentAmount = amount;
+
+        // Normalize account name (for later matching)
+        const normalizedName = accountName.toLowerCase().replace(/\s+/g, ' ').trim();
 
         const docRef = await addDoc(collection(db, 'transactions'), {
           userId: user.uid,
@@ -613,7 +622,8 @@
           amount: amount,
           status: 'pending',
           reference: currentRef,
-          narrationEmail: userEmail,
+          accountName: accountName,               // original
+          accountNameNormalized: normalizedName,  // for matching
           createdAt: serverTimestamp()
         });
         currentTxId = docRef.id;
@@ -622,7 +632,6 @@
         document.getElementById('popupAmount').textContent = `₦${amount.toLocaleString()}`;
         document.getElementById('popupSendAmount').textContent = `₦${amount.toLocaleString()}`;
         document.getElementById('popupRef').textContent = currentRef;
-        document.getElementById('userEmailDisplay').textContent = userEmail;
         document.getElementById('topupPopup').classList.add('active');
 
         loadTransactions(user.uid);
@@ -632,7 +641,7 @@
         alert('Something went wrong. Please try again.');
       } finally {
         openBtn.textContent = 'Open payment';
-        openBtn.disabled = false;
+        checkFormValidity();
       }
     });
 
@@ -644,7 +653,7 @@
       document.getElementById('topupPopup').classList.remove('active');
     });
 
-    // I have already made deposit → start verification
+    // I have already made deposit
     document.getElementById('alreadyDepositedBtn').addEventListener('click', () => {
       document.getElementById('topupPopup').classList.remove('active');
       startVerification();
@@ -667,7 +676,6 @@
       let secondsLeft = 60;
       timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
 
-      // Clear any previous
       if (verifyInterval) clearInterval(verifyInterval);
       if (verifyTimeout) clearTimeout(verifyTimeout);
 
@@ -675,7 +683,6 @@
         secondsLeft--;
         timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
 
-        // Check transaction status
         if (currentTxId) {
           try {
             const txSnap = await getDoc(doc(db, 'transactions', currentTxId));
@@ -687,17 +694,6 @@
             }
           } catch (e) {}
         }
-
-        // Also check balance increase as fallback
-        try {
-          const user = auth.currentUser;
-          if (user) {
-            const userSnap = await getDoc(doc(db, 'users', user.uid));
-            if (userSnap.exists()) {
-              // We could store previous balance, but for simplicity we just refresh at the end
-            }
-          }
-        } catch (e) {}
 
         if (secondsLeft <= 0) {
           clearInterval(verifyInterval);
@@ -718,7 +714,6 @@
       document.getElementById('verifyStatus').className = 'verify-status verify-success';
       document.getElementById('verifyMsg').textContent = 'Your deposit has been credited. Balance updated.';
       
-      // Refresh balance
       const user = auth.currentUser;
       if (user) {
         getDoc(doc(db, 'users', user.uid)).then(snap => {
@@ -747,14 +742,12 @@
       if (verifyTimeout) clearTimeout(verifyTimeout);
     }
 
-    // Copy helper
     window.copyText = function(text) {
       navigator.clipboard.writeText(text).then(() => {
         alert('Copied!');
       });
     };
 
-    // Load user data + transactions
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -767,9 +760,6 @@
       if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
       document.getElementById('userAvatar').textContent = initials;
 
-      userEmail = user.email || '';
-
-      // Balance
       const userRef = doc(db, 'users', user.uid);
       const userSnap = await getDoc(userRef);
       let balance = 0;
