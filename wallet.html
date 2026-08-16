@@ -172,6 +172,7 @@
     .status-pending { background: #fff3e0; color: #ef6c00; }
     .status-failed { background: #fce8e6; color: #c5221f; }
     .status-success { background: #e6f4ea; color: #137333; }
+    .status-expired { background: #fce8e6; color: #c5221f; }
     .empty-tx { padding: 40px 20px; text-align: center; color: #888; font-size: 14px; }
 
     /* ===== POPUPS ===== */
@@ -225,6 +226,15 @@
     }
     .btn-cancel { background: #f0f0f0; color: #333; }
     .btn-proof { background: #3d6b1e; color: white; }
+
+    /* Session timer (added, minimal visual impact) */
+    .session-timer {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #c5221f;
+      margin-bottom: 14px;
+    }
 
     /* Verification popup */
     .verify-content { text-align: center; padding: 10px 0 20px; }
@@ -377,7 +387,7 @@
         <button class="quick-btn" data-amount="10000">₦10,000</button>
       </div>
 
-      <!-- NEW: Account Name field -->
+      <!-- Account Name field -->
       <div class="amount-label" style="margin-top: 8px;">Account Name</div>
       <input type="text" class="amount-input" id="accountNameInput" placeholder="Enter the full name on your bank account" autocomplete="off">
       <div class="min-note">
@@ -401,7 +411,7 @@
     </div>
   </div>
 
-  <!-- TOP-UP POPUP (same as before) -->
+  <!-- TOP-UP POPUP (visual design unchanged) -->
   <div class="popup-overlay" id="topupPopup">
     <div class="popup">
       <div class="popup-header">
@@ -450,10 +460,15 @@
         <div class="send-amount" id="popupSendAmount">₦0</div>
       </div>
 
+      <!-- Session timer (new) -->
+      <div class="session-timer" id="sessionTimer">
+        Session expires in <span id="paymentTimerValue">60</span> seconds
+      </div>
+
       <div class="instructions">
         <strong>Important Instructions</strong>
         1. Transfer the exact amount shown above<br>
-        2. Use the account name you entered earlier<br>
+        2. Put the Reference code in the transfer narration / remark<br>
         3. After transferring, tap <b>“I have already made deposit”</b>
       </div>
 
@@ -584,6 +599,55 @@
     let verifyInterval = null;
     let verifyTimeout = null;
 
+    // Payment session timer variables
+    let paymentTimerInterval = null;
+    let paymentSecondsLeft = 60;
+
+    function updatePaymentTimerDisplay() {
+      const el = document.getElementById('paymentTimerValue');
+      if (el) el.textContent = paymentSecondsLeft;
+    }
+
+    function clearPaymentTimer() {
+      if (paymentTimerInterval) {
+        clearInterval(paymentTimerInterval);
+        paymentTimerInterval = null;
+      }
+    }
+
+    async function expireCurrentSession() {
+      if (!currentTxId) return;
+      try {
+        await updateDoc(doc(db, 'transactions', currentTxId), {
+          status: 'expired',
+          expiredAt: serverTimestamp()
+        });
+        const user = auth.currentUser;
+        if (user) loadTransactions(user.uid);
+      } catch (e) {
+        console.error('Failed to expire session:', e);
+      }
+      currentTxId = null;
+    }
+
+    function startPaymentSessionTimer() {
+      clearPaymentTimer();
+      paymentSecondsLeft = 60;
+      updatePaymentTimerDisplay();
+
+      paymentTimerInterval = setInterval(() => {
+        paymentSecondsLeft--;
+        updatePaymentTimerDisplay();
+
+        if (paymentSecondsLeft <= 0) {
+          clearPaymentTimer();
+          // Auto-close and expire
+          document.getElementById('topupPopup').classList.remove('active');
+          expireCurrentSession();
+        }
+      }, 1000);
+    }
+
     // Open payment
     openBtn.addEventListener('click', async () => {
       const amount = Number(amountInput.value);
@@ -609,10 +673,11 @@
         const user = auth.currentUser;
         if (!user) throw new Error('Not logged in');
 
+        // Always create a brand-new unique reference
         currentRef = 'TS-' + Date.now().toString(36).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
         currentAmount = amount;
 
-        // Normalize account name (for later matching)
+        // Normalize account name (for later matching if needed)
         const normalizedName = accountName.toLowerCase().replace(/\s+/g, ' ').trim();
 
         const docRef = await addDoc(collection(db, 'transactions'), {
@@ -622,8 +687,8 @@
           amount: amount,
           status: 'pending',
           reference: currentRef,
-          accountName: accountName,               // original
-          accountNameNormalized: normalizedName,  // for matching
+          accountName: accountName,
+          accountNameNormalized: normalizedName,
           createdAt: serverTimestamp()
         });
         currentTxId = docRef.id;
@@ -633,6 +698,9 @@
         document.getElementById('popupSendAmount').textContent = `₦${amount.toLocaleString()}`;
         document.getElementById('popupRef').textContent = currentRef;
         document.getElementById('topupPopup').classList.add('active');
+
+        // Start 60-second session timer immediately
+        startPaymentSessionTimer();
 
         loadTransactions(user.uid);
 
@@ -645,17 +713,21 @@
       }
     });
 
-    // Close payment popup
-    document.getElementById('closePopup').addEventListener('click', () => {
+    // Close / Cancel payment popup → expire the session
+    function closeAndExpirePaymentPopup() {
       document.getElementById('topupPopup').classList.remove('active');
-    });
-    document.getElementById('cancelPopup').addEventListener('click', () => {
-      document.getElementById('topupPopup').classList.remove('active');
-    });
+      clearPaymentTimer();
+      expireCurrentSession();
+    }
 
-    // I have already made deposit
+    document.getElementById('closePopup').addEventListener('click', closeAndExpirePaymentPopup);
+    document.getElementById('cancelPopup').addEventListener('click', closeAndExpirePaymentPopup);
+
+    // I have already made deposit → stop timer but KEEP session pending
     document.getElementById('alreadyDepositedBtn').addEventListener('click', () => {
+      clearPaymentTimer();                       // stop countdown
       document.getElementById('topupPopup').classList.remove('active');
+      // Do NOT call expireCurrentSession() — leave status = 'pending'
       startVerification();
     });
 
