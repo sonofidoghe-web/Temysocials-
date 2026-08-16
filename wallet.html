@@ -21,8 +21,6 @@
     }
     .menu-toggle { background: none; border: none; cursor: pointer; padding: 4px; color: #333; }
     .header-right { display: flex; align-items: center; gap: 12px; }
-    .badge-no { background: #f0f0f0; color: #555; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
-    .icon-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #444; }
     .avatar {
       width: 36px; height: 36px; background: #3d6b1e; color: white;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -53,7 +51,6 @@
     }
     .menu-item:hover { background: #f5f5f5; }
     .menu-item.active { background: #f0f7eb; color: #3d6b1e; }
-    .menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
     .signout-item { color: #d32f2f !important; margin-top: 10px; }
     .container { max-width: 480px; margin: 0 auto; padding: 24px 16px; }
     h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
@@ -86,7 +83,7 @@
     .error-box {
       width: 100%; padding: 14px; border-radius: 12px; font-size: 15px;
       margin-bottom: 14px; display: none; text-align: center;
-      background: #fce8e6; color: #c5221f; border: 1px solid #f5c6cb;
+      background: #fce8e6; color: #c5221f;
     }
     .error-box.show { display: block; }
     .open-btn {
@@ -126,7 +123,7 @@
     .status-expired { background: #fce8e6; color: #c5221f; }
     .empty-tx { padding: 40px 20px; text-align: center; color: #888; font-size: 14px; }
 
-    /* Popup */
+    /* POPUPS */
     .popup-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
       display: flex; align-items: center; justify-content: center;
@@ -180,6 +177,20 @@
     }
     .btn-cancel { background: #f0f0f0; color: #333; }
     .btn-proof { background: #3d6b1e; color: white; }
+
+    /* Verification popup */
+    .verify-content { text-align: center; padding: 10px 0 20px; }
+    .spinner {
+      width: 48px; height: 48px; border: 4px solid #e0e0e0;
+      border-top-color: #3d6b1e; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto 20px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .verify-timer { font-size: 15px; color: #666; margin-bottom: 8px; }
+    .verify-status { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+    .verify-success { color: #137333; }
+    .verify-pending { color: #ef6c00; }
+    .verify-msg { font-size: 14px; color: #555; line-height: 1.5; }
   </style>
 </head>
 <body>
@@ -265,18 +276,15 @@
       <div class="transfer-box">
         <div class="bank-label">Bank</div>
         <div class="bank-name">PalmPay</div>
-
         <div class="acc-label">Account Number</div>
         <div class="acc-number">9117412352</div>
-
         <div class="acc-label">Account Name</div>
         <div class="acc-name">Ogaga blessing Idoghe</div>
-
         <div class="send-label">Transfer Exactly This Amount</div>
         <div class="send-amount" id="popupSendAmount">₦0.00</div>
       </div>
 
-      <div class="session-timer" id="sessionTimer">
+      <div class="session-timer">
         Session expires in <span id="paymentTimerValue">60</span> seconds
       </div>
 
@@ -291,6 +299,23 @@
         <button class="popup-btn btn-cancel" id="cancelPopup">CANCEL</button>
         <button class="popup-btn btn-proof" id="alreadyDepositedBtn">I have already made deposit</button>
       </div>
+    </div>
+  </div>
+
+  <!-- VERIFICATION POPUP (60 seconds countdown) -->
+  <div class="popup-overlay" id="verifyPopup">
+    <div class="popup">
+      <div class="popup-header">
+        <h2>Verifying deposit</h2>
+        <button class="popup-close" id="closeVerify">×</button>
+      </div>
+      <div class="verify-content">
+        <div class="spinner" id="verifySpinner"></div>
+        <div class="verify-timer" id="verifyTimer">Checking... 60s remaining</div>
+        <div class="verify-status" id="verifyStatus">Looking for your transfer</div>
+        <div class="verify-msg" id="verifyMsg">Please wait while we check for your deposit.</div>
+      </div>
+      <button class="popup-btn btn-cancel" style="width:100%; margin-top:10px;" id="closeVerifyBtn">Close</button>
     </div>
   </div>
 
@@ -336,7 +361,6 @@
 
     const openBtn = document.getElementById('openBtn');
     const amountInput = document.getElementById('amountInput');
-    const errorBox = document.getElementById('errorBox');
 
     document.querySelectorAll('.quick-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -344,27 +368,25 @@
         checkFormValidity();
       });
     });
-
     amountInput.addEventListener('input', checkFormValidity);
 
     function checkFormValidity() {
-      const amount = Number(amountInput.value);
-      openBtn.disabled = !(amount >= 1000);
+      openBtn.disabled = !(Number(amountInput.value) >= 1000);
     }
 
     let currentTxId = null;
     let paymentTimerInterval = null;
-    let paymentSecondsLeft = 60;
+    let verifyInterval = null;
 
     function startPaymentTimer() {
       clearInterval(paymentTimerInterval);
-      paymentSecondsLeft = 60;
-      document.getElementById('paymentTimerValue').textContent = paymentSecondsLeft;
+      let seconds = 60;
+      document.getElementById('paymentTimerValue').textContent = seconds;
 
       paymentTimerInterval = setInterval(() => {
-        paymentSecondsLeft--;
-        document.getElementById('paymentTimerValue').textContent = paymentSecondsLeft;
-        if (paymentSecondsLeft <= 0) {
+        seconds--;
+        document.getElementById('paymentTimerValue').textContent = seconds;
+        if (seconds <= 0) {
           clearInterval(paymentTimerInterval);
           closeAndExpire();
         }
@@ -391,6 +413,7 @@
     document.getElementById('closePopup').addEventListener('click', closeAndExpire);
     document.getElementById('cancelPopup').addEventListener('click', closeAndExpire);
 
+    // Open payment
     openBtn.addEventListener('click', async () => {
       const requestedAmount = Number(amountInput.value);
       if (requestedAmount < 1000) return;
@@ -402,44 +425,90 @@
         const user = auth.currentUser;
         if (!user) throw new Error('Not logged in');
 
-        // Generate unique payment amount (requested + 0.01 to 15.00)
-        const offset = (Math.floor(Math.random() * 1500) + 1) / 100; // 0.01 → 15.00
+        // Unique amount (requested + 0.01 to 15.00)
+        const offset = (Math.floor(Math.random() * 1500) + 1) / 100;
         const paymentAmount = Number((requestedAmount + offset).toFixed(2));
 
         const docRef = await addDoc(collection(db, 'transactions'), {
           userId: user.uid,
           type: 'topup',
           method: 'bank',
-          amount: requestedAmount,          // what user will receive
-          paymentAmount: paymentAmount,     // what user must transfer
+          amount: requestedAmount,
+          paymentAmount: paymentAmount,
           status: 'pending',
           createdAt: serverTimestamp()
         });
         currentTxId = docRef.id;
 
-        // Show popup
         document.getElementById('popupReceiveAmount').textContent = `₦${requestedAmount.toLocaleString()}`;
         document.getElementById('popupSendAmount').textContent = `₦${paymentAmount.toFixed(2)}`;
         document.getElementById('topupPopup').classList.add('active');
         startPaymentTimer();
-
         loadTransactions(user.uid);
 
       } catch (err) {
         console.error(err);
-        alert('Something went wrong. Please try again.');
+        alert('Something went wrong');
       } finally {
         openBtn.textContent = 'Open payment';
         checkFormValidity();
       }
     });
 
+    // ===== VERIFICATION POPUP (60 seconds) =====
     document.getElementById('alreadyDepositedBtn').addEventListener('click', () => {
       clearInterval(paymentTimerInterval);
       document.getElementById('topupPopup').classList.remove('active');
-      alert('Thank you! Your deposit is being verified automatically.');
+      startVerification();
     });
 
+    function startVerification() {
+      const verifyPopup = document.getElementById('verifyPopup');
+      const spinner = document.getElementById('verifySpinner');
+      const timerEl = document.getElementById('verifyTimer');
+      const statusEl = document.getElementById('verifyStatus');
+      const msgEl = document.getElementById('verifyMsg');
+
+      spinner.style.display = 'block';
+      timerEl.style.display = 'block';
+      statusEl.textContent = 'Looking for your transfer';
+      statusEl.className = 'verify-status';
+      msgEl.textContent = 'Please wait while we check for your deposit.';
+      verifyPopup.classList.add('active');
+
+      let secondsLeft = 60;
+      timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
+
+      if (verifyInterval) clearInterval(verifyInterval);
+
+      verifyInterval = setInterval(() => {
+        secondsLeft--;
+        timerEl.textContent = `Checking... ${secondsLeft}s remaining`;
+
+        if (secondsLeft <= 0) {
+          clearInterval(verifyInterval);
+          showVerifyPending();
+        }
+      }, 1000);
+    }
+
+    function showVerifyPending() {
+      document.getElementById('verifySpinner').style.display = 'none';
+      document.getElementById('verifyTimer').style.display = 'none';
+      document.getElementById('verifyStatus').textContent = 'Pending';
+      document.getElementById('verifyStatus').className = 'verify-status verify-pending';
+      document.getElementById('verifyMsg').textContent = 'We have not detected the deposit yet. It will still be credited automatically when the bank notification arrives.';
+    }
+
+    document.getElementById('closeVerify').addEventListener('click', closeVerifyPopup);
+    document.getElementById('closeVerifyBtn').addEventListener('click', closeVerifyPopup);
+
+    function closeVerifyPopup() {
+      document.getElementById('verifyPopup').classList.remove('active');
+      if (verifyInterval) clearInterval(verifyInterval);
+    }
+
+    // Auth & load
     onAuthStateChanged(auth, async (user) => {
       if (!user) {
         window.location.href = 'login.html';
@@ -458,12 +527,7 @@
       if (userSnap.exists()) {
         balance = userSnap.data().balance || 0;
       } else {
-        await setDoc(userRef, {
-          email: user.email,
-          displayName,
-          balance: 0,
-          createdAt: new Date()
-        });
+        await setDoc(userRef, { email: user.email, displayName, balance: 0, createdAt: new Date() });
       }
       document.getElementById('walletBalance').textContent = `₦${balance.toLocaleString()}`;
       loadTransactions(user.uid);
@@ -488,9 +552,7 @@
       snapshot.forEach(docSnap => {
         const tx = docSnap.data();
         const status = tx.status || 'pending';
-        const dateStr = tx.createdAt?.toDate 
-          ? tx.createdAt.toDate().toLocaleString('en-GB')
-          : '';
+        const dateStr = tx.createdAt?.toDate ? tx.createdAt.toDate().toLocaleString('en-GB') : '';
 
         html += `
           <div class="tx-item">
