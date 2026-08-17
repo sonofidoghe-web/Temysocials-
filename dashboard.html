@@ -701,7 +701,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
@@ -796,12 +796,32 @@
       }
 
       document.getElementById('walletBalance').textContent = `₦${userData.balance.toLocaleString()}`;
-      document.getElementById('totalPurchases').textContent = userData.totalPurchases;
-      
-      const totalInv = (userData.logs || 0) + (userData.tools || 0);
-      document.getElementById('totalInventory').textContent = totalInv;
-      document.getElementById('inventoryBreakdown').textContent = 
-        `${userData.logs || 0} logs · ${userData.tools || 0} tools`;
+document.getElementById('totalPurchases').textContent = userData.totalPurchases;
+
+// Count real available products from the products collection
+try {
+  const productsSnap = await getDocs(
+    query(collection(db, 'products'), where('stock', '>', 0))
+  );
+
+  let logsCount = 0;
+  let toolsCount = 0;
+
+  productsSnap.forEach(doc => {
+    const data = doc.data();
+    if (data.category === 'logs') logsCount++;
+    else if (data.category === 'tools') toolsCount++;
+  });
+
+  const totalInv = logsCount + toolsCount;
+  document.getElementById('totalInventory').textContent = totalInv;
+  document.getElementById('inventoryBreakdown').textContent = 
+    `${logsCount} logs · ${toolsCount} tools`;
+} catch (err) {
+  console.error('Inventory count error:', err);
+  document.getElementById('totalInventory').textContent = 0;
+  document.getElementById('inventoryBreakdown').textContent = `0 logs · 0 tools`;
+}
     });
   </script>
 </body>
