@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SME Boosting - Temmy Social</title>
+  <title>SME Boosting - Trust Social</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -136,7 +136,7 @@
       cursor: not-allowed;
     }
 
-    /* ===== CHAT POPUP (same as SMS) ===== */
+    /* CHAT */
     .chat-overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
       display: flex; align-items: flex-end; justify-content: center;
@@ -148,8 +148,8 @@
       background: white;
       width: 100%;
       max-width: 420px;
-      height: 70vh;
-      max-height: 520px;
+      height: 75vh;
+      max-height: 580px;
       border-radius: 20px 20px 0 0;
       display: flex;
       flex-direction: column;
@@ -204,6 +204,32 @@
       color: white;
       align-self: flex-end;
       border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-area {
+      padding: 12px 16px;
+      background: white;
+      border-top: 1px solid #eee;
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input-area input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 25px;
+      font-size: 15px;
+      outline: none;
+    }
+    .chat-input-area button {
+      background: #3d6b1e;
+      color: white;
+      border: none;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
     }
 
     .typing {
@@ -302,14 +328,10 @@
     <p class="subtitle">Boost your social media presence</p>
 
     <div class="section-title">1. Choose Platform</div>
-    <div class="platforms-grid" id="platformsGrid">
-      <!-- Platforms will be added by JavaScript -->
-    </div>
+    <div class="platforms-grid" id="platformsGrid"></div>
 
     <div class="section-title">2. Choose Service</div>
-    <div class="services-grid" id="servicesGrid">
-      <!-- Services will be added by JavaScript -->
-    </div>
+    <div class="services-grid" id="servicesGrid"></div>
 
     <button class="buy-btn" id="buyBtn" disabled>Select Platform & Service first</button>
   </div>
@@ -325,9 +347,14 @@
         </div>
       </div>
       <div class="chat-messages" id="chatMessages"></div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type here..." autocomplete="off">
+        <button id="sendBtn">➤</button>
+      </div>
     </div>
   </div>
-    <script type="module">
+
+  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
@@ -346,7 +373,21 @@
     const analytics = getAnalytics(app);
     const auth = getAuth(app);
 
-    // ========== DATA ==========
+    // ========== CONFIG ==========
+    const API_URL = "https://pdsboost-proxy.netlify.app/.netlify/functions/api";
+
+    // You will later map real Service IDs from PdsBoost here
+    // For now we use placeholder IDs (you must change them later)
+    const serviceMap = {
+      "Instagram_Followers": 1,
+      "Instagram_Likes": 2,
+      "TikTok_Followers": 3,
+      "TikTok_Likes": 4,
+      "YouTube_Views": 5,
+      "Facebook_Likes": 6
+      // Add more after you get the real list
+    };
+
     const platforms = [
       { name: "Instagram", icon: "📸" },
       { name: "Facebook", icon: "👤" },
@@ -367,6 +408,9 @@
 
     let selectedPlatform = null;
     let selectedService = null;
+    let chatStep = 0; // 0 = waiting link, 1 = waiting quantity
+    let userLink = "";
+    let userQuantity = "";
 
     // ========== SIDEBAR ==========
     const sidebar = document.getElementById('sidebar');
@@ -383,19 +427,17 @@
       document.body.style.overflow = '';
     });
 
-    // Header scroll
     window.addEventListener('scroll', () => {
       document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
     });
 
-    // Sign out
     document.getElementById('signOutBtn').addEventListener('click', async (e) => {
       e.preventDefault();
       await signOut(auth);
       window.location.href = 'login.html';
     });
 
-    // ========== RENDER PLATFORMS ==========
+    // ========== RENDER PLATFORMS & SERVICES ==========
     const platformsGrid = document.getElementById('platformsGrid');
     platforms.forEach(platform => {
       const card = document.createElement('div');
@@ -413,7 +455,6 @@
       platformsGrid.appendChild(card);
     });
 
-    // ========== RENDER SERVICES ==========
     const servicesGrid = document.getElementById('servicesGrid');
     services.forEach(service => {
       const card = document.createElement('div');
@@ -428,9 +469,7 @@
       servicesGrid.appendChild(card);
     });
 
-    // ========== BUY BUTTON ==========
     const buyBtn = document.getElementById('buyBtn');
-
     function updateBuyButton() {
       if (selectedPlatform && selectedService) {
         buyBtn.disabled = false;
@@ -441,52 +480,46 @@
       }
     }
 
-    buyBtn.addEventListener('click', () => {
-      if (!selectedPlatform || !selectedService) return;
-      startChatAnimation();
-    });
-
-    // ========== CHAT ANIMATION ==========
+    // ========== CHAT SYSTEM ==========
     const chatOverlay = document.getElementById('chatOverlay');
     const chatMessages = document.getElementById('chatMessages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
 
-    function startChatAnimation() {
+    buyBtn.addEventListener('click', () => {
+      if (!selectedPlatform || !selectedService) return;
+      startChat();
+    });
+
+    function startChat() {
       chatMessages.innerHTML = '';
+      chatStep = 0;
+      userLink = '';
+      userQuantity = '';
       chatOverlay.classList.add('active');
 
-      // Step 1: Typing
-      setTimeout(() => showTyping(), 400);
-
-      // Step 2: User message
       setTimeout(() => {
-        removeTyping();
-        addMessage(`Hey, I want to buy <b>${selectedService}</b> for <b>${selectedPlatform}</b>`, 'user');
-      }, 1600);
-
-      // Step 3: Typing
-      setTimeout(() => showTyping(), 2400);
-
-      // Step 4: Bot reply 1
-      setTimeout(() => {
-        removeTyping();
-        addMessage('Available, checking the best package for you.', 'bot');
-      }, 3600);
-
-      // Step 5: Typing
-      setTimeout(() => showTyping(), 4400);
-
-      // Step 6: Bot reply 2 + redirect
-      setTimeout(() => {
-        removeTyping();
-        addMessage('Hold on, redirecting to WhatsApp...', 'bot');
-
+        addBotMessage(`You selected <b>${selectedService}</b> for <b>${selectedPlatform}</b>.`);
         setTimeout(() => {
-          const message = `Hi, I want to buy ${selectedService} for ${selectedPlatform}.`;
-          const url = `https://wa.me/2349117412352?text=${encodeURIComponent(message)}`;
-          window.location.href = url;
-        }, 1500);
+          addBotMessage("Please send the <b>Link</b> of the account/post:");
+        }, 800);
+      }, 400);
+    }
 
-      }, 5600);
+    function addBotMessage(text) {
+      const msg = document.createElement('div');
+      msg.className = 'message bot';
+      msg.innerHTML = text;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addUserMessage(text) {
+      const msg = document.createElement('div');
+      msg.className = 'message user';
+      msg.textContent = text;
+      chatMessages.appendChild(msg);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
     function showTyping() {
@@ -499,16 +532,76 @@
     }
 
     function removeTyping() {
-      const typing = document.getElementById('typingIndicator');
-      if (typing) typing.remove();
+      const t = document.getElementById('typingIndicator');
+      if (t) t.remove();
     }
 
-    function addMessage(text, type) {
-      const msg = document.createElement('div');
-      msg.className = `message ${type}`;
-      msg.innerHTML = text;
-      chatMessages.appendChild(msg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+    sendBtn.addEventListener('click', handleUserInput);
+    chatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleUserInput();
+    });
+
+    function handleUserInput() {
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      addUserMessage(text);
+      chatInput.value = '';
+
+      if (chatStep === 0) {
+        // User sent the link
+        userLink = text;
+        chatStep = 1;
+        showTyping();
+        setTimeout(() => {
+          removeTyping();
+          addBotMessage("Great! Now send the <b>Quantity</b> you want:");
+        }, 900);
+      } 
+      else if (chatStep === 1) {
+        // User sent quantity
+        userQuantity = text;
+        chatStep = 2;
+        placeRealOrder();
+      }
+    }
+
+    async function placeRealOrder() {
+      showTyping();
+      addBotMessage("Placing your order, please wait...");
+
+      // Temporary: You must replace these with real Service IDs from PdsBoost
+      const key = `${selectedPlatform}_${selectedService}`;
+      const serviceId = serviceMap[key] || 1; // fallback
+
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "add",
+            service: serviceId,
+            link: userLink,
+            quantity: userQuantity
+          })
+        });
+
+        const data = await response.json();
+        removeTyping();
+
+        if (data.order) {
+          addBotMessage(`✅ Order placed successfully!<br><br>
+            <b>Order ID:</b> ${data.order}<br>
+            Platform: ${selectedPlatform}<br>
+            Service: ${selectedService}<br>
+            Quantity: ${userQuantity}`);
+        } else {
+          addBotMessage(`❌ Error: ${data.error || JSON.stringify(data)}`);
+        }
+      } catch (err) {
+        removeTyping();
+        addBotMessage("❌ Failed to place order. Please try again later.");
+      }
     }
 
     // ========== AUTH ==========
@@ -517,7 +610,6 @@
         window.location.href = 'login.html';
         return;
       }
-
       const displayName = user.displayName || user.email.split('@')[0];
       const names = displayName.trim().split(' ');
       let initials = names[0].charAt(0).toUpperCase();
