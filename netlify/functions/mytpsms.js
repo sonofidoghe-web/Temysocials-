@@ -2,59 +2,86 @@
 
 const API_BASE = "https://mytpsms.com/api/v1";
 
+const ALLOWED_PROVIDERS = ["global", "usa", "usa2"];
+
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Content-Type": "application/json"
+  "Access-Control-Allow-Headers":
+    "Content-Type, Authorization",
+  "Access-Control-Allow-Methods":
+    "GET, POST, OPTIONS",
+  "Content-Type":
+    "application/json"
 };
 
 
-// ==========================================
+// ======================================================
 // MAIN NETLIFY FUNCTION
-// ==========================================
+// ======================================================
 
 exports.handler = async (event) => {
 
-  // Handle browser CORS request
+  // ----------------------------------------------------
+  // CORS PREFLIGHT
+  // ----------------------------------------------------
+
   if (event.httpMethod === "OPTIONS") {
+
     return {
       statusCode: 204,
       headers: CORS_HEADERS,
       body: ""
     };
+
   }
 
 
-  // ==========================================
-  // CHECK API KEY
-  // ==========================================
+  // ----------------------------------------------------
+  // GET API KEY FROM NETLIFY ENVIRONMENT VARIABLES
+  // ----------------------------------------------------
 
-  const API_KEY = process.env.MYTPSMS_API_KEY;
+  const API_KEY =
+    process.env.MYTPSMS_API_KEY;
+
 
   if (!API_KEY) {
-    return response(500, {
-      error: "MYTPSMS API key is not configured on Netlify."
-    });
+
+    console.error(
+      "MYTPSMS_API_KEY is missing."
+    );
+
+    return jsonResponse(
+      500,
+      {
+        error:
+          "MYTPSMS API key is not configured on Netlify."
+      }
+    );
+
   }
 
 
   try {
 
-    // ==========================================
+    // ==================================================
     // GET REQUESTS
-    // ==========================================
+    // ==================================================
 
     if (event.httpMethod === "GET") {
 
-      const params = event.queryStringParameters || {};
+      const params =
+        event.queryStringParameters || {};
 
-      const action = params.action || "";
+      const action =
+        String(params.action || "")
+          .trim()
+          .toLowerCase();
 
 
-      // ----------------------------------------
+      // ==================================================
       // BALANCE
-      // ----------------------------------------
+      // GET ?action=balance
+      // ==================================================
 
       if (action === "balance") {
 
@@ -67,21 +94,28 @@ exports.handler = async (event) => {
       }
 
 
-      // ----------------------------------------
+      // ==================================================
       // COUNTRIES
-      // ----------------------------------------
+      // GET ?action=countries&provider=global
+      // ==================================================
 
       if (action === "countries") {
 
         const provider =
-          params.provider || "global";
+          String(
+            params.provider || "global"
+          ).trim();
 
 
-        if (!["global", "usa", "usa2"].includes(provider)) {
+        if (!ALLOWED_PROVIDERS.includes(provider)) {
 
-          return response(400, {
-            error: "Invalid provider."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Invalid provider."
+            }
+          );
 
         }
 
@@ -89,7 +123,7 @@ exports.handler = async (event) => {
         return await proxyGET(
           "/countries.php",
           {
-            provider: provider
+            provider
           },
           API_KEY
         );
@@ -97,33 +131,46 @@ exports.handler = async (event) => {
       }
 
 
-      // ----------------------------------------
+      // ==================================================
       // SERVICES
-      // ----------------------------------------
+      // GET ?action=services&provider=global&country=...
+      // ==================================================
 
       if (action === "services") {
 
         const provider =
-          params.provider || "global";
+          String(
+            params.provider || "global"
+          ).trim();
 
         const country =
-          params.country || "";
+          String(
+            params.country || ""
+          ).trim();
 
 
-        if (!["global", "usa", "usa2"].includes(provider)) {
+        if (!ALLOWED_PROVIDERS.includes(provider)) {
 
-          return response(400, {
-            error: "Invalid provider."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Invalid provider."
+            }
+          );
 
         }
 
 
         if (!country) {
 
-          return response(400, {
-            error: "Country is required."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Country is required."
+            }
+          );
 
         }
 
@@ -131,8 +178,8 @@ exports.handler = async (event) => {
         return await proxyGET(
           "/services.php",
           {
-            provider: provider,
-            country: country
+            provider,
+            country
           },
           API_KEY
         );
@@ -140,21 +187,28 @@ exports.handler = async (event) => {
       }
 
 
-      // ----------------------------------------
+      // ==================================================
       // ORDER STATUS
-      // ----------------------------------------
+      // GET ?action=status&order_id=...
+      // ==================================================
 
       if (action === "status") {
 
         const orderId =
-          params.order_id || "";
+          String(
+            params.order_id || ""
+          ).trim();
 
 
         if (!orderId) {
 
-          return response(400, {
-            error: "order_id is required."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "order_id is required."
+            }
+          );
 
         }
 
@@ -170,20 +224,23 @@ exports.handler = async (event) => {
       }
 
 
-      // ----------------------------------------
+      // ==================================================
       // ORDER HISTORY
-      // ----------------------------------------
+      // GET ?action=history&page=1
+      // ==================================================
 
       if (action === "history") {
 
         const page =
-          params.page || "1";
+          String(
+            params.page || "1"
+          ).trim();
 
 
         return await proxyGET(
           "/history.php",
           {
-            page: page
+            page
           },
           API_KEY
         );
@@ -191,20 +248,33 @@ exports.handler = async (event) => {
       }
 
 
-      return response(400, {
-        error: "Unknown action."
-      });
+      // ==================================================
+      // UNKNOWN GET ACTION
+      // ==================================================
+
+      return jsonResponse(
+        400,
+        {
+          error:
+            "Unknown action."
+        }
+      );
 
     }
 
 
-    // ==========================================
+    // ==================================================
     // POST REQUESTS
-    // ==========================================
+    // ==================================================
 
     if (event.httpMethod === "POST") {
 
       let body = {};
+
+
+      // ------------------------------------------------
+      // PARSE JSON
+      // ------------------------------------------------
 
       try {
 
@@ -213,110 +283,170 @@ exports.handler = async (event) => {
             event.body || "{}"
           );
 
-      } catch {
+      } catch (error) {
 
-        return response(400, {
-          error: "Invalid JSON request."
-        });
+        return jsonResponse(
+          400,
+          {
+            error:
+              "Invalid JSON request."
+          }
+        );
 
       }
 
 
       const action =
-        body.action || "";
+        String(
+          body.action || ""
+        ).trim().toLowerCase();
 
 
-      // ----------------------------------------
+      // ==================================================
       // BUY NUMBER
-      // ----------------------------------------
+      // ==================================================
 
       if (action === "buy") {
 
         const provider =
-          body.provider || "";
+          String(
+            body.provider || ""
+          ).trim();
 
         const country =
-          body.country || "";
+          String(
+            body.country || ""
+          ).trim();
 
         const service =
-          body.service || "";
+          String(
+            body.service || ""
+          ).trim();
 
         const serviceName =
-          body.serviceName || "";
+          String(
+            body.serviceName || ""
+          ).trim();
 
 
-        // Validate provider
+        // ------------------------------------------------
+        // PROVIDER VALIDATION
+        // ------------------------------------------------
 
         if (
-          !["global", "usa", "usa2"].includes(provider)
+          !ALLOWED_PROVIDERS.includes(
+            provider
+          )
         ) {
 
-          return response(400, {
-            error: "Invalid provider."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Invalid provider."
+            }
+          );
 
         }
 
 
-        // Validate required fields
+        // ------------------------------------------------
+        // COUNTRY VALIDATION
+        // ------------------------------------------------
 
         if (!country) {
 
-          return response(400, {
-            error: "Country is required."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Country is required."
+            }
+          );
 
         }
 
+
+        // ------------------------------------------------
+        // SERVICE VALIDATION
+        // ------------------------------------------------
 
         if (!service) {
 
-          return response(400, {
-            error: "Service is required."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "Service is required."
+            }
+          );
 
         }
 
 
-        // --------------------------------------
-        // SEND PURCHASE TO MYTPSMS
-        // --------------------------------------
+        // ------------------------------------------------
+        // SEND PURCHASE TO MYTP SMS
+        //
+        // MYTP SMS DOCUMENTATION:
+        //
+        // provider
+        // country
+        // service
+        // service_name (optional)
+        // ------------------------------------------------
 
-        const result =
-          await proxyPOST(
-            "/buy.php",
-            {
-              provider: provider,
-              country: country,
-              service: service,
-              ...(serviceName
-                ? { service_name: serviceName }
-                : {})
-            },
-            API_KEY
-          );
+        const purchaseData = {
+
+          provider:
+            provider,
+
+          country:
+            country,
+
+          service:
+            service
+
+        };
 
 
-        return result;
+        if (serviceName) {
+
+          purchaseData.service_name =
+            serviceName;
+
+        }
+
+
+        return await proxyPOST(
+          "/buy.php",
+          purchaseData,
+          API_KEY
+        );
 
       }
 
 
-      // ----------------------------------------
+      // ==================================================
       // CANCEL ORDER
-      // ----------------------------------------
+      // ==================================================
 
       if (action === "cancel") {
 
         const orderId =
-          body.order_id || "";
+          String(
+            body.order_id || ""
+          ).trim();
 
 
         if (!orderId) {
 
-          return response(400, {
-            error: "order_id is required."
-          });
+          return jsonResponse(
+            400,
+            {
+              error:
+                "order_id is required."
+            }
+          );
 
         }
 
@@ -324,7 +454,8 @@ exports.handler = async (event) => {
         return await proxyPOST(
           "/cancel.php",
           {
-            order_id: orderId
+            order_id:
+              orderId
           },
           API_KEY
         );
@@ -332,40 +463,59 @@ exports.handler = async (event) => {
       }
 
 
-      return response(400, {
-        error: "Unknown action."
-      });
+      // ==================================================
+      // UNKNOWN POST ACTION
+      // ==================================================
+
+      return jsonResponse(
+        400,
+        {
+          error:
+            "Unknown action."
+        }
+      );
 
     }
 
 
-    return response(405, {
-      error: "Method not allowed."
-    });
+    // ==================================================
+    // METHOD NOT ALLOWED
+    // ==================================================
+
+    return jsonResponse(
+      405,
+      {
+        error:
+          "Method not allowed."
+      }
+    );
 
 
   } catch (error) {
 
     console.error(
-      "MYTPSMS backend error:",
+      "MYTPSMS Netlify Function Error:",
       error
     );
 
 
-    return response(500, {
-      error:
-        error.message ||
-        "Server error."
-    });
+    return jsonResponse(
+      500,
+      {
+        error:
+          error?.message ||
+          "Internal server error."
+      }
+    );
 
   }
 
 };
 
 
-// ==========================================
-// GET REQUEST TO MYTPSMS
-// ==========================================
+// ======================================================
+// GET REQUEST TO MYTP SMS
+// ======================================================
 
 async function proxyGET(
   endpoint,
@@ -379,7 +529,9 @@ async function proxyGET(
     );
 
 
-  Object.entries(parameters).forEach(
+  Object.entries(
+    parameters || {}
+  ).forEach(
     ([key, value]) => {
 
       if (
@@ -399,29 +551,39 @@ async function proxyGET(
   );
 
 
-  const result =
+  console.log(
+    "MYTPSMS GET:",
+    endpoint
+  );
+
+
+  const apiResponse =
     await fetch(
       url.toString(),
       {
         method: "GET",
+
         headers: {
-          "X-API-KEY": apiKey,
-          "Accept": "application/json"
+          "X-API-KEY":
+            apiKey,
+
+          "Accept":
+            "application/json"
         }
       }
     );
 
 
   return await formatAPIResponse(
-    result
+    apiResponse
   );
 
 }
 
 
-// ==========================================
-// POST REQUEST TO MYTPSMS
-// ==========================================
+// ======================================================
+// POST REQUEST TO MYTP SMS
+// ======================================================
 
 async function proxyPOST(
   endpoint,
@@ -429,95 +591,188 @@ async function proxyPOST(
   apiKey
 ) {
 
-  const result =
+  console.log(
+    "MYTPSMS POST:",
+    endpoint
+  );
+
+
+  const apiResponse =
     await fetch(
       API_BASE + endpoint,
       {
         method: "POST",
 
         headers: {
-          "X-API-KEY": apiKey,
-          "Content-Type": "application/json",
-          "Accept": "application/json"
+          "X-API-KEY":
+            apiKey,
+
+          "Content-Type":
+            "application/json",
+
+          "Accept":
+            "application/json"
         },
 
-        body: JSON.stringify(data)
+        body:
+          JSON.stringify(data)
       }
     );
 
 
   return await formatAPIResponse(
-    result
+    apiResponse
   );
 
 }
 
 
-// ==========================================
-// FORMAT API RESPONSE
-// ==========================================
+// ======================================================
+// FORMAT MYTP SMS RESPONSE
+// ======================================================
 
 async function formatAPIResponse(
   apiResponse
 ) {
 
-  let data;
+  const status =
+    apiResponse.status || 500;
+
+
+  let rawText = "";
 
 
   try {
 
-    data =
-      await apiResponse.json();
-
-  } catch {
-
-    const text =
+    rawText =
       await apiResponse.text();
 
-    data = {
-      error:
-        text ||
-        "MYTPSMS returned an invalid response."
-    };
+  } catch (error) {
 
-  }
+    console.error(
+      "Unable to read MYTPSMS response:",
+      error
+    );
 
-
-  // MYTPSMS documentation says
-  // errors can return success:false.
-
-  if (
-    !apiResponse.ok ||
-    data?.success === false
-  ) {
-
-    return response(
-      apiResponse.status || 400,
+    return jsonResponse(
+      502,
       {
         error:
-          data?.message ||
-          data?.error ||
-          "MYTPSMS request failed.",
-        ...data
+          "Unable to read MYTPSMS response."
       }
     );
 
   }
 
 
-  return response(
-    apiResponse.status || 200,
+  // ----------------------------------------------------
+  // TRY TO PARSE JSON
+  // ----------------------------------------------------
+
+  let data = null;
+
+
+  if (rawText) {
+
+    try {
+
+      data =
+        JSON.parse(rawText);
+
+    } catch {
+
+      data = null;
+
+    }
+
+  }
+
+
+  // ----------------------------------------------------
+  // INVALID / NON-JSON RESPONSE
+  // ----------------------------------------------------
+
+  if (!data) {
+
+    if (!apiResponse.ok) {
+
+      return jsonResponse(
+        status,
+        {
+          error:
+            rawText ||
+            "MYTPSMS request failed."
+        }
+      );
+
+    }
+
+
+    return jsonResponse(
+      502,
+      {
+        error:
+          rawText ||
+          "MYTPSMS returned an invalid response."
+      }
+    );
+
+  }
+
+
+  // ----------------------------------------------------
+  // MYTP SMS DOCUMENTATION:
+  //
+  // API errors can return:
+  //
+  // success: false
+  // ----------------------------------------------------
+
+  if (
+    !apiResponse.ok ||
+    data.success === false
+  ) {
+
+    const errorMessage =
+      data.message ||
+      data.error ||
+      "MYTPSMS request failed.";
+
+
+    return jsonResponse(
+      apiResponse.ok
+        ? 400
+        : status,
+      {
+        ...data,
+
+        error:
+          errorMessage
+      }
+    );
+
+  }
+
+
+  // ----------------------------------------------------
+  // SUCCESS
+  // ----------------------------------------------------
+
+  return jsonResponse(
+    status >= 200 && status < 300
+      ? status
+      : 200,
     data
   );
 
 }
 
 
-// ==========================================
-// NETLIFY RESPONSE HELPER
-// ==========================================
+// ======================================================
+// NETLIFY JSON RESPONSE
+// ======================================================
 
-function response(
+function jsonResponse(
   statusCode,
   body
 ) {
