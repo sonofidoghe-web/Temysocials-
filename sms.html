@@ -512,15 +512,8 @@
     }
 
     /* =========================
-       LOADING
+       ERROR
     ========================= */
-
-    .loading {
-      text-align: center;
-      padding: 18px;
-      color: #777;
-      font-size: 14px;
-    }
 
     .error-box {
       background: #fff1f1;
@@ -608,6 +601,7 @@
       color: #3d6b1e;
       font-size: 25px;
       font-weight: 700;
+      word-break: break-word;
     }
 
     .sms-code-box {
@@ -663,17 +657,10 @@
 
 <body>
 
-  <!-- =========================
-       SIDEBAR OVERLAY
-  ========================= -->
-
+  <!-- SIDEBAR OVERLAY -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- =========================
-       SIDEBAR
-       KEPT AS YOUR DESIGN
-  ========================= -->
-
+  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
 
     <div class="sidebar-logo">
@@ -765,18 +752,30 @@
 
       <div class="menu-section-title">Account</div>
 
-      <a href="support.html" class="menu-item">Support</a>
-      <a href="notification.html" class="menu-item">Notification</a>
-      <a href="profile.html" class="menu-item">Profile</a>
+      <a href="support.html" class="menu-item">
+        Support
+      </a>
+
+      <a href="notification.html" class="menu-item">
+        Notification
+      </a>
+
+      <a href="profile.html" class="menu-item">
+        Profile
+      </a>
 
     </div>
 
-    <div class="menu-section"
-         style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;">
+    <div
+      class="menu-section"
+      style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;"
+    >
 
-      <a href="login.html"
-         class="menu-item signout-item"
-         id="signOutBtn">
+      <a
+        href="login.html"
+        class="menu-item signout-item"
+        id="signOutBtn"
+      >
         Sign out
       </a>
 
@@ -784,25 +783,23 @@
 
   </div>
 
-  <!-- =========================
-       HEADER
-  ========================= -->
-
+  <!-- HEADER -->
   <header class="header" id="header">
 
     <button class="menu-toggle" id="menuToggle">
 
-      <svg width="24" height="24"
-           viewBox="0 0 24 24"
-           fill="none"
-           stroke="currentColor"
-           stroke-width="2">
-
+      <svg
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+      >
         <rect x="3" y="3" width="7" height="7" rx="1"/>
         <rect x="14" y="3" width="7" height="7" rx="1"/>
         <rect x="14" y="14" width="7" height="7" rx="1"/>
         <rect x="3" y="14" width="7" height="7" rx="1"/>
-
       </svg>
 
     </button>
@@ -811,14 +808,16 @@
 
       <span class="badge-no">No</span>
 
-      <button class="icon-btn">
+      <button class="icon-btn" type="button">
 
-        <svg width="20" height="20"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2">
-
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <circle cx="12" cy="12" r="4"/>
           <path d="M12 2v2"/>
           <path d="M12 20v2"/>
@@ -828,36 +827,35 @@
           <path d="M20 12h2"/>
           <path d="M6.34 17.66l-1.41 1.41"/>
           <path d="M19.07 4.93l-1.41 1.41"/>
-
         </svg>
 
       </button>
 
-      <button class="icon-btn">
+      <button class="icon-btn" type="button">
 
-        <svg width="20" height="20"
-             viewBox="0 0 24 24"
-             fill="none"
-             stroke="currentColor"
-             stroke-width="2">
-
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-
         </svg>
 
       </button>
 
-      <div class="avatar" id="userAvatar">--</div>
+      <div class="avatar" id="userAvatar">
+        --
+      </div>
 
     </div>
 
   </header>
 
-  <!-- =========================
-       MAIN
-  ========================= -->
-
+  <!-- MAIN -->
   <main class="container">
 
     <h1>SMS Numbers</h1>
@@ -871,21 +869,28 @@
     <div class="balance-card">
 
       <div>
+
         <div class="balance-label">
           Wallet Balance
         </div>
 
-        <div class="balance-value"
-             id="walletBalance">
+        <div
+          class="balance-value"
+          id="walletBalance"
+        >
           ₦0.00
         </div>
+
       </div>
 
     </div>
 
     <!-- ERROR -->
 
-    <div class="error-box" id="errorBox"></div>
+    <div
+      class="error-box"
+      id="errorBox"
+    ></div>
 
     <!-- BUY CARD -->
 
@@ -897,10 +902,15 @@
         1. Provider
       </div>
 
-      <div class="providers" id="providers">
+      <div
+        class="providers"
+        id="providers"
+      >
 
-        <div class="provider-card"
-             data-provider="global">
+        <div
+          class="provider-card"
+          data-provider="global"
+        >
 
           <div class="provider-icon">
             🌐
@@ -924,9 +934,10 @@
 
         </div>
 
-
-        <div class="provider-card"
-             data-provider="usa">
+        <div
+          class="provider-card"
+          data-provider="usa"
+        >
 
           <div class="provider-icon">
             🇺🇸
@@ -950,9 +961,10 @@
 
         </div>
 
-
-        <div class="provider-card"
-             data-provider="usa2">
+        <div
+          class="provider-card"
+          data-provider="usa2"
+        >
 
           <div class="provider-icon">
             🌐
@@ -977,7 +989,6 @@
         </div>
 
       </div>
-
 
       <!-- COUNTRY -->
 
@@ -1005,7 +1016,6 @@
 
       </div>
 
-
       <!-- SERVICE -->
 
       <div class="service-area">
@@ -1024,7 +1034,8 @@
 
         <select
           class="service-select"
-          id="serviceSelect">
+          id="serviceSelect"
+        >
 
           <option value="">
             Select service...
@@ -1034,7 +1045,6 @@
 
       </div>
 
-
       <!-- PRICE -->
 
       <div class="price-box">
@@ -1043,32 +1053,34 @@
           Price
         </div>
 
-        <div class="price"
-             id="price">
+        <div
+          class="price"
+          id="price"
+        >
           --
         </div>
 
-        <div class="price-note"
-             id="priceNote">
+        <div
+          class="price-note"
+          id="priceNote"
+        >
           Select a service to see the price.
         </div>
 
       </div>
-
 
       <!-- BUY -->
 
       <button
         class="buy-btn"
         id="buyBtn"
-        disabled>
-
+        type="button"
+        disabled
+      >
         Select Provider, Country & Service
-
       </button>
 
     </div>
-
 
     <!-- HOW IT WORKS -->
 
@@ -1136,12 +1148,12 @@
 
   </main>
 
+  <!-- NUMBER MODAL -->
 
-  <!-- =========================
-       NUMBER MODAL
-  ========================= -->
-
-  <div class="modal-overlay" id="numberModal">
+  <div
+    class="modal-overlay"
+    id="numberModal"
+  >
 
     <div class="modal">
 
@@ -1151,8 +1163,10 @@
         Your SMS Number
       </div>
 
-      <div class="modal-subtitle"
-           id="modalSubtitle">
+      <div
+        class="modal-subtitle"
+        id="modalSubtitle"
+      >
         Your number is ready.
       </div>
 
@@ -1162,8 +1176,10 @@
           Phone Number
         </div>
 
-        <div class="number-value"
-             id="numberValue">
+        <div
+          class="number-value"
+          id="numberValue"
+        >
           --
         </div>
 
@@ -1175,8 +1191,10 @@
           SMS Code
         </div>
 
-        <div class="sms-code"
-             id="smsCode">
+        <div
+          class="sms-code"
+          id="smsCode"
+        >
           Waiting...
         </div>
 
@@ -1184,22 +1202,23 @@
 
       <button
         class="modal-close"
-        id="closeModal">
-
+        id="closeModal"
+        type="button"
+      >
         Close
-
       </button>
 
     </div>
 
   </div>
 
-
-  <!-- =========================
-       FIREBASE
-  ========================= -->
+  <!-- FIREBASE -->
 
   <script type="module">
+
+    /* =========================
+       FIREBASE IMPORTS
+    ========================= */
 
     import {
       initializeApp
@@ -1214,10 +1233,7 @@
     import {
       getFirestore,
       doc,
-      getDoc,
-      addDoc,
-      collection,
-      serverTimestamp
+      getDoc
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -1227,7 +1243,8 @@
 
     const firebaseConfig = {
 
-      apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+      apiKey:
+        "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
 
       authDomain:
         "trustsocials-8fc8b.firebaseapp.com",
@@ -1250,6 +1267,10 @@
     };
 
 
+    /* =========================
+       INITIALIZE FIREBASE
+    ========================= */
+
     const app =
       initializeApp(firebaseConfig);
 
@@ -1262,9 +1283,6 @@
 
     /* =========================
        NETLIFY BACKEND
-       
-       WE WILL PUT THE REAL
-       NETLIFY URL HERE IN PART 2.
     ========================= */
 
     const API_URL =
@@ -1319,6 +1337,21 @@
     const errorBox =
       document.getElementById("errorBox");
 
+    const walletBalance =
+      document.getElementById("walletBalance");
+
+    const numberModal =
+      document.getElementById("numberModal");
+
+    const numberValue =
+      document.getElementById("numberValue");
+
+    const smsCode =
+      document.getElementById("smsCode");
+
+    const modalSubtitle =
+      document.getElementById("modalSubtitle");
+
 
     /* =========================
        SIDEBAR
@@ -1326,16 +1359,19 @@
 
     document
       .getElementById("menuToggle")
-      .addEventListener("click", () => {
+      .addEventListener(
+        "click",
+        () => {
 
-        sidebar.classList.add("active");
+          sidebar.classList.add("active");
 
-        overlay.classList.add("active");
+          overlay.classList.add("active");
 
-        document.body.style.overflow =
-          "hidden";
+          document.body.style.overflow =
+            "hidden";
 
-      });
+        }
+      );
 
 
     overlay.addEventListener(
@@ -1382,14 +1418,24 @@
       .getElementById("signOutBtn")
       .addEventListener(
         "click",
-        async (e) => {
+        async event => {
 
-          e.preventDefault();
+          event.preventDefault();
 
-          await signOut(auth);
+          try {
 
-          window.location.href =
-            "login.html";
+            await signOut(auth);
+
+            window.location.href =
+              "login.html";
+
+          } catch (error) {
+
+            showError(
+              "Unable to sign out. Please try again."
+            );
+
+          }
 
         }
       );
@@ -1409,18 +1455,24 @@
 
             document
               .querySelectorAll(".provider-card")
-              .forEach(c =>
-                c.classList.remove("active")
-              );
+              .forEach(item => {
+
+                item.classList.remove("active");
+
+              });
 
             card.classList.add("active");
 
             selectedProvider =
-              card.dataset.provider;
+              card.dataset.provider || "";
 
             selectedCountry = "";
 
             selectedService = null;
+
+            allServices = [];
+
+            serviceSearch.value = "";
 
             countrySelect.innerHTML =
               `<option value="">Loading countries...</option>`;
@@ -1449,6 +1501,10 @@
 
     async function loadCountries() {
 
+      if (!selectedProvider) {
+        return;
+      }
+
       try {
 
         hideError();
@@ -1458,8 +1514,22 @@
             `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`
           );
 
-        const data =
-          await response.json();
+
+        let data;
+
+        try {
+
+          data =
+            await response.json();
+
+        } catch {
+
+          throw new Error(
+            "The server returned an invalid response."
+          );
+
+        }
+
 
         if (!response.ok || data.error) {
 
@@ -1470,34 +1540,64 @@
 
         }
 
+
+        const countries =
+          Array.isArray(data.countries)
+            ? data.countries
+            : [];
+
+
         countrySelect.innerHTML =
           `<option value="">Select country...</option>`;
 
 
-        const countries =
-          data.countries || [];
-
-
         countries.forEach(country => {
+
+          if (!country) {
+            return;
+          }
+
 
           const option =
             document.createElement("option");
 
+
           option.value =
-            country.code || country.id || country.name;
+            country.code ||
+            country.id ||
+            country.name ||
+            "";
+
 
           option.textContent =
-            country.name || country.code;
+            country.name ||
+            country.code ||
+            country.id ||
+            "Unknown country";
+
 
           countrySelect.appendChild(option);
 
         });
 
+
+        if (countries.length === 0) {
+
+          countrySelect.innerHTML =
+            `<option value="">No countries available</option>`;
+
+        }
+
       } catch (error) {
+
+        console.error(
+          "Countries error:",
+          error
+        );
 
         showError(
           "Unable to load countries: " +
-          error.message
+          (error.message || "Unknown error")
         );
 
         countrySelect.innerHTML =
@@ -1517,9 +1617,13 @@
       async () => {
 
         selectedCountry =
-          countrySelect.value;
+          countrySelect.value || "";
 
         selectedService = null;
+
+        allServices = [];
+
+        serviceSearch.value = "";
 
         serviceSelect.innerHTML =
           `<option value="">Loading services...</option>`;
@@ -1554,17 +1658,42 @@
 
     async function loadServices() {
 
+      if (
+        !selectedProvider ||
+        !selectedCountry
+      ) {
+
+        return;
+
+      }
+
+
       try {
 
         hideError();
+
 
         const response =
           await fetch(
             `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`
           );
 
-        const data =
-          await response.json();
+
+        let data;
+
+        try {
+
+          data =
+            await response.json();
+
+        } catch {
+
+          throw new Error(
+            "The server returned an invalid response."
+          );
+
+        }
+
 
         if (!response.ok || data.error) {
 
@@ -1575,16 +1704,35 @@
 
         }
 
+
         allServices =
-          data.services || [];
+          Array.isArray(data.services)
+            ? data.services
+            : [];
+
 
         renderServices(allServices);
 
+
+        if (allServices.length === 0) {
+
+          price.textContent = "--";
+
+          priceNote.textContent =
+            "No services are available for this country.";
+
+        }
+
       } catch (error) {
+
+        console.error(
+          "Services error:",
+          error
+        );
 
         showError(
           "Unable to load SMS services: " +
-          error.message
+          (error.message || "Unknown error")
         );
 
         serviceSelect.innerHTML =
@@ -1607,24 +1755,64 @@
 
       services.forEach(service => {
 
+        if (!service) {
+          return;
+        }
+
+
+        const serviceCode =
+          service.code ||
+          service.id ||
+          service.name ||
+          "";
+
+
+        const serviceName =
+          service.name ||
+          service.code ||
+          service.id ||
+          "Unknown service";
+
+
         const option =
           document.createElement("option");
 
+
         option.value =
-          service.code ||
-          service.id ||
-          service.name;
+          serviceCode;
+
 
         option.textContent =
-          service.name ||
-          service.code;
+          serviceName;
 
-        option.dataset.service =
-          JSON.stringify(service);
+
+        try {
+
+          option.dataset.service =
+            JSON.stringify(service);
+
+        } catch {
+
+          option.dataset.service =
+            JSON.stringify({
+              code: serviceCode,
+              name: serviceName
+            });
+
+        }
+
 
         serviceSelect.appendChild(option);
 
       });
+
+
+      if (services.length === 0) {
+
+        serviceSelect.innerHTML =
+          `<option value="">No matching services</option>`;
+
+      }
 
     }
 
@@ -1643,15 +1831,26 @@
             .toLowerCase();
 
 
+        if (!search) {
+
+          renderServices(allServices);
+
+          return;
+
+        }
+
+
         const filtered =
           allServices.filter(service => {
 
             const name =
               String(
-                service.name ||
-                service.code ||
+                service?.name ||
+                service?.code ||
+                service?.id ||
                 ""
               ).toLowerCase();
+
 
             return name.includes(search);
 
@@ -1677,7 +1876,11 @@
             serviceSelect.selectedIndex
           ];
 
-        if (!option || !option.value) {
+
+        if (
+          !option ||
+          !option.value
+        ) {
 
           selectedService = null;
 
@@ -1697,14 +1900,19 @@
 
           selectedService =
             JSON.parse(
-              option.dataset.service
+              option.dataset.service || "{}"
             );
 
         } catch {
 
           selectedService = {
-            code: option.value,
-            name: option.textContent
+
+            code:
+              option.value,
+
+            name:
+              option.textContent
+
           };
 
         }
@@ -1712,9 +1920,9 @@
 
         const originalPrice =
           Number(
-            selectedService.price ||
-            selectedService.cost ||
-            selectedService.amount ||
+            selectedService.price ??
+            selectedService.cost ??
+            selectedService.amount ??
             0
           );
 
@@ -1725,12 +1933,28 @@
           );
 
 
-        price.textContent =
-          formatNaira(sellingPrice);
+        if (
+          !Number.isFinite(originalPrice) ||
+          originalPrice <= 0
+        ) {
+
+          price.textContent = "--";
+
+          priceNote.textContent =
+            "Price unavailable for this service.";
+
+        } else {
+
+          price.textContent =
+            formatNaira(
+              sellingPrice
+            );
 
 
-        priceNote.textContent =
-          `Provider price: ${formatNaira(originalPrice)}`;
+          priceNote.textContent =
+            `Provider price: ${formatNaira(originalPrice)}`;
+
+        }
 
 
         updateBuyButton();
@@ -1740,7 +1964,7 @@
 
 
     /* =========================
-       YOUR PRICING RULE
+       PRICING RULE
        
        <= ₦500       = x2
        > ₦500 < ₦1000 = x1.5
@@ -1755,8 +1979,10 @@
         Number(providerPrice);
 
 
-      if (!Number.isFinite(amount) ||
-          amount <= 0) {
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
 
         return 0;
 
@@ -1788,14 +2014,28 @@
 
     function formatNaira(amount) {
 
+      const number =
+        Number(amount);
+
+
+      if (
+        !Number.isFinite(number)
+      ) {
+
+        return "₦0.00";
+
+      }
+
+
       return new Intl.NumberFormat(
         "en-NG",
         {
           style: "currency",
           currency: "NGN",
-          minimumFractionDigits: 2
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
         }
-      ).format(amount);
+      ).format(number);
 
     }
 
@@ -1806,11 +2046,15 @@
 
     function updateBuyButton() {
 
-      if (
-        selectedProvider &&
-        selectedCountry &&
-        selectedService
-      ) {
+      const ready =
+        Boolean(
+          selectedProvider &&
+          selectedCountry &&
+          selectedService
+        );
+
+
+      if (ready) {
 
         buyBtn.disabled = false;
 
@@ -1823,6 +2067,43 @@
 
         buyBtn.textContent =
           "Select Provider, Country & Service";
+
+      }
+
+    }
+
+
+    /* =========================
+       GET FIREBASE TOKEN
+    ========================= */
+
+    async function getFirebaseToken() {
+
+      if (!currentUser) {
+
+        throw new Error(
+          "Your session has expired. Please sign in again."
+        );
+
+      }
+
+
+      try {
+
+        return await currentUser.getIdToken(
+          true
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Token error:",
+          error
+        );
+
+        throw new Error(
+          "Unable to verify your account. Please sign in again."
+        );
 
       }
 
@@ -1865,17 +2146,45 @@
 
       const providerPrice =
         Number(
-          selectedService.price ||
-          selectedService.cost ||
-          selectedService.amount ||
+          selectedService.price ??
+          selectedService.cost ??
+          selectedService.amount ??
           0
         );
+
+
+      if (
+        !Number.isFinite(providerPrice) ||
+        providerPrice <= 0
+      ) {
+
+        showError(
+          "This service does not have a valid price."
+        );
+
+        return;
+
+      }
 
 
       const sellingPrice =
         calculateSellingPrice(
           providerPrice
         );
+
+
+      if (
+        !Number.isFinite(sellingPrice) ||
+        sellingPrice <= 0
+      ) {
+
+        showError(
+          "Unable to calculate the purchase price."
+        );
+
+        return;
+
+      }
 
 
       buyBtn.disabled = true;
@@ -1889,6 +2198,21 @@
         hideError();
 
 
+        const token =
+          await getFirebaseToken();
+
+
+        /*
+          IMPORTANT:
+
+          The backend must verify this Firebase
+          ID token and obtain the real UID from it.
+
+          Do not trust the UID, price or service
+          values sent by the browser for wallet
+          security.
+        */
+
         const response =
           await fetch(
             API_URL,
@@ -1896,13 +2220,29 @@
               method: "POST",
 
               headers: {
+
                 "Content-Type":
-                  "application/json"
+                  "application/json",
+
+                "Authorization":
+                  `Bearer ${token}`
+
               },
 
               body: JSON.stringify({
 
                 action: "buy",
+
+                /*
+                  UID is included for compatibility
+                  with the current backend.
+
+                  The backend MUST verify the token
+                  and use the token's UID instead.
+                */
+
+                uid:
+                  currentUser.uid,
 
                 provider:
                   selectedProvider,
@@ -1917,16 +2257,21 @@
 
                 serviceName:
                   selectedService.name ||
-                  selectedService.code,
+                  selectedService.code ||
+                  selectedService.id,
+
+                /*
+                  These are informational values.
+                  The backend should recalculate the
+                  actual provider price and selling
+                  price itself.
+                */
 
                 providerPrice:
                   providerPrice,
 
                 sellingPrice:
-                  sellingPrice,
-
-                uid:
-                  currentUser.uid
+                  sellingPrice
 
               })
 
@@ -1934,11 +2279,26 @@
           );
 
 
-        const data =
-          await response.json();
+        let data;
+
+        try {
+
+          data =
+            await response.json();
+
+        } catch {
+
+          throw new Error(
+            "The server returned an invalid response."
+          );
+
+        }
 
 
-        if (!response.ok || data.error) {
+        if (
+          !response.ok ||
+          data.error
+        ) {
 
           throw new Error(
             data.error ||
@@ -1948,55 +2308,83 @@
         }
 
 
-        /*
-          The backend will return the
-          purchased number here.
-        */
-
-        currentOrder = data;
+        currentOrder =
+          data;
 
 
-        document.getElementById(
-          "numberValue"
-        ).textContent =
+        const purchasedNumber =
           data.number ||
           data.phone ||
+          data.phoneNumber ||
+          data.msisdn ||
           "--";
 
 
-        document.getElementById(
-          "modalSubtitle"
-        ).textContent =
-          `${selectedCountry} • ${selectedService.name || selectedService.code}`;
+        numberValue.textContent =
+          purchasedNumber;
 
 
-        document.getElementById(
-          "smsCode"
-        ).textContent =
+        const serviceDisplayName =
+          selectedService.name ||
+          selectedService.code ||
+          selectedService.id ||
+          "SMS Service";
+
+
+        modalSubtitle.textContent =
+          `${selectedCountry} • ${serviceDisplayName}`;
+
+
+        smsCode.textContent =
+          data.smsCode ||
+          data.code ||
           "Waiting...";
 
 
-        document
-          .getElementById("numberModal")
-          .classList.add("active");
+        numberModal.classList.add(
+          "active"
+        );
 
 
         /*
-          Later, Part 2 backend will
-          provide the real SMS status.
+          If the backend returns a new balance,
+          use it immediately.
         */
 
+        if (
+          data.balance !== undefined &&
+          data.balance !== null
+        ) {
+
+          walletBalance.textContent =
+            formatNaira(
+              data.balance
+            );
+
+        } else {
+
+          /*
+            Otherwise refresh the Firebase
+            user document.
+          */
+
+          await loadWalletBalance();
+
+        }
 
       } catch (error) {
 
+        console.error(
+          "Purchase error:",
+          error
+        );
+
         showError(
           error.message ||
-          "Purchase failed."
+          "Purchase failed. Please try again."
         );
 
       } finally {
-
-        buyBtn.disabled = false;
 
         updateBuyButton();
 
@@ -2013,45 +2401,66 @@
       .getElementById("closeModal")
       .addEventListener(
         "click",
-        () => {
-
-          document
-            .getElementById("numberModal")
-            .classList.remove("active");
-
-        }
+        closeNumberModal
       );
 
 
-    document
-      .getElementById("numberModal")
-      .addEventListener(
-        "click",
-        e => {
+    numberModal.addEventListener(
+      "click",
+      event => {
 
-          if (
-            e.target.id ===
-            "numberModal"
-          ) {
+        if (
+          event.target ===
+          numberModal
+        ) {
 
-            document
-              .getElementById("numberModal")
-              .classList.remove("active");
-
-          }
+          closeNumberModal();
 
         }
+
+      }
+    );
+
+
+    function closeNumberModal() {
+
+      numberModal.classList.remove(
+        "active"
       );
+
+    }
 
 
     /* =========================
-       ERRORS
+       ESCAPE KEY
+    ========================= */
+
+    document.addEventListener(
+      "keydown",
+      event => {
+
+        if (
+          event.key === "Escape"
+        ) {
+
+          closeNumberModal();
+
+          closeSidebar();
+
+        }
+
+      }
+    );
+
+
+    /* =========================
+       ERROR FUNCTIONS
     ========================= */
 
     function showError(message) {
 
       errorBox.textContent =
-        message;
+        String(message);
 
       errorBox.style.display =
         "block";
@@ -2061,8 +2470,75 @@
 
     function hideError() {
 
+      errorBox.textContent = "";
+
       errorBox.style.display =
         "none";
+
+    }
+
+
+    /* =========================
+       LOAD WALLET BALANCE
+    ========================= */
+
+    async function loadWalletBalance() {
+
+      if (!currentUser) {
+        return;
+      }
+
+
+      try {
+
+        const userRef =
+          doc(
+            db,
+            "users",
+            currentUser.uid
+          );
+
+
+        const userSnap =
+          await getDoc(
+            userRef
+          );
+
+
+        if (!userSnap.exists()) {
+
+          walletBalance.textContent =
+            "₦0.00";
+
+          return;
+
+        }
+
+
+        const userData =
+          userSnap.data();
+
+
+        const balance =
+          Number(
+            userData.balance ?? 0
+          );
+
+
+        walletBalance.textContent =
+          formatNaira(balance);
+
+      } catch (error) {
+
+        console.error(
+          "Balance loading error:",
+          error
+        );
+
+        walletBalance.textContent =
+          "₦0.00";
+
+      }
 
     }
 
@@ -2077,6 +2553,8 @@
 
         if (!user) {
 
+          currentUser = null;
+
           window.location.href =
             "login.html";
 
@@ -2085,8 +2563,13 @@
         }
 
 
-        currentUser = user;
+        currentUser =
+          user;
 
+
+        /* =====================
+           AVATAR
+        ===================== */
 
         const displayName =
           user.displayName ||
@@ -2103,13 +2586,18 @@
         let initials =
           names[0]
             ?.charAt(0)
-            .toUpperCase() || "";
+            .toUpperCase() ||
+          "";
 
 
-        if (names.length > 1) {
+        if (
+          names.length > 1
+        ) {
 
           initials +=
-            names[names.length - 1]
+            names[
+              names.length - 1
+            ]
               .charAt(0)
               .toUpperCase();
 
@@ -2119,60 +2607,15 @@
         document.getElementById(
           "userAvatar"
         ).textContent =
-          initials;
+          initials ||
+          "U";
 
 
-        /*
-          Read wallet balance.
-          This expects:
+        /* =====================
+           LOAD BALANCE
+        ===================== */
 
-          users/{uid}
-          balance
-
-          We'll confirm this with
-          your wallet.html later.
-        */
-
-        try {
-
-          const userRef =
-            doc(
-              db,
-              "users",
-              user.uid
-            );
-
-          const userSnap =
-            await getDoc(userRef);
-
-
-          if (userSnap.exists()) {
-
-            const userData =
-              userSnap.data();
-
-
-            const balance =
-              Number(
-                userData.balance || 0
-              );
-
-
-            document.getElementById(
-              "walletBalance"
-            ).textContent =
-              formatNaira(balance);
-
-          }
-
-        } catch (error) {
-
-          console.log(
-            "Balance loading error:",
-            error
-          );
-
-        }
+        await loadWalletBalance();
 
       }
     );
