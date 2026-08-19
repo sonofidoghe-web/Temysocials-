@@ -3,126 +3,442 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SMS Numbers - TrustSocial</title>
+  <title>SMS Numbers - Trust Social</title>
+
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Helvetica, Arial, sans-serif;
       background: #f8f9fa;
       color: #111;
       min-height: 100vh;
       padding-bottom: 50px;
     }
 
-    /* Header */
+    /* =========================
+       HEADER
+    ========================= */
+
     .header {
-      position: sticky; top: 0; z-index: 100;
-      background: #fff; padding: 12px 16px;
-      display: flex; justify-content: space-between; align-items: center;
-      border-bottom: 1px solid #eee; transition: all 0.3s ease;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #fff;
+      padding: 12px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+      transition: all 0.3s ease;
     }
+
     .header.scrolled {
       background: rgba(255,255,255,0.85);
       backdrop-filter: blur(12px);
     }
-    .menu-toggle { background: none; border: none; cursor: pointer; padding: 4px; color: #333; }
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    .badge-no { background: #f0f0f0; color: #555; font-size: 13px; font-weight: 500; padding: 4px 10px; border-radius: 20px; }
-    .icon-btn { background: none; border: none; cursor: pointer; padding: 4px; color: #444; }
-    .avatar {
-      width: 36px; height: 36px; background: #3d6b1e; color: white;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-weight: 600; font-size: 14px;
+
+    .menu-toggle {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      color: #333;
     }
 
-    /* Sidebar */
-    .sidebar-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200;
-      opacity: 0; visibility: hidden; transition: all 0.3s ease;
-    }
-    .sidebar-overlay.active { opacity: 1; visibility: visible; }
-    .sidebar {
-      position: fixed; top: 0; left: 0; width: 300px; height: 100%;
-      background: white; z-index: 300; transform: translateX(-100%);
-      transition: transform 0.3s ease; overflow-y: auto; padding: 20px 0 30px;
-    }
-    .sidebar.active { transform: translateX(0); }
-    .sidebar-logo { padding: 0 20px 20px; border-bottom: 1px solid #eee; }
-    .sidebar-logo img { height: 40px; }
-    .menu-section { padding: 20px 12px 8px; }
-    .menu-section-title {
-      font-size: 13px; color: #888; font-weight: 500; padding: 0 12px 10px;
-      text-transform: uppercase; letter-spacing: 0.3px;
-    }
-    .menu-item {
-      display: flex; align-items: center; gap: 14px; padding: 12px 14px;
-      border-radius: 12px; color: #333; text-decoration: none; font-size: 15px;
-      font-weight: 500; margin-bottom: 2px;
-    }
-    .menu-item:hover { background: #f5f5f5; }
-    .menu-item.active { background: #f0f7eb; color: #3d6b1e; }
-    .menu-item svg { width: 20px; height: 20px; flex-shrink: 0; }
-    .soon-badge { margin-left: auto; background: #e8f5e9; color: #2e7d32; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 10px; }
-    .signout-item { color: #d32f2f !important; }
-
-    /* Content */
-    .container { max-width: 480px; margin: 0 auto; padding: 24px 16px; }
-    h1 { font-size: 26px; font-weight: 700; margin-bottom: 6px; }
-    .subtitle { color: #666; font-size: 15px; margin-bottom: 28px; }
-
-    .section-title {
-      font-size: 16px; font-weight: 600; margin-bottom: 14px;
-    }
-
-    /* Countries Grid */
-    .countries-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 28px;
-    }
-    .country-card {
-      background: white;
-      border: 1.5px solid #e8e8e8;
-      border-radius: 14px;
-      padding: 14px 12px;
+    .header-right {
       display: flex;
       align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 0.2s;
+      gap: 12px;
     }
-    .country-card:hover { border-color: #3d6b1e; }
-    .country-card.active {
-      border-color: #3d6b1e;
-      background: #f0f7eb;
-    }
-    .country-flag { font-size: 22px; }
-    .country-name { font-size: 14px; font-weight: 500; }
 
-    /* Apps */
-    .apps-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-      margin-bottom: 30px;
+    .badge-no {
+      background: #f0f0f0;
+      color: #555;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 20px;
     }
-    .app-card {
-      background: white;
-      border: 1.5px solid #e8e8e8;
-      border-radius: 14px;
-      padding: 16px 10px;
-      text-align: center;
+
+    .icon-btn {
+      background: none;
+      border: none;
       cursor: pointer;
-      transition: all 0.2s;
+      padding: 4px;
+      color: #444;
     }
-    .app-card:hover { border-color: #3d6b1e; }
-    .app-card.active {
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      background: #3d6b1e;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    /* =========================
+       SIDEBAR
+       DO NOT CHANGE
+    ========================= */
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      z-index: 200;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 300px;
+      height: 100%;
+      background: white;
+      z-index: 300;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      padding: 20px 0 30px;
+    }
+
+    .sidebar.active {
+      transform: translateX(0);
+    }
+
+    .sidebar-logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .sidebar-logo img {
+      height: 40px;
+    }
+
+    .menu-section {
+      padding: 20px 12px 8px;
+    }
+
+    .menu-section-title {
+      font-size: 13px;
+      color: #888;
+      font-weight: 500;
+      padding: 0 12px 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      color: #333;
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .menu-item:hover {
+      background: #f5f5f5;
+    }
+
+    .menu-item.active {
+      background: #f0f7eb;
+      color: #3d6b1e;
+    }
+
+    .menu-item svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .soon-badge {
+      margin-left: auto;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 10px;
+    }
+
+    .signout-item {
+      color: #d32f2f !important;
+    }
+
+    /* =========================
+       MAIN CONTENT
+    ========================= */
+
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 24px 16px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    /* =========================
+       WALLET BALANCE
+    ========================= */
+
+    .balance-card {
+      background: #f0f7eb;
+      border: 1px solid #dcebd2;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .balance-label {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 3px;
+    }
+
+    .balance-value {
+      color: #3d6b1e;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    /* =========================
+       MAIN CARD
+    ========================= */
+
+    .buy-card {
+      background: white;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    /* =========================
+       PROVIDERS
+    ========================= */
+
+    .providers {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 26px;
+    }
+
+    .provider-card {
+      background: white;
+      border: 1.5px solid #ddd;
+      border-radius: 14px;
+      padding: 13px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .provider-card:hover {
+      border-color: #3d6b1e;
+    }
+
+    .provider-card.active {
       border-color: #3d6b1e;
       background: #f0f7eb;
     }
-    .app-icon { font-size: 24px; margin-bottom: 6px; }
-    .app-name { font-size: 13px; font-weight: 500; }
+
+    .provider-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #f0f7eb;
+      color: #3d6b1e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 21px;
+      flex-shrink: 0;
+    }
+
+    .provider-info {
+      flex: 1;
+    }
+
+    .provider-name {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .provider-description {
+      color: #777;
+      font-size: 12px;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      border: 1.5px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+      font-size: 12px;
+    }
+
+    .provider-card.active .check {
+      background: #3d6b1e;
+      border-color: #3d6b1e;
+      color: white;
+    }
+
+    /* =========================
+       COUNTRY
+    ========================= */
+
+    .country-area {
+      margin-bottom: 24px;
+    }
+
+    .select-box {
+      position: relative;
+    }
+
+    .select-box select {
+      width: 100%;
+      appearance: none;
+      padding: 14px 42px 14px 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      background: white;
+      color: #222;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .select-box select:focus {
+      border-color: #3d6b1e;
+    }
+
+    .select-arrow {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: #777;
+    }
+
+    /* =========================
+       SERVICES
+    ========================= */
+
+    .service-area {
+      margin-bottom: 24px;
+    }
+
+    .service-search {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      margin-bottom: 8px;
+    }
+
+    .service-search:focus {
+      border-color: #3d6b1e;
+    }
+
+    .service-select {
+      width: 100%;
+      padding: 14px;
+      border: 1.5px solid #ddd;
+      border-radius: 12px;
+      background: white;
+      font-size: 15px;
+      outline: none;
+    }
+
+    .service-select:focus {
+      border-color: #3d6b1e;
+    }
+
+    /* =========================
+       PRICE
+    ========================= */
+
+    .price-box {
+      background: #f0f7eb;
+      border-radius: 14px;
+      padding: 16px;
+      margin-bottom: 16px;
+    }
+
+    .price-label {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .price {
+      color: #3d6b1e;
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    .price-note {
+      color: #777;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+
+    /* =========================
+       BUY BUTTON
+    ========================= */
 
     .buy-btn {
       width: 100%;
@@ -134,447 +450,1734 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
+      transition: 0.2s;
     }
+
+    .buy-btn:hover:not(:disabled) {
+      background: #315617;
+    }
+
     .buy-btn:disabled {
       background: #ccc;
       cursor: not-allowed;
     }
 
-    /* ===== CHAT POPUP ===== */
-    .chat-overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
-      display: flex; align-items: flex-end; justify-content: center;
-      padding: 0; opacity: 0; visibility: hidden; transition: all 0.3s ease;
-    }
-    .chat-overlay.active { opacity: 1; visibility: visible; }
+    /* =========================
+       HOW IT WORKS
+    ========================= */
 
-    .chat-box {
+    .how-card {
       background: white;
-      width: 100%;
-      max-width: 420px;
-      height: 70vh;
-      max-height: 520px;
-      border-radius: 20px 20px 0 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transform: translateY(100%);
-      transition: transform 0.35s ease;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 17px;
+      margin-top: 20px;
     }
-    .chat-overlay.active .chat-box { transform: translateY(0); }
 
-    .chat-header {
-      padding: 16px 20px;
-      background: #3d6b1e;
-      color: white;
+    .how-title {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 650;
+      margin-bottom: 14px;
     }
-    .chat-header .avatar-small {
-      width: 38px; height: 38px; background: white; color: #3d6b1e;
-      border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      font-weight: 700; font-size: 14px;
-    }
-    .chat-header-info h3 { font-size: 16px; font-weight: 600; }
-    .chat-header-info p { font-size: 12px; opacity: 0.85; }
 
-    .chat-messages {
-      flex: 1;
-      padding: 20px 16px;
-      overflow-y: auto;
-      background: #f7f7f7;
+    .how-title-icon {
+      color: #3d6b1e;
+      font-size: 20px;
+    }
+
+    .how-step {
       display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .message {
-      max-width: 80%;
-      padding: 10px 14px;
-      border-radius: 18px;
+      gap: 10px;
+      margin-bottom: 12px;
+      color: #555;
       font-size: 14px;
       line-height: 1.4;
-      animation: fadeIn 0.3s ease;
-    }
-    .message.bot {
-      background: white;
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-    }
-    .message.user {
-      background: #3d6b1e;
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
     }
 
-    .typing {
+    .how-step-number {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #f0f7eb;
+      color: #3d6b1e;
+      font-size: 12px;
+      font-weight: 700;
       display: flex;
-      gap: 4px;
-      padding: 12px 16px;
-      background: white;
-      border-radius: 18px;
-      align-self: flex-start;
-      width: fit-content;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    .typing span {
-      width: 7px; height: 7px; background: #999; border-radius: 50%;
-      animation: typing 1.2s infinite;
-    }
-    .typing span:nth-child(2) { animation-delay: 0.2s; }
-    .typing span:nth-child(3) { animation-delay: 0.4s; }
 
-    @keyframes typing {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-      30% { transform: translateY(-4px); opacity: 1; }
+    /* =========================
+       LOADING
+    ========================= */
+
+    .loading {
+      text-align: center;
+      padding: 18px;
+      color: #777;
+      font-size: 14px;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    .error-box {
+      background: #fff1f1;
+      border: 1px solid #f2cccc;
+      color: #b3261e;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* =========================
+       SUCCESS / NUMBER POPUP
+    ========================= */
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: 0.3s;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: 22px 22px 0 0;
+      padding: 22px 18px 28px;
+      transform: translateY(100%);
+      transition: 0.3s;
+    }
+
+    .modal-overlay.active .modal {
+      transform: translateY(0);
+    }
+
+    .modal-handle {
+      width: 40px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 5px;
+      margin: 0 auto 18px;
+    }
+
+    .modal-title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .modal-subtitle {
+      color: #777;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    .number-box {
+      background: #f0f7eb;
+      border: 1px solid #d8e9ce;
+      border-radius: 14px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .number-label {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .number-value {
+      color: #3d6b1e;
+      font-size: 25px;
+      font-weight: 700;
+    }
+
+    .sms-code-box {
+      background: #f8f9fa;
+      border: 1px solid #e5e5e5;
+      border-radius: 14px;
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .sms-code-label {
+      color: #777;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .sms-code {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111;
+      letter-spacing: 2px;
+    }
+
+    .modal-close {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 12px;
+      background: #eee;
+      color: #333;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 360px) {
+      .container {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-  <!-- SIDEBAR OVERLAY -->
+  <!-- =========================
+       SIDEBAR OVERLAY
+  ========================= -->
+
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- SIDEBAR -->
+  <!-- =========================
+       SIDEBAR
+       KEPT AS YOUR DESIGN
+  ========================= -->
+
   <div class="sidebar" id="sidebar">
+
     <div class="sidebar-logo">
       <img src="logo.png" alt="Trust Social">
     </div>
 
     <div class="menu-section">
+
       <div class="menu-section-title">Main</div>
+
       <a href="dashboard.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="3" width="7" height="7" rx="1"/>
+          <rect x="14" y="14" width="7" height="7" rx="1"/>
+          <rect x="3" y="14" width="7" height="7" rx="1"/>
+        </svg>
         Dashboard
       </a>
+
       <a href="wallet.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M22 10H2"/><path d="M6 14h.01"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="6" width="20" height="12" rx="2"/>
+          <path d="M22 10H2"/>
+          <path d="M6 14h.01"/>
+        </svg>
         Wallet
       </a>
+
       <a href="orders.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 0 1-8 0"/>
+        </svg>
         Orders
       </a>
+
       <a href="transactions.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="17 1 21 5 17 9"/>
+          <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+          <polyline points="7 23 3 19 7 15"/>
+          <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+        </svg>
         Transactions
       </a>
+
     </div>
 
     <div class="menu-section">
+
       <div class="menu-section-title">Store</div>
+
       <a href="logs.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+          <line x1="12" y1="22.08" x2="12" y2="12"/>
+        </svg>
         Logs Store
       </a>
+
       <a href="tools.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
         Tools Store
       </a>
+
       <a href="sms.html" class="menu-item active">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
         SMS Numbers
       </a>
+
       <a href="sme.html" class="menu-item">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-        SME Boosting <span class="soon-badge">Soon</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+        </svg>
+        SME Boosting
+        <span class="soon-badge">Soon</span>
       </a>
+
     </div>
 
     <div class="menu-section">
+
       <div class="menu-section-title">Account</div>
+
       <a href="support.html" class="menu-item">Support</a>
       <a href="notification.html" class="menu-item">Notification</a>
       <a href="profile.html" class="menu-item">Profile</a>
+
     </div>
 
-    <div class="menu-section" style="border-top:1px solid #eee; margin-top:10px; padding-top:10px;">
-      <a href="login.html" class="menu-item signout-item" id="signOutBtn">Sign out</a>
+    <div class="menu-section"
+         style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;">
+
+      <a href="login.html"
+         class="menu-item signout-item"
+         id="signOutBtn">
+        Sign out
+      </a>
+
     </div>
+
   </div>
 
-  <!-- HEADER -->
+  <!-- =========================
+       HEADER
+  ========================= -->
+
   <header class="header" id="header">
+
     <button class="menu-toggle" id="menuToggle">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
+
+      <svg width="24" height="24"
+           viewBox="0 0 24 24"
+           fill="none"
+           stroke="currentColor"
+           stroke-width="2">
+
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+
       </svg>
+
     </button>
+
     <div class="header-right">
+
       <span class="badge-no">No</span>
+
       <button class="icon-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+        <svg width="20" height="20"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
           <circle cx="12" cy="12" r="4"/>
-          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          <path d="M12 2v2"/>
+          <path d="M12 20v2"/>
+          <path d="M4.93 4.93l1.41 1.41"/>
+          <path d="M17.66 17.66l1.41 1.41"/>
+          <path d="M2 12h2"/>
+          <path d="M20 12h2"/>
+          <path d="M6.34 17.66l-1.41 1.41"/>
+          <path d="M19.07 4.93l-1.41 1.41"/>
+
         </svg>
+
       </button>
+
       <button class="icon-btn">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+
+        <svg width="20" height="20"
+             viewBox="0 0 24 24"
+             fill="none"
+             stroke="currentColor"
+             stroke-width="2">
+
           <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
           <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+
         </svg>
+
       </button>
+
       <div class="avatar" id="userAvatar">--</div>
+
     </div>
+
   </header>
 
-  <div class="container">
+  <!-- =========================
+       MAIN
+  ========================= -->
+
+  <main class="container">
+
     <h1>SMS Numbers</h1>
-    <p class="subtitle">Get temporary numbers for verification</p>
 
-    <div class="section-title">1. Choose Country</div>
-    <div class="countries-grid" id="countriesGrid">
-      <!-- Countries will be added by JavaScript -->
-    </div>
+    <p class="subtitle">
+      Get temporary numbers for verification
+    </p>
 
-    <div class="section-title">2. Choose App</div>
-    <div class="apps-grid" id="appsGrid">
-      <!-- Apps will be added by JavaScript -->
-    </div>
+    <!-- BALANCE -->
 
-    <button class="buy-btn" id="buyBtn" disabled>Select Country & App first</button>
-  </div>
+    <div class="balance-card">
 
-  <!-- CHAT POPUP -->
-  <div class="chat-overlay" id="chatOverlay">
-    <div class="chat-box">
-      <div class="chat-header">
-        <div class="avatar-small">TS</div>
-        <div class="chat-header-info">
-          <h3>Trust Socials</h3>
-          <p>Online</p>
+      <div>
+        <div class="balance-label">
+          Wallet Balance
+        </div>
+
+        <div class="balance-value"
+             id="walletBalance">
+          ₦0.00
         </div>
       </div>
-      <div class="chat-messages" id="chatMessages">
-        <!-- Messages will appear here with animation -->
-      </div>
+
     </div>
+
+    <!-- ERROR -->
+
+    <div class="error-box" id="errorBox"></div>
+
+    <!-- BUY CARD -->
+
+    <div class="buy-card">
+
+      <!-- PROVIDER -->
+
+      <div class="section-title">
+        1. Provider
+      </div>
+
+      <div class="providers" id="providers">
+
+        <div class="provider-card"
+             data-provider="global">
+
+          <div class="provider-icon">
+            🌐
+          </div>
+
+          <div class="provider-info">
+
+            <div class="provider-name">
+              Global Number
+            </div>
+
+            <div class="provider-description">
+              Global numbers
+            </div>
+
+          </div>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </div>
+
+
+        <div class="provider-card"
+             data-provider="usa">
+
+          <div class="provider-icon">
+            🇺🇸
+          </div>
+
+          <div class="provider-info">
+
+            <div class="provider-name">
+              USA Number
+            </div>
+
+            <div class="provider-description">
+              USA numbers only
+            </div>
+
+          </div>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </div>
+
+
+        <div class="provider-card"
+             data-provider="usa2">
+
+          <div class="provider-icon">
+            🌐
+          </div>
+
+          <div class="provider-info">
+
+            <div class="provider-name">
+              Global Number (Server 2)
+            </div>
+
+            <div class="provider-description">
+              Global numbers
+            </div>
+
+          </div>
+
+          <div class="check">
+            ✓
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- COUNTRY -->
+
+      <div class="country-area">
+
+        <div class="section-title">
+          2. Country
+        </div>
+
+        <div class="select-box">
+
+          <select id="countrySelect">
+
+            <option value="">
+              Select country...
+            </option>
+
+          </select>
+
+          <div class="select-arrow">
+            ▼
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <!-- SERVICE -->
+
+      <div class="service-area">
+
+        <div class="section-title">
+          3. Service
+        </div>
+
+        <input
+          type="text"
+          class="service-search"
+          id="serviceSearch"
+          placeholder="Search service..."
+          autocomplete="off"
+        >
+
+        <select
+          class="service-select"
+          id="serviceSelect">
+
+          <option value="">
+            Select service...
+          </option>
+
+        </select>
+
+      </div>
+
+
+      <!-- PRICE -->
+
+      <div class="price-box">
+
+        <div class="price-label">
+          Price
+        </div>
+
+        <div class="price"
+             id="price">
+          --
+        </div>
+
+        <div class="price-note"
+             id="priceNote">
+          Select a service to see the price.
+        </div>
+
+      </div>
+
+
+      <!-- BUY -->
+
+      <button
+        class="buy-btn"
+        id="buyBtn"
+        disabled>
+
+        Select Provider, Country & Service
+
+      </button>
+
+    </div>
+
+
+    <!-- HOW IT WORKS -->
+
+    <div class="how-card">
+
+      <div class="how-title">
+
+        <span class="how-title-icon">
+          ⓘ
+        </span>
+
+        How it works
+
+      </div>
+
+      <div class="how-step">
+
+        <div class="how-step-number">
+          1
+        </div>
+
+        <div>
+          Choose your provider, country and service.
+        </div>
+
+      </div>
+
+      <div class="how-step">
+
+        <div class="how-step-number">
+          2
+        </div>
+
+        <div>
+          The cost is deducted from your wallet.
+        </div>
+
+      </div>
+
+      <div class="how-step">
+
+        <div class="how-step-number">
+          3
+        </div>
+
+        <div>
+          Your number appears after a successful purchase.
+        </div>
+
+      </div>
+
+      <div class="how-step">
+
+        <div class="how-step-number">
+          4
+        </div>
+
+        <div>
+          We automatically check for your SMS code.
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       NUMBER MODAL
+  ========================= -->
+
+  <div class="modal-overlay" id="numberModal">
+
+    <div class="modal">
+
+      <div class="modal-handle"></div>
+
+      <div class="modal-title">
+        Your SMS Number
+      </div>
+
+      <div class="modal-subtitle"
+           id="modalSubtitle">
+        Your number is ready.
+      </div>
+
+      <div class="number-box">
+
+        <div class="number-label">
+          Phone Number
+        </div>
+
+        <div class="number-value"
+             id="numberValue">
+          --
+        </div>
+
+      </div>
+
+      <div class="sms-code-box">
+
+        <div class="sms-code-label">
+          SMS Code
+        </div>
+
+        <div class="sms-code"
+             id="smsCode">
+          Waiting...
+        </div>
+
+      </div>
+
+      <button
+        class="modal-close"
+        id="closeModal">
+
+        Close
+
+      </button>
+
+    </div>
+
   </div>
-    <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-analytics.js";
-    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+  <!-- =========================
+       FIREBASE
+  ========================= -->
+
+  <script type="module">
+
+    import {
+      initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged,
+      signOut
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      addDoc,
+      collection,
+      serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    /* =========================
+       FIREBASE CONFIG
+    ========================= */
 
     const firebaseConfig = {
+
       apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
-      authDomain: "trustsocials-8fc8b.firebaseapp.com",
-      projectId: "trustsocials-8fc8b",
-      storageBucket: "trustsocials-8fc8b.firebasestorage.app",
-      messagingSenderId: "675550258010",
-      appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
-      measurementId: "G-KDVYRV55JD"
+
+      authDomain:
+        "trustsocials-8fc8b.firebaseapp.com",
+
+      projectId:
+        "trustsocials-8fc8b",
+
+      storageBucket:
+        "trustsocials-8fc8b.firebasestorage.app",
+
+      messagingSenderId:
+        "675550258010",
+
+      appId:
+        "1:675550258010:web:ec6444eb22b04a92fd0963",
+
+      measurementId:
+        "G-KDVYRV55JD"
+
     };
 
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
-    const auth = getAuth(app);
 
-    // ========== DATA ==========
-    const countries = [
-      { name: "United States", flag: "🇺🇸" },
-      { name: "United Kingdom", flag: "🇬🇧" },
-      { name: "Canada", flag: "🇨🇦" },
-      { name: "Germany", flag: "🇩🇪" },
-      { name: "France", flag: "🇫🇷" },
-      { name: "Netherlands", flag: "🇳🇱" },
-      { name: "Australia", flag: "🇦🇺" },
-      { name: "Sweden", flag: "🇸🇪" },
-      { name: "Poland", flag: "🇵🇱" },
-      { name: "Spain", flag: "🇪🇸" },
-      { name: "Italy", flag: "🇮🇹" },
-      { name: "Brazil", flag: "🇧🇷" },
-      { name: "India", flag: "🇮🇳" },
-      { name: "Indonesia", flag: "🇮🇩" },
-      { name: "Philippines", flag: "🇵🇭" },
-      { name: "Malaysia", flag: "🇲🇾" },
-      { name: "Singapore", flag: "🇸🇬" },
-      { name: "South Africa", flag: "🇿🇦" },
-      { name: "Nigeria", flag: "🇳🇬" },
-      { name: "Other Country", flag: "🌍" }
-    ];
+    const app =
+      initializeApp(firebaseConfig);
 
-    const apps = [
-      { name: "WhatsApp", icon: "💬" },
-      { name: "Telegram", icon: "✈️" },
-      { name: "Instagram", icon: "📸" },
-      { name: "Gmail", icon: "📧" },
-      { name: "Facebook", icon: "👤" },
-      { name: "Twitter/X", icon: "🐦" },
-      { name: "TikTok", icon: "🎵" },
-      { name: "Discord", icon: "🎮" },
-      { name: "Other App", icon: "📱" }
-    ];
+    const auth =
+      getAuth(app);
 
-    let selectedCountry = null;
-    let selectedApp = null;
+    const db =
+      getFirestore(app);
 
-    // ========== SIDEBAR ==========
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
 
-    document.getElementById('menuToggle').addEventListener('click', () => {
-      sidebar.classList.add('active');
-      overlay.classList.add('active');
-      document.body.style.overflow = 'hidden';
-    });
-    overlay.addEventListener('click', () => {
-      sidebar.classList.remove('active');
-      overlay.classList.remove('active');
-      document.body.style.overflow = '';
-    });
+    /* =========================
+       NETLIFY BACKEND
+       
+       WE WILL PUT THE REAL
+       NETLIFY URL HERE IN PART 2.
+    ========================= */
 
-    // Header scroll
-    window.addEventListener('scroll', () => {
-      document.getElementById('header').classList.toggle('scrolled', window.scrollY > 10);
-    });
+    const API_URL =
+      "https://YOUR-NETLIFY-SITE.netlify.app/.netlify/functions/mytpsms";
 
-    // Sign out
-    document.getElementById('signOutBtn').addEventListener('click', async (e) => {
-      e.preventDefault();
-      await signOut(auth);
-      window.location.href = 'login.html';
-    });
 
-    // ========== RENDER COUNTRIES ==========
-    const countriesGrid = document.getElementById('countriesGrid');
-    countries.forEach(country => {
-      const card = document.createElement('div');
-      card.className = 'country-card';
-      card.innerHTML = `
-        <span class="country-flag">${country.flag}</span>
-        <span class="country-name">${country.name}</span>
-      `;
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.country-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedCountry = country.name;
-        updateBuyButton();
+    /* =========================
+       VARIABLES
+    ========================= */
+
+    let currentUser = null;
+
+    let selectedProvider = "";
+
+    let selectedCountry = "";
+
+    let selectedService = null;
+
+    let allServices = [];
+
+    let currentOrder = null;
+
+
+    /* =========================
+       ELEMENTS
+    ========================= */
+
+    const sidebar =
+      document.getElementById("sidebar");
+
+    const overlay =
+      document.getElementById("sidebarOverlay");
+
+    const countrySelect =
+      document.getElementById("countrySelect");
+
+    const serviceSelect =
+      document.getElementById("serviceSelect");
+
+    const serviceSearch =
+      document.getElementById("serviceSearch");
+
+    const buyBtn =
+      document.getElementById("buyBtn");
+
+    const price =
+      document.getElementById("price");
+
+    const priceNote =
+      document.getElementById("priceNote");
+
+    const errorBox =
+      document.getElementById("errorBox");
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    document
+      .getElementById("menuToggle")
+      .addEventListener("click", () => {
+
+        sidebar.classList.add("active");
+
+        overlay.classList.add("active");
+
+        document.body.style.overflow =
+          "hidden";
+
       });
-      countriesGrid.appendChild(card);
-    });
 
-    // ========== RENDER APPS ==========
-    const appsGrid = document.getElementById('appsGrid');
-    apps.forEach(appItem => {
-      const card = document.createElement('div');
-      card.className = 'app-card';
-      card.innerHTML = `
-        <div class="app-icon">${appItem.icon}</div>
-        <div class="app-name">${appItem.name}</div>
-      `;
-      card.addEventListener('click', () => {
-        document.querySelectorAll('.app-card').forEach(c => c.classList.remove('active'));
-        card.classList.add('active');
-        selectedApp = appItem.name;
-        updateBuyButton();
+
+    overlay.addEventListener(
+      "click",
+      closeSidebar
+    );
+
+
+    function closeSidebar() {
+
+      sidebar.classList.remove("active");
+
+      overlay.classList.remove("active");
+
+      document.body.style.overflow = "";
+
+    }
+
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    window.addEventListener(
+      "scroll",
+      () => {
+
+        document
+          .getElementById("header")
+          .classList.toggle(
+            "scrolled",
+            window.scrollY > 10
+          );
+
+      }
+    );
+
+
+    /* =========================
+       SIGN OUT
+    ========================= */
+
+    document
+      .getElementById("signOutBtn")
+      .addEventListener(
+        "click",
+        async (e) => {
+
+          e.preventDefault();
+
+          await signOut(auth);
+
+          window.location.href =
+            "login.html";
+
+        }
+      );
+
+
+    /* =========================
+       PROVIDER SELECTION
+    ========================= */
+
+    document
+      .querySelectorAll(".provider-card")
+      .forEach(card => {
+
+        card.addEventListener(
+          "click",
+          async () => {
+
+            document
+              .querySelectorAll(".provider-card")
+              .forEach(c =>
+                c.classList.remove("active")
+              );
+
+            card.classList.add("active");
+
+            selectedProvider =
+              card.dataset.provider;
+
+            selectedCountry = "";
+
+            selectedService = null;
+
+            countrySelect.innerHTML =
+              `<option value="">Loading countries...</option>`;
+
+            serviceSelect.innerHTML =
+              `<option value="">Select service...</option>`;
+
+            price.textContent = "--";
+
+            priceNote.textContent =
+              "Select a service to see the price.";
+
+            updateBuyButton();
+
+            await loadCountries();
+
+          }
+        );
+
       });
-      appsGrid.appendChild(card);
-    });
 
-    // ========== BUY BUTTON ==========
-    const buyBtn = document.getElementById('buyBtn');
+
+    /* =========================
+       LOAD COUNTRIES
+    ========================= */
+
+    async function loadCountries() {
+
+      try {
+
+        hideError();
+
+        const response =
+          await fetch(
+            `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`
+          );
+
+        const data =
+          await response.json();
+
+        if (!response.ok || data.error) {
+
+          throw new Error(
+            data.error ||
+            "Unable to load countries."
+          );
+
+        }
+
+        countrySelect.innerHTML =
+          `<option value="">Select country...</option>`;
+
+
+        const countries =
+          data.countries || [];
+
+
+        countries.forEach(country => {
+
+          const option =
+            document.createElement("option");
+
+          option.value =
+            country.code || country.id || country.name;
+
+          option.textContent =
+            country.name || country.code;
+
+          countrySelect.appendChild(option);
+
+        });
+
+      } catch (error) {
+
+        showError(
+          "Unable to load countries: " +
+          error.message
+        );
+
+        countrySelect.innerHTML =
+          `<option value="">Unable to load countries</option>`;
+
+      }
+
+    }
+
+
+    /* =========================
+       COUNTRY CHANGE
+    ========================= */
+
+    countrySelect.addEventListener(
+      "change",
+      async () => {
+
+        selectedCountry =
+          countrySelect.value;
+
+        selectedService = null;
+
+        serviceSelect.innerHTML =
+          `<option value="">Loading services...</option>`;
+
+        price.textContent = "--";
+
+        priceNote.textContent =
+          "Select a service to see the price.";
+
+        updateBuyButton();
+
+
+        if (!selectedCountry) {
+
+          serviceSelect.innerHTML =
+            `<option value="">Select service...</option>`;
+
+          return;
+
+        }
+
+
+        await loadServices();
+
+      }
+    );
+
+
+    /* =========================
+       LOAD SERVICES
+    ========================= */
+
+    async function loadServices() {
+
+      try {
+
+        hideError();
+
+        const response =
+          await fetch(
+            `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`
+          );
+
+        const data =
+          await response.json();
+
+        if (!response.ok || data.error) {
+
+          throw new Error(
+            data.error ||
+            "Unable to load services."
+          );
+
+        }
+
+        allServices =
+          data.services || [];
+
+        renderServices(allServices);
+
+      } catch (error) {
+
+        showError(
+          "Unable to load SMS services: " +
+          error.message
+        );
+
+        serviceSelect.innerHTML =
+          `<option value="">Unable to load services</option>`;
+
+      }
+
+    }
+
+
+    /* =========================
+       RENDER SERVICES
+    ========================= */
+
+    function renderServices(services) {
+
+      serviceSelect.innerHTML =
+        `<option value="">Select service...</option>`;
+
+
+      services.forEach(service => {
+
+        const option =
+          document.createElement("option");
+
+        option.value =
+          service.code ||
+          service.id ||
+          service.name;
+
+        option.textContent =
+          service.name ||
+          service.code;
+
+        option.dataset.service =
+          JSON.stringify(service);
+
+        serviceSelect.appendChild(option);
+
+      });
+
+    }
+
+
+    /* =========================
+       SEARCH SERVICES
+    ========================= */
+
+    serviceSearch.addEventListener(
+      "input",
+      () => {
+
+        const search =
+          serviceSearch.value
+            .trim()
+            .toLowerCase();
+
+
+        const filtered =
+          allServices.filter(service => {
+
+            const name =
+              String(
+                service.name ||
+                service.code ||
+                ""
+              ).toLowerCase();
+
+            return name.includes(search);
+
+          });
+
+
+        renderServices(filtered);
+
+      }
+    );
+
+
+    /* =========================
+       SERVICE CHANGE
+    ========================= */
+
+    serviceSelect.addEventListener(
+      "change",
+      () => {
+
+        const option =
+          serviceSelect.options[
+            serviceSelect.selectedIndex
+          ];
+
+        if (!option || !option.value) {
+
+          selectedService = null;
+
+          price.textContent = "--";
+
+          priceNote.textContent =
+            "Select a service to see the price.";
+
+          updateBuyButton();
+
+          return;
+
+        }
+
+
+        try {
+
+          selectedService =
+            JSON.parse(
+              option.dataset.service
+            );
+
+        } catch {
+
+          selectedService = {
+            code: option.value,
+            name: option.textContent
+          };
+
+        }
+
+
+        const originalPrice =
+          Number(
+            selectedService.price ||
+            selectedService.cost ||
+            selectedService.amount ||
+            0
+          );
+
+
+        const sellingPrice =
+          calculateSellingPrice(
+            originalPrice
+          );
+
+
+        price.textContent =
+          formatNaira(sellingPrice);
+
+
+        priceNote.textContent =
+          `Provider price: ${formatNaira(originalPrice)}`;
+
+
+        updateBuyButton();
+
+      }
+    );
+
+
+    /* =========================
+       YOUR PRICING RULE
+       
+       <= ₦500       = x2
+       > ₦500 < ₦1000 = x1.5
+       >= ₦1000      = x1.3
+    ========================= */
+
+    function calculateSellingPrice(
+      providerPrice
+    ) {
+
+      const amount =
+        Number(providerPrice);
+
+
+      if (!Number.isFinite(amount) ||
+          amount <= 0) {
+
+        return 0;
+
+      }
+
+
+      if (amount <= 500) {
+
+        return amount * 2;
+
+      }
+
+
+      if (amount < 1000) {
+
+        return amount * 1.5;
+
+      }
+
+
+      return amount * 1.3;
+
+    }
+
+
+    /* =========================
+       FORMAT NAIRA
+    ========================= */
+
+    function formatNaira(amount) {
+
+      return new Intl.NumberFormat(
+        "en-NG",
+        {
+          style: "currency",
+          currency: "NGN",
+          minimumFractionDigits: 2
+        }
+      ).format(amount);
+
+    }
+
+
+    /* =========================
+       BUY BUTTON
+    ========================= */
 
     function updateBuyButton() {
-      if (selectedCountry && selectedApp) {
+
+      if (
+        selectedProvider &&
+        selectedCountry &&
+        selectedService
+      ) {
+
         buyBtn.disabled = false;
-        buyBtn.textContent = `Buy ${selectedApp} Number (${selectedCountry})`;
+
+        buyBtn.textContent =
+          "Buy Number";
+
       } else {
+
         buyBtn.disabled = true;
-        buyBtn.textContent = 'Select Country & App first';
-      }
-    }
 
-    buyBtn.addEventListener('click', () => {
-      if (!selectedCountry || !selectedApp) return;
-      startChatAnimation();
-    });
+        buyBtn.textContent =
+          "Select Provider, Country & Service";
 
-    // ========== CHAT ANIMATION ==========
-    const chatOverlay = document.getElementById('chatOverlay');
-    const chatMessages = document.getElementById('chatMessages');
-
-    function startChatAnimation() {
-      chatMessages.innerHTML = '';
-      chatOverlay.classList.add('active');
-
-      // Step 1: Typing
-      setTimeout(() => showTyping(), 400);
-
-      // Step 2: User message
-      setTimeout(() => {
-        removeTyping();
-        addMessage(`Hey, I want to buy the SMS number for <b>${selectedCountry} - ${selectedApp}</b>`, 'user');
-      }, 1600);
-
-      // Step 3: Typing
-      setTimeout(() => showTyping(), 2400);
-
-      // Step 4: Bot reply 1
-      setTimeout(() => {
-        removeTyping();
-        addMessage('Available, checking availability.', 'bot');
-      }, 3600);
-
-      // Step 5: Typing
-      setTimeout(() => showTyping(), 4400);
-
-      // Step 6: Bot reply 2 + redirect
-      setTimeout(() => {
-        removeTyping();
-        addMessage('Hold on, redirecting to WhatsApp...', 'bot');
-
-        // Redirect after short delay
-        setTimeout(() => {
-  const message = `Hi, I want to buy a temporary ${selectedApp} number for ${selectedCountry}.`;
-  const url = `https://wa.me/2349117412352?text=${encodeURIComponent(message)}`;
-  
-  window.location.href = url;   // ← Changed this line
-}, 1500);
-        }, 5600);
       }
 
-    function showTyping() {
-      const typing = document.createElement('div');
-      typing.className = 'typing';
-      typing.id = 'typingIndicator';
-      typing.innerHTML = '<span></span><span></span><span></span>';
-      chatMessages.appendChild(typing);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    function removeTyping() {
-      const typing = document.getElementById('typingIndicator');
-      if (typing) typing.remove();
-    }
 
-    function addMessage(text, type) {
-      const msg = document.createElement('div');
-      msg.className = `message ${type}`;
-      msg.innerHTML = text;
-      chatMessages.appendChild(msg);
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+    /* =========================
+       BUY NUMBER
+    ========================= */
 
-    // ========== AUTH ==========
-    onAuthStateChanged(auth, (user) => {
-      if (!user) {
-        window.location.href = 'login.html';
+    buyBtn.addEventListener(
+      "click",
+      buyNumber
+    );
+
+
+    async function buyNumber() {
+
+      if (
+        !selectedProvider ||
+        !selectedCountry ||
+        !selectedService
+      ) {
+
         return;
+
       }
 
-      const displayName = user.displayName || user.email.split('@')[0];
-      const names = displayName.trim().split(' ');
-      let initials = names[0].charAt(0).toUpperCase();
-      if (names.length > 1) initials += names[names.length - 1].charAt(0).toUpperCase();
-      document.getElementById('userAvatar').textContent = initials;
-    });
+
+      if (!currentUser) {
+
+        showError(
+          "Please sign in before buying a number."
+        );
+
+        return;
+
+      }
+
+
+      const providerPrice =
+        Number(
+          selectedService.price ||
+          selectedService.cost ||
+          selectedService.amount ||
+          0
+        );
+
+
+      const sellingPrice =
+        calculateSellingPrice(
+          providerPrice
+        );
+
+
+      buyBtn.disabled = true;
+
+      buyBtn.textContent =
+        "Buying Number...";
+
+
+      try {
+
+        hideError();
+
+
+        const response =
+          await fetch(
+            API_URL,
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+
+              body: JSON.stringify({
+
+                action: "buy",
+
+                provider:
+                  selectedProvider,
+
+                country:
+                  selectedCountry,
+
+                service:
+                  selectedService.code ||
+                  selectedService.id ||
+                  selectedService.name,
+
+                serviceName:
+                  selectedService.name ||
+                  selectedService.code,
+
+                providerPrice:
+                  providerPrice,
+
+                sellingPrice:
+                  sellingPrice,
+
+                uid:
+                  currentUser.uid
+
+              })
+
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+        if (!response.ok || data.error) {
+
+          throw new Error(
+            data.error ||
+            "Unable to purchase number."
+          );
+
+        }
+
+
+        /*
+          The backend will return the
+          purchased number here.
+        */
+
+        currentOrder = data;
+
+
+        document.getElementById(
+          "numberValue"
+        ).textContent =
+          data.number ||
+          data.phone ||
+          "--";
+
+
+        document.getElementById(
+          "modalSubtitle"
+        ).textContent =
+          `${selectedCountry} • ${selectedService.name || selectedService.code}`;
+
+
+        document.getElementById(
+          "smsCode"
+        ).textContent =
+          "Waiting...";
+
+
+        document
+          .getElementById("numberModal")
+          .classList.add("active");
+
+
+        /*
+          Later, Part 2 backend will
+          provide the real SMS status.
+        */
+
+
+      } catch (error) {
+
+        showError(
+          error.message ||
+          "Purchase failed."
+        );
+
+      } finally {
+
+        buyBtn.disabled = false;
+
+        updateBuyButton();
+
+      }
+
+    }
+
+
+    /* =========================
+       CLOSE NUMBER MODAL
+    ========================= */
+
+    document
+      .getElementById("closeModal")
+      .addEventListener(
+        "click",
+        () => {
+
+          document
+            .getElementById("numberModal")
+            .classList.remove("active");
+
+        }
+      );
+
+
+    document
+      .getElementById("numberModal")
+      .addEventListener(
+        "click",
+        e => {
+
+          if (
+            e.target.id ===
+            "numberModal"
+          ) {
+
+            document
+              .getElementById("numberModal")
+              .classList.remove("active");
+
+          }
+
+        }
+      );
+
+
+    /* =========================
+       ERRORS
+    ========================= */
+
+    function showError(message) {
+
+      errorBox.textContent =
+        message;
+
+      errorBox.style.display =
+        "block";
+
+    }
+
+
+    function hideError() {
+
+      errorBox.style.display =
+        "none";
+
+    }
+
+
+    /* =========================
+       AUTH
+    ========================= */
+
+    onAuthStateChanged(
+      auth,
+      async user => {
+
+        if (!user) {
+
+          window.location.href =
+            "login.html";
+
+          return;
+
+        }
+
+
+        currentUser = user;
+
+
+        const displayName =
+          user.displayName ||
+          user.email?.split("@")[0] ||
+          "User";
+
+
+        const names =
+          displayName
+            .trim()
+            .split(/\s+/);
+
+
+        let initials =
+          names[0]
+            ?.charAt(0)
+            .toUpperCase() || "";
+
+
+        if (names.length > 1) {
+
+          initials +=
+            names[names.length - 1]
+              .charAt(0)
+              .toUpperCase();
+
+        }
+
+
+        document.getElementById(
+          "userAvatar"
+        ).textContent =
+          initials;
+
+
+        /*
+          Read wallet balance.
+          This expects:
+
+          users/{uid}
+          balance
+
+          We'll confirm this with
+          your wallet.html later.
+        */
+
+        try {
+
+          const userRef =
+            doc(
+              db,
+              "users",
+              user.uid
+            );
+
+          const userSnap =
+            await getDoc(userRef);
+
+
+          if (userSnap.exists()) {
+
+            const userData =
+              userSnap.data();
+
+
+            const balance =
+              Number(
+                userData.balance || 0
+              );
+
+
+            document.getElementById(
+              "walletBalance"
+            ).textContent =
+              formatNaira(balance);
+
+          }
+
+        } catch (error) {
+
+          console.log(
+            "Balance loading error:",
+            error
+          );
+
+        }
+
+      }
+    );
+
   </script>
+
 </body>
 </html>
