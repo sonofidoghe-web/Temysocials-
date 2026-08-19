@@ -1,0 +1,13 @@
+{
+  "name": "trustsocials-netlify",
+  "version": "1.0.0",
+  "description": "Trust Socials backend",
+  "private": true,
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.4.0"
+  }
+}
