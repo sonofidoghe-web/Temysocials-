@@ -1192,7 +1192,6 @@ document.querySelectorAll(".provider-card").forEach(card => {
 
 
 /* ================= COUNTRIES ================= */
-
 async function loadCountries(){
 
   if(!selectedProvider) return;
@@ -1204,16 +1203,21 @@ async function loadCountries(){
 
     hideError();
 
+    const token =
+      await getFirebaseToken();
+
     const url =
       `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
 
-    const token = await getFirebaseToken();
+    const data =
+      await requestJSON(url, {
 
-const data = await requestJSON(url, {
-  headers: {
-    "Authorization": `Bearer ${token}`
-  }
-});
+        headers:{
+          "Authorization":
+            `Bearer ${token}`
+        }
+
+      });
 
     console.log("COUNTRIES:", data);
 
@@ -1260,7 +1264,8 @@ const data = await requestJSON(url, {
 
       if(!code) return;
 
-      const option = document.createElement("option");
+      const option =
+        document.createElement("option");
 
       option.value = code;
       option.textContent = name || code;
@@ -1274,18 +1279,26 @@ const data = await requestJSON(url, {
       countrySelect.innerHTML =
         `<option value="">No countries available</option>`;
 
-      throw new Error("The SMS provider returned no countries.");
+      throw new Error(
+        "The SMS provider returned no countries."
+      );
 
     }
 
   }catch(error){
 
-    console.error("COUNTRIES ERROR:", error);
+    console.error(
+      "COUNTRIES ERROR:",
+      error
+    );
 
     countrySelect.innerHTML =
       `<option value="">Unable to load countries</option>`;
 
-    showError("Unable to load countries: " + error.message);
+    showError(
+      "Unable to load countries: " +
+      error.message
+    );
 
   }
 
