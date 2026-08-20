@@ -162,15 +162,35 @@ async function verifyUser(req){
       token
     );
 
-  }catch(error){
+    }catch(error){
 
     console.error(
-      "Firebase token verification failed:",
-      error
+      "========== FIREBASE TOKEN ERROR =========="
+    );
+
+    console.error(
+      "Error code:",
+      error?.code
+    );
+
+    console.error(
+      "Error message:",
+      error?.message
+    );
+
+    console.error(
+      "Project ID:",
+      process.env.FIREBASE_PROJECT_ID
+    );
+
+    console.error(
+      "=========================================="
     );
 
     throw new Error(
-      "Invalid or expired authentication."
+      `Firebase authentication failed: ${
+        error?.code || "unknown"
+      }`
     );
 
   }
