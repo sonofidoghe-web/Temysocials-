@@ -1,287 +1,162 @@
-const API_BASE = "https://mytpsms.com/api/v1";
+const fetch = require("node-fetch");
+
+// Your pricing rules
+function calculateSellingPrice(originalPrice) {
+  const price = parseFloat(originalPrice);
+  if (isNaN(price)) return 0;
+
+  if (price <= 500) return price * 2;          // ×2
+  if (price < 1000) return price * 1.5;        // +50%
+  return price * 1.3;                          // +30%
+}
 
 exports.handler = async (event) => {
+  const headers = {
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Content-Type": "application/json",
+  };
+
+  if (event.httpMethod === "OPTIONS") {
+    return { statusCode: 200, headers, body: "" };
+  }
+
   try {
-    const method = event.httpMethod;
-
-    let action = event.queryStringParameters?.action || "";
-
-    if (method === "POST") {
-      let body = {};
-
-      try {
-        body = JSON.parse(event.body || "{}");
-      } catch {
-        return response(400, {
-          success: false,
-          error: "Invalid JSON request."
-        });
-      }
-
-      action = body.action || "";
-    }
-
-    if (!action) {
-      return response(400, {
-        success: false,
-        error: "Missing action."
-      });
-    }
-
     const apiKey = process.env.MYTPSMS_API_KEY;
-
     if (!apiKey) {
-      console.error("MYTPSMS_API_KEY is missing.");
-
-      return response(500, {
-        success: false,
-        error: "SMS API is not configured."
-      });
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ success: false, message: "API key not configured" }),
+      };
     }
 
-    /*
-      BALANCE
-    */
+    // ========== GET REQUESTS ==========
+    if (event.httpMethod === "GET") {
+      const action = event.queryStringParameters?.action;
+      const provider = event.queryStringParameters?.provider;
+      const country = event.queryStringParameters?.country;
+      const order_id = event.queryStringParameters?.order_id;
 
-    if (action === "balance") {
-      return await proxyGET("/balance.php");
-    }
-
-    /*
-      COUNTRIES
-    */
-
-    if (action === "countries") {
-      const provider =
-        event.queryStringParameters?.provider || "";
-
-      if (!provider) {
-        return response(400, {
-          success: false,
-          error: "Provider is required."
-        });
+      // Get Countries
+      if (action === "countries") {
+        const res = await fetch(
+          `https://mytpsms.com/api/v1/countries.php?provider=${provider}`,
+          { headers: { "X-API-KEY": apiKey } }
+        );
+        const data = await res.json();
+        return { statusCode: 200, headers, body: JSON.stringify(data) };
       }
 
-      return await proxyGET(
-        `/countries.php?provider=${encodeURIComponent(provider)}`
-      );
-    }
-
-    /*
-      SERVICES
-    */
-
-    if (action === "services") {
-      const provider =
-        event.queryStringParameters?.provider || "";
-
-      const country =
-        event.queryStringParameters?.country || "";
-
-      if (!provider || !country) {
-        return response(400, {
-          success: false,
-          error: "Provider and country are required."
-        });
+      // Get Services
+      if (action === "services") {
+        const res = await fetch(
+          `https://mytpsms.com/api/v1/services.php?provider=${provider}&country=${country}`,
+          { headers: { "X-API-KEY": apiKey } }
+        );
+        const data = await res.json();
+        return { statusCode: 200, headers, body: JSON.stringify(data) };
       }
 
-      return await proxyGET(
-        `/services.php?provider=${encodeURIComponent(provider)}&country=${encodeURIComponent(country)}`
-      );
-    }
-
-    /*
-      STATUS
-    */
-
-    if (action === "status") {
-      const orderId =
-        event.queryStringParameters?.order_id || "";
-
-      if (!orderId) {
-        return response(400, {
-          success: false,
-          error: "Order ID is required."
-        });
+      // Check Status
+      if (action === "status") {
+        const res = await fetch(
+          `https://mytpsms.com/api/v1/status.php?order_id=${order_id}`,
+          { headers: { "X-API-KEY": apiKey } }
+        );
+        const data = await res.json();
+        return { statusCode: 200, headers, body: JSON.stringify(data) };
       }
 
-      return await proxyGET(
-        `/status.php?order_id=${encodeURIComponent(orderId)}`
-      );
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ success: false, message: "Invalid action" }),
+      };
     }
 
-    /*
-      HISTORY
-    */
-
-    if (action === "history") {
-      const page =
-        event.queryStringParameters?.page || "1";
-
-      return await proxyGET(
-        `/history.php?page=${encodeURIComponent(page)}`
-      );
-    }
-
-    /*
-      CANCEL
-    */
-
-    if (action === "cancel") {
-      if (method !== "POST") {
-        return response(405, {
-          success: false,
-          error: "POST required."
-        });
-      }
-
+    // ========== POST REQUEST (BUY) ==========
+    if (event.httpMethod === "POST") {
       const body = JSON.parse(event.body || "{}");
 
-      if (!body.order_id) {
-        return response(400, {
-          success: false,
-          error: "Order ID is required."
-        });
+      if (body.action !== "buy") {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ success: false, message: "Invalid action" }),
+        };
       }
 
-      return await proxyPOST("/cancel.php", {
-        order_id: body.order_id
+      const { provider, country, service, serviceName } = body;
+
+      if (!provider || !country || !service) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify({ success: false, message: "Missing required fields" }),
+        };
+      }
+
+      // Call MYTPSMS Buy
+      const formData = new URLSearchParams();
+      formData.append("provider", provider);
+      formData.append("country", country);
+      formData.append("service", service);
+      if (serviceName) formData.append("service_name", serviceName);
+
+      const res = await fetch("https://mytpsms.com/api/v1/buy.php", {
+        method: "POST",
+        headers: {
+          "X-API-KEY": apiKey,
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData.toString(),
       });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        return {
+          statusCode: 400,
+          headers,
+          body: JSON.stringify(data),
+        };
+      }
+
+      // Apply your pricing markup
+      const originalPrice = parseFloat(data.price) || 0;
+      const sellingPrice = calculateSellingPrice(originalPrice);
+
+      // Return clean response
+      return {
+        statusCode: 200,
+        headers,
+        body: JSON.stringify({
+          success: true,
+          order_id: data.order_id,
+          number: data.number,
+          original_price: originalPrice,
+          selling_price: sellingPrice,   // ← This is what you charge the user
+          price: sellingPrice,           // also available as price
+          currency: data.currency || "NGN",
+          expires_at: data.expires_at,
+          status: data.status,
+        }),
+      };
     }
 
-    /*
-      BUY
-    */
-
-    if (action === "buy") {
-      if (method !== "POST") {
-        return response(405, {
-          success: false,
-          error: "POST required."
-        });
-      }
-
-      const body = JSON.parse(event.body || "{}");
-
-      if (
-        !body.provider ||
-        !body.country ||
-        !body.service
-      ) {
-        return response(400, {
-          success: false,
-          error:
-            "Provider, country and service are required."
-        });
-      }
-
-      /*
-        For now this sends the purchase request
-        to MYTP SMS.
-
-        Wallet deduction and Firebase order
-        recording will be added in the next step.
-      */
-
-      return await proxyPOST("/buy.php", {
-        provider: body.provider,
-        country: body.country,
-        service: body.service,
-        service_name: body.serviceName || ""
-      });
-    }
-
-    return response(400, {
-      success: false,
-      error: "Unknown action."
-    });
+    return {
+      statusCode: 405,
+      headers,
+      body: JSON.stringify({ success: false, message: "Method not allowed" }),
+    };
 
   } catch (error) {
-    console.error("MYTPSMS FUNCTION ERROR:", error);
-
-    return response(500, {
-      success: false,
-      error: "Internal SMS server error."
-    });
+    return {
+      statusCode: 500,
+      headers,
+      body: JSON.stringify({ success: false, message: error.message }),
+    };
   }
 };
-
-
-/*
-  GET REQUEST TO MYTPSMS
-*/
-
-async function proxyGET(path) {
-  const result = await fetch(
-    `${API_BASE}${path}`,
-    {
-      method: "GET",
-      headers: {
-        "X-API-KEY": process.env.MYTPSMS_API_KEY,
-        "Accept": "application/json"
-      }
-    }
-  );
-
-  return returnProviderResponse(result);
-}
-
-
-/*
-  POST REQUEST TO MYTPSMS
-*/
-
-async function proxyPOST(path, data) {
-  const result = await fetch(
-    `${API_BASE}${path}`,
-    {
-      method: "POST",
-      headers: {
-        "X-API-KEY": process.env.MYTPSMS_API_KEY,
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Accept": "application/json"
-      },
-      body: new URLSearchParams(data).toString()
-    }
-  );
-
-  return returnProviderResponse(result);
-}
-
-
-/*
-  RETURN PROVIDER RESPONSE
-*/
-
-async function returnProviderResponse(result) {
-  const text = await result.text();
-
-  let data;
-
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    return response(result.status, {
-      success: false,
-      error: "Invalid response from SMS provider."
-    });
-  }
-
-  return response(result.status, data);
-}
-
-
-/*
-  NETLIFY RESPONSE
-*/
-
-function response(statusCode, body) {
-  return {
-    statusCode,
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store"
-    },
-    body: JSON.stringify(body)
-  };
-}
