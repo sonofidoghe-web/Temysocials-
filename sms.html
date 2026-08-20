@@ -811,10 +811,7 @@
           Wallet Balance
         </div>
 
-        <div
-          class="balance-value"
-          id="walletBalance"
-        >
+        <div class="balance-value" id="walletBalance">
           ₦0.00
         </div>
 
@@ -822,10 +819,7 @@
 
     </div>
 
-    <div
-      class="error-box"
-      id="errorBox"
-    ></div>
+    <div class="error-box" id="errorBox"></div>
 
     <div class="buy-card">
 
@@ -833,15 +827,9 @@
         1. Provider
       </div>
 
-      <div
-        class="providers"
-        id="providers"
-      >
+      <div class="providers" id="providers">
 
-        <div
-          class="provider-card"
-          data-provider="global"
-        >
+        <div class="provider-card" data-provider="global">
 
           <div class="provider-icon">
             🌐
@@ -865,10 +853,7 @@
 
         </div>
 
-        <div
-          class="provider-card"
-          data-provider="usa"
-        >
+        <div class="provider-card" data-provider="usa">
 
           <div class="provider-icon">
             🇺🇸
@@ -892,10 +877,7 @@
 
         </div>
 
-        <div
-          class="provider-card"
-          data-provider="usa2"
-        >
+        <div class="provider-card" data-provider="usa2">
 
           <div class="provider-icon">
             🌐
@@ -930,11 +912,9 @@
         <div class="select-box">
 
           <select id="countrySelect">
-
             <option value="">
               Select country...
             </option>
-
           </select>
 
           <div class="select-arrow">
@@ -978,17 +958,11 @@
           Price
         </div>
 
-        <div
-          class="price"
-          id="price"
-        >
+        <div class="price" id="price">
           --
         </div>
 
-        <div
-          class="price-note"
-          id="priceNote"
-        >
+        <div class="price-note" id="priceNote">
           Select a service to see the price.
         </div>
 
@@ -1069,10 +1043,7 @@
 
   </main>
 
-  <div
-    class="modal-overlay"
-    id="numberModal"
-  >
+  <div class="modal-overlay" id="numberModal">
 
     <div class="modal">
 
@@ -1082,10 +1053,7 @@
         Your SMS Number
       </div>
 
-      <div
-        class="modal-subtitle"
-        id="modalSubtitle"
-      >
+      <div class="modal-subtitle" id="modalSubtitle">
         Your number is ready.
       </div>
 
@@ -1095,10 +1063,7 @@
           Phone Number
         </div>
 
-        <div
-          class="number-value"
-          id="numberValue"
-        >
+        <div class="number-value" id="numberValue">
           --
         </div>
 
@@ -1110,10 +1075,7 @@
           SMS Code
         </div>
 
-        <div
-          class="sms-code"
-          id="smsCode"
-        >
+        <div class="sms-code" id="smsCode">
           Waiting...
         </div>
 
@@ -1130,6 +1092,7 @@
     </div>
 
   </div>
+
 
   <script type="module">
 
@@ -1149,6 +1112,10 @@
       getDoc
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+    /* ==================================================
+       FIREBASE
+    ================================================== */
 
     const firebaseConfig = {
 
@@ -1187,8 +1154,7 @@
 
 
     /* ==================================================
-       IMPORTANT:
-       THIS MUST MATCH YOUR NETLIFY FUNCTION
+       NETLIFY FUNCTION
     ================================================== */
 
     const API_URL =
@@ -1196,19 +1162,17 @@
 
 
     let currentUser = null;
-
     let selectedProvider = "";
-
     let selectedCountry = "";
-
     let selectedService = null;
-
     let allServices = [];
-
     let currentOrder = null;
-
     let statusTimer = null;
 
+
+    /* ==================================================
+       ELEMENTS
+    ================================================== */
 
     const sidebar =
       document.getElementById("sidebar");
@@ -1262,10 +1226,10 @@
       .addEventListener("click", () => {
 
         sidebar.classList.add("active");
-
         overlay.classList.add("active");
 
-        document.body.style.overflow = "hidden";
+        document.body.style.overflow =
+          "hidden";
 
       });
 
@@ -1279,7 +1243,6 @@
     function closeSidebar() {
 
       sidebar.classList.remove("active");
-
       overlay.classList.remove("active");
 
       document.body.style.overflow = "";
@@ -1325,7 +1288,7 @@
             window.location.href =
               "login.html";
 
-          } catch (error) {
+          } catch {
 
             showError(
               "Unable to sign out. Please try again."
@@ -1338,7 +1301,7 @@
 
 
     /* ==================================================
-       PROVIDER SELECTION
+       PROVIDERS
     ================================================== */
 
     document
@@ -1353,7 +1316,9 @@
               .querySelectorAll(".provider-card")
               .forEach(item => {
 
-                item.classList.remove("active");
+                item.classList.remove(
+                  "active"
+                );
 
               });
 
@@ -1365,9 +1330,7 @@
               ).trim();
 
             selectedCountry = "";
-
             selectedService = null;
-
             allServices = [];
 
             serviceSearch.value = "";
@@ -1384,7 +1347,6 @@
               "Select a service to see the price.";
 
             hideError();
-
             updateBuyButton();
 
             await loadCountries();
@@ -1396,10 +1358,80 @@
 
 
     /* ==================================================
+       API HELPER
+    ================================================== */
+
+    async function requestJSON(
+      url,
+      options = {}
+    ) {
+
+      const response =
+        await fetch(
+          url,
+          {
+            ...options,
+            cache: "no-store"
+          }
+        );
+
+
+      const rawText =
+        await response.text();
+
+
+      let data = {};
+
+      try {
+
+        data =
+          rawText
+            ? JSON.parse(rawText)
+            : {};
+
+      } catch {
+
+        console.error(
+          "Invalid API response:",
+          rawText
+        );
+
+        throw new Error(
+          "The server returned an invalid response."
+        );
+
+      }
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          data.error ||
+          data.message ||
+          `Server error ${response.status}`
+        );
+
+      }
+
+
+      if (data.success === false) {
+
+        throw new Error(
+          data.error ||
+          data.message ||
+          "The request was unsuccessful."
+        );
+
+      }
+
+
+      return data;
+
+    }
+
+
+    /* ==================================================
        LOAD COUNTRIES
-       
-       CORRECT ROUTE:
-       ?action=countries&provider=global
     ================================================== */
 
     async function loadCountries() {
@@ -1408,8 +1440,10 @@
         return;
       }
 
+
       countrySelect.innerHTML =
         `<option value="">Loading countries...</option>`;
+
 
       try {
 
@@ -1418,47 +1452,9 @@
         const url =
           `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
 
-        console.log(
-          "Loading countries:",
-          url
-        );
 
-        const response =
-          await fetch(
-            url,
-            {
-              method: "GET",
-              headers: {
-                "Accept": "application/json"
-              },
-              cache: "no-store"
-            }
-          );
-
-
-        const rawText =
-          await response.text();
-
-
-        let data;
-
-        try {
-
-          data =
-            JSON.parse(rawText);
-
-        } catch {
-
-          console.error(
-            "Countries raw response:",
-            rawText
-          );
-
-          throw new Error(
-            "The server returned an invalid response."
-          );
-
-        }
+        const data =
+          await requestJSON(url);
 
 
         console.log(
@@ -1467,32 +1463,14 @@
         );
 
 
-        if (!response.ok) {
-
-          throw new Error(
-            data.error ||
-            data.message ||
-            `Server error ${response.status}`
-          );
-
-        }
-
-
-        if (data.success === false) {
-
-          throw new Error(
-            data.error ||
-            data.message ||
-            "Unable to load countries."
-          );
-
-        }
-
-
         const countries =
           Array.isArray(data.countries)
             ? data.countries
-            : [];
+            : Array.isArray(data.data)
+              ? data.data
+              : Array.isArray(data.data?.countries)
+                ? data.data.countries
+                : [];
 
 
         countrySelect.innerHTML =
@@ -1506,20 +1484,41 @@
           }
 
 
-          const code =
-            String(
-              country.code ??
-              country.id ??
-              ""
-            ).trim();
+          let code = "";
+          let name = "";
 
 
-          const name =
-            String(
-              country.name ??
-              country.country ??
-              code
-            ).trim();
+          if (
+            typeof country === "string"
+          ) {
+
+            code = country;
+            name = country;
+
+          } else {
+
+            code =
+              String(
+                country.code ??
+                country.id ??
+                country.country_code ??
+                country.countryCode ??
+                country.value ??
+                ""
+              ).trim();
+
+
+            name =
+              String(
+                country.name ??
+                country.country ??
+                country.country_name ??
+                country.countryName ??
+                country.label ??
+                code
+              ).trim();
+
+          }
 
 
           if (!code) {
@@ -1533,7 +1532,6 @@
 
           option.value =
             code;
-
 
           option.textContent =
             name || code;
@@ -1564,10 +1562,7 @@
 
         showError(
           "Unable to load countries: " +
-          (
-            error?.message ||
-            "Unknown error"
-          )
+          error.message
         );
 
         countrySelect.innerHTML =
@@ -1592,7 +1587,6 @@
           ).trim();
 
         selectedService = null;
-
         allServices = [];
 
         serviceSearch.value = "";
@@ -1619,9 +1613,6 @@
 
     /* ==================================================
        LOAD SERVICES
-       
-       CORRECT ROUTE:
-       ?action=services&provider=global&country=1
     ================================================== */
 
     async function loadServices() {
@@ -1645,48 +1636,9 @@
         const url =
           `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`;
 
-        console.log(
-          "Loading services:",
-          url
-        );
 
-
-        const response =
-          await fetch(
-            url,
-            {
-              method: "GET",
-              headers: {
-                "Accept": "application/json"
-              },
-              cache: "no-store"
-            }
-          );
-
-
-        const rawText =
-          await response.text();
-
-
-        let data;
-
-        try {
-
-          data =
-            JSON.parse(rawText);
-
-        } catch {
-
-          console.error(
-            "Services raw response:",
-            rawText
-          );
-
-          throw new Error(
-            "The server returned an invalid response."
-          );
-
-        }
+        const data =
+          await requestJSON(url);
 
 
         console.log(
@@ -1695,32 +1647,14 @@
         );
 
 
-        if (!response.ok) {
-
-          throw new Error(
-            data.error ||
-            data.message ||
-            `Server error ${response.status}`
-          );
-
-        }
-
-
-        if (data.success === false) {
-
-          throw new Error(
-            data.error ||
-            data.message ||
-            "Unable to load services."
-          );
-
-        }
-
-
         allServices =
           Array.isArray(data.services)
             ? data.services
-            : [];
+            : Array.isArray(data.data)
+              ? data.data
+              : Array.isArray(data.data?.services)
+                ? data.data.services
+                : [];
 
 
         renderServices(
@@ -1732,7 +1666,8 @@
           allServices.length === 0
         ) {
 
-          price.textContent = "--";
+          price.textContent =
+            "--";
 
           priceNote.textContent =
             "No services are available for this country.";
@@ -1748,10 +1683,7 @@
 
         showError(
           "Unable to load SMS services: " +
-          (
-            error?.message ||
-            "Unknown error"
-          )
+          error.message
         );
 
         serviceSelect.innerHTML =
@@ -1781,25 +1713,47 @@
         }
 
 
-        const serviceCode =
-          String(
-            service.code ??
-            service.id ??
-            service.service ??
-            service.name ??
-            ""
-          ).trim();
+        let serviceCode = "";
+        let serviceName = "";
 
 
-        const serviceName =
-          String(
-            service.name ??
-            service.service_name ??
-            service.serviceName ??
-            service.code ??
-            service.id ??
-            "Unknown service"
-          ).trim();
+        if (
+          typeof service === "string"
+        ) {
+
+          serviceCode =
+            service;
+
+          serviceName =
+            service;
+
+        } else {
+
+          serviceCode =
+            String(
+              service.code ??
+              service.id ??
+              service.service ??
+              service.service_id ??
+              service.serviceId ??
+              service.name ??
+              ""
+            ).trim();
+
+
+          serviceName =
+            String(
+              service.name ??
+              service.service_name ??
+              service.serviceName ??
+              service.title ??
+              service.label ??
+              service.code ??
+              service.id ??
+              "Unknown service"
+            ).trim();
+
+        }
 
 
         if (!serviceCode) {
@@ -1814,13 +1768,14 @@
         option.value =
           serviceCode;
 
-
         option.textContent =
           serviceName;
 
 
         option.dataset.service =
-          JSON.stringify(service);
+          JSON.stringify(
+            service
+          );
 
 
         serviceSelect.appendChild(
@@ -1876,8 +1831,11 @@
                   service?.name ??
                   service?.service_name ??
                   service?.serviceName ??
+                  service?.title ??
+                  service?.label ??
                   service?.code ??
                   service?.id ??
+                  service ??
                   ""
                 ).toLowerCase();
 
@@ -1919,7 +1877,8 @@
 
           selectedService = null;
 
-          price.textContent = "--";
+          price.textContent =
+            "--";
 
           priceNote.textContent =
             "Select a service to see the price.";
@@ -1942,13 +1901,8 @@
         } catch {
 
           selectedService = {
-
-            code:
-              option.value,
-
-            name:
-              option.textContent
-
+            code: option.value,
+            name: option.textContent
           };
 
         }
@@ -1967,13 +1921,12 @@
 
 
         if (
-          !Number.isFinite(
-            providerPrice
-          ) ||
+          !Number.isFinite(providerPrice) ||
           providerPrice <= 0
         ) {
 
-          price.textContent = "--";
+          price.textContent =
+            "--";
 
           priceNote.textContent =
             "Price unavailable for this service.";
@@ -1999,7 +1952,7 @@
 
 
     /* ==================================================
-       GET SERVICE PRICE
+       PRICE
     ================================================== */
 
     function getServicePrice(
@@ -2009,14 +1962,12 @@
       const possiblePrices = [
 
         service?.price,
-
         service?.cost,
-
         service?.amount,
-
         service?.selling_price,
-
-        service?.sellingPrice
+        service?.sellingPrice,
+        service?.price_ngn,
+        service?.priceNGN
 
       ];
 
@@ -2032,7 +1983,11 @@
         ) {
 
           const number =
-            Number(value);
+            Number(
+              String(value)
+                .replace(/[₦,$]/g, "")
+                .trim()
+            );
 
 
           if (
@@ -2055,11 +2010,7 @@
 
 
     /* ==================================================
-       PRICING
-       
-       <= 500 = x2
-       > 500 < 1000 = x1.5
-       >= 1000 = x1.3
+       SELLING PRICE
     ================================================== */
 
     function calculateSellingPrice(
@@ -2106,7 +2057,7 @@
 
 
     /* ==================================================
-       FORMAT NAIRA
+       NAIRA
     ================================================== */
 
     function formatNaira(
@@ -2155,14 +2106,16 @@
 
       if (ready) {
 
-        buyBtn.disabled = false;
+        buyBtn.disabled =
+          false;
 
         buyBtn.textContent =
           "Buy Number";
 
       } else {
 
-        buyBtn.disabled = true;
+        buyBtn.disabled =
+          true;
 
         buyBtn.textContent =
           "Select Provider, Country & Service";
@@ -2243,9 +2196,7 @@
 
 
       if (
-        !Number.isFinite(
-          providerPrice
-        ) ||
+        !Number.isFinite(providerPrice) ||
         providerPrice <= 0
       ) {
 
@@ -2264,7 +2215,8 @@
         );
 
 
-      buyBtn.disabled = true;
+      buyBtn.disabled =
+        true;
 
       buyBtn.textContent =
         "Buying Number...";
@@ -2284,6 +2236,8 @@
             selectedService.code ??
             selectedService.id ??
             selectedService.service ??
+            selectedService.service_id ??
+            selectedService.serviceId ??
             selectedService.name ??
             ""
           ).trim();
@@ -2294,35 +2248,23 @@
             selectedService.name ??
             selectedService.service_name ??
             selectedService.serviceName ??
+            selectedService.title ??
             serviceCode
           ).trim();
 
 
-        /*
-          The current mytpsms.js accepts:
-
-          action
-          provider
-          country
-          service
-          serviceName
-        */
-
-
-        const response =
-          await fetch(
+        const data =
+          await requestJSON(
             API_URL,
             {
               method: "POST",
 
               headers: {
-
                 "Content-Type":
                   "application/json",
 
                 "Authorization":
                   `Bearer ${token}`
-
               },
 
               body:
@@ -2349,69 +2291,42 @@
           );
 
 
-        const rawText =
-          await response.text();
-
-
-        let data;
-
-        try {
-
-          data =
-            JSON.parse(rawText);
-
-        } catch {
-
-          console.error(
-            "Buy raw response:",
-            rawText
-          );
-
-          throw new Error(
-            "The server returned an invalid response."
-          );
-
-        }
-
-
         console.log(
           "Buy response:",
           data
         );
 
 
-        if (
-          !response.ok ||
-          data.error ||
-          data.success === false
-        ) {
-
-          throw new Error(
-            data.error ||
-            data.message ||
-            "Unable to purchase number."
-          );
-
-        }
-
-
         currentOrder =
           data;
 
 
+        const responseData =
+          data.data &&
+          typeof data.data === "object"
+            ? data.data
+            : data;
+
+
         const purchasedNumber =
+          responseData.number ??
+          responseData.phone ??
+          responseData.phoneNumber ??
+          responseData.msisdn ??
+          responseData.mobile ??
+          responseData.mobile_number ??
+          responseData.phone_number ??
           data.number ??
           data.phone ??
           data.phoneNumber ??
           data.msisdn ??
-          data.data?.number ??
-          data.data?.phone ??
-          data.data?.phoneNumber ??
           "--";
 
 
         numberValue.textContent =
-          purchasedNumber;
+          String(
+            purchasedNumber
+          );
 
 
         modalSubtitle.textContent =
@@ -2419,17 +2334,19 @@
 
 
         const initialCode =
+          responseData.smsCode ??
+          responseData.code ??
+          responseData.sms_code ??
+          responseData.sms ??
           data.smsCode ??
           data.code ??
-          data.sms_code ??
-          data.data?.smsCode ??
-          data.data?.code ??
-          data.data?.sms_code;
+          data.sms_code;
 
 
         smsCode.textContent =
-          initialCode ||
-          "Waiting...";
+          initialCode
+            ? String(initialCode)
+            : "Waiting...";
 
 
         numberModal.classList.add(
@@ -2439,7 +2356,7 @@
 
         const newBalance =
           data.balance ??
-          data.data?.balance;
+          responseData.balance;
 
 
         if (
@@ -2459,22 +2376,23 @@
         }
 
 
-        /* START STATUS CHECK */
-
         const orderId =
           data.order_id ??
           data.orderId ??
+          data.orderID ??
           data.id ??
-          data.data?.order_id ??
-          data.data?.orderId ??
-          data.data?.id;
+          responseData.order_id ??
+          responseData.orderId ??
+          responseData.orderID ??
+          responseData.id;
 
 
         if (orderId) {
 
           currentOrder = {
             ...data,
-            order_id: orderId
+            order_id:
+              orderId
           };
 
 
@@ -2516,9 +2434,11 @@
       stopStatusPolling();
 
 
-      let attempts = 0;
+      let attempts =
+        0;
 
-      const maxAttempts = 60;
+      const maxAttempts =
+        60;
 
 
       statusTimer =
@@ -2545,43 +2465,28 @@
                 `${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`;
 
 
-              const response =
-                await fetch(
-                  url,
-                  {
-                    method: "GET",
-                    headers: {
-                      "Accept":
-                        "application/json"
-                    },
-                    cache: "no-store"
-                  }
+              const data =
+                await requestJSON(
+                  url
                 );
 
 
-              const data =
-                await response.json();
-
-
-              if (
-                !response.ok ||
-                data.error
-              ) {
-
-                return;
-
-              }
+              const responseData =
+                data.data &&
+                typeof data.data === "object"
+                  ? data.data
+                  : data;
 
 
               const code =
+                responseData.smsCode ??
+                responseData.code ??
+                responseData.sms_code ??
+                responseData.sms ??
                 data.smsCode ??
                 data.code ??
                 data.sms_code ??
-                data.sms ??
-                data.data?.smsCode ??
-                data.data?.code ??
-                data.data?.sms_code ??
-                data.data?.sms;
+                data.sms;
 
 
               if (
@@ -2600,8 +2505,8 @@
 
               const status =
                 String(
+                  responseData.status ??
                   data.status ??
-                  data.data?.status ??
                   ""
                 ).toLowerCase();
 
@@ -2610,7 +2515,8 @@
                 status === "cancelled" ||
                 status === "canceled" ||
                 status === "expired" ||
-                status === "completed"
+                status === "completed" ||
+                status === "success"
               ) {
 
                 stopStatusPolling();
@@ -2641,7 +2547,8 @@
           statusTimer
         );
 
-        statusTimer = null;
+        statusTimer =
+          null;
 
       }
 
@@ -2649,7 +2556,7 @@
 
 
     /* ==================================================
-       CLOSE MODAL
+       MODAL
     ================================================== */
 
     document
@@ -2701,7 +2608,6 @@
         ) {
 
           closeNumberModal();
-
           closeSidebar();
 
         }
@@ -2711,7 +2617,7 @@
 
 
     /* ==================================================
-       ERROR
+       ERRORS
     ================================================== */
 
     function showError(
@@ -2739,7 +2645,7 @@
 
 
     /* ==================================================
-       FIREBASE WALLET BALANCE
+       WALLET BALANCE
     ================================================== */
 
     async function loadWalletBalance() {
@@ -2815,7 +2721,8 @@
 
         if (!user) {
 
-          currentUser = null;
+          currentUser =
+            null;
 
           window.location.href =
             "login.html";
