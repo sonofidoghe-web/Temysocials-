@@ -1055,7 +1055,9 @@ import {
 import {
   getFirestore,
   doc,
-  getDoc
+  getDoc,
+  updateDoc,
+  increment
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -1064,46 +1066,25 @@ import {
 ===================================================== */
 
 const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
-
-  authDomain:
-    "trustsocials-8fc8b.firebaseapp.com",
-
-  projectId:
-    "trustsocials-8fc8b",
-
-  storageBucket:
-    "trustsocials-8fc8b.firebasestorage.app",
-
-  messagingSenderId:
-    "675550258010",
-
-  appId:
-    "1:675550258010:web:ec6444eb22b04a92fd0963",
-
-  measurementId:
-    "G-KDVYRV55JD"
+  apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+  authDomain: "trustsocials-8fc8b.firebaseapp.com",
+  projectId: "trustsocials-8fc8b",
+  storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+  messagingSenderId: "675550258010",
+  appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+  measurementId: "G-KDVYRV55JD"
 };
 
-
-const app =
-  initializeApp(firebaseConfig);
-
-const auth =
-  getAuth(app);
-
-const db =
-  getFirestore(app);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
 
 
 /* =====================================================
    YOUR NETLIFY SMS API
 ===================================================== */
 
-const API_URL =
-  "https://trustsocials.netlify.app/.netlify/functions/mytpsms";
+const API_URL = "https://trustsocials.netlify.app/.netlify/functions/mytpsms";
 
 
 /* =====================================================
@@ -1111,17 +1092,11 @@ const API_URL =
 ===================================================== */
 
 let currentUser = null;
-
 let selectedProvider = "";
-
 let selectedCountry = "";
-
 let selectedService = null;
-
 let allServices = [];
-
 let currentOrder = null;
-
 let statusTimer = null;
 
 
@@ -1129,87 +1104,39 @@ let statusTimer = null;
    ELEMENTS
 ===================================================== */
 
-const sidebar =
-  document.getElementById("sidebar");
-
-const overlay =
-  document.getElementById("sidebarOverlay");
-
-const countrySelect =
-  document.getElementById("countrySelect");
-
-const serviceSelect =
-  document.getElementById("serviceSelect");
-
-const serviceSearch =
-  document.getElementById("serviceSearch");
-
-const buyBtn =
-  document.getElementById("buyBtn");
-
-const price =
-  document.getElementById("price");
-
-const priceNote =
-  document.getElementById("priceNote");
-
-const errorBox =
-  document.getElementById("errorBox");
-
-const successBox =
-  document.getElementById("successBox");
-
-const walletBalance =
-  document.getElementById("walletBalance");
-
-const numberModal =
-  document.getElementById("numberModal");
-
-const numberValue =
-  document.getElementById("numberValue");
-
-const smsCode =
-  document.getElementById("smsCode");
-
-const modalSubtitle =
-  document.getElementById("modalSubtitle");
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+const countrySelect = document.getElementById("countrySelect");
+const serviceSelect = document.getElementById("serviceSelect");
+const serviceSearch = document.getElementById("serviceSearch");
+const buyBtn = document.getElementById("buyBtn");
+const price = document.getElementById("price");
+const priceNote = document.getElementById("priceNote");
+const errorBox = document.getElementById("errorBox");
+const successBox = document.getElementById("successBox");
+const walletBalance = document.getElementById("walletBalance");
+const numberModal = document.getElementById("numberModal");
+const numberValue = document.getElementById("numberValue");
+const smsCode = document.getElementById("smsCode");
+const modalSubtitle = document.getElementById("modalSubtitle");
 
 
 /* =====================================================
    SIDEBAR
 ===================================================== */
 
-document
-  .getElementById("menuToggle")
-  .addEventListener(
-    "click",
-    () => {
+document.getElementById("menuToggle").addEventListener("click", () => {
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+});
 
-      sidebar.classList.add("active");
+overlay.addEventListener("click", closeSidebar);
 
-      overlay.classList.add("active");
-
-      document.body.style.overflow =
-        "hidden";
-
-    }
-  );
-
-
-overlay.addEventListener(
-  "click",
-  closeSidebar
-);
-
-
-function closeSidebar(){
-
+function closeSidebar() {
   sidebar.classList.remove("active");
-
   overlay.classList.remove("active");
-
   document.body.style.overflow = "";
-
 }
 
 
@@ -1217,229 +1144,90 @@ function closeSidebar(){
    HEADER
 ===================================================== */
 
-window.addEventListener(
-  "scroll",
-  () => {
-
-    document
-      .getElementById("header")
-      .classList.toggle(
-        "scrolled",
-        window.scrollY > 10
-      );
-
-  }
-);
+window.addEventListener("scroll", () => {
+  document.getElementById("header").classList.toggle("scrolled", window.scrollY > 10);
+});
 
 
 /* =====================================================
    SIGN OUT
 ===================================================== */
 
-document
-  .getElementById("signOutBtn")
-  .addEventListener(
-    "click",
-    async event => {
-
-      event.preventDefault();
-
-      try{
-
-        await signOut(auth);
-
-        window.location.href =
-          "login.html";
-
-      }catch(error){
-
-        showError(
-          "Unable to sign out."
-        );
-
-      }
-
-    }
-  );
+document.getElementById("signOutBtn").addEventListener("click", async (event) => {
+  event.preventDefault();
+  try {
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch (error) {
+    showError("Unable to sign out.");
+  }
+});
 
 
 /* =====================================================
    PROVIDER SELECTION
 ===================================================== */
 
-document
-  .querySelectorAll(".provider-card")
-  .forEach(card => {
+document.querySelectorAll(".provider-card").forEach(card => {
+  card.addEventListener("click", async () => {
+    document.querySelectorAll(".provider-card").forEach(item => item.classList.remove("active"));
+    card.classList.add("active");
 
-    card.addEventListener(
-      "click",
-      async () => {
+    selectedProvider = String(card.dataset.provider || "").trim();
+    selectedCountry = "";
+    selectedService = null;
+    allServices = [];
 
-        document
-          .querySelectorAll(".provider-card")
-          .forEach(item => {
+    serviceSearch.value = "";
+    serviceSelect.innerHTML = `<option value="">Select service...</option>`;
+    countrySelect.innerHTML = `<option value="">Loading countries...</option>`;
+    price.textContent = "--";
+    priceNote.textContent = "Select a service to see the price.";
 
-            item.classList.remove("active");
+    hideError();
+    hideSuccess();
+    updateBuyButton();
 
-          });
-
-
-        card.classList.add("active");
-
-
-        selectedProvider =
-          String(
-            card.dataset.provider || ""
-          ).trim();
-
-
-        selectedCountry = "";
-
-        selectedService = null;
-
-        allServices = [];
-
-
-        serviceSearch.value = "";
-
-
-        serviceSelect.innerHTML =
-          `<option value="">
-             Select service...
-           </option>`;
-
-
-        countrySelect.innerHTML =
-          `<option value="">
-             Loading countries...
-           </option>`;
-
-
-        price.textContent =
-          "--";
-
-
-        priceNote.textContent =
-          "Select a service to see the price.";
-
-
-        hideError();
-
-        hideSuccess();
-
-        updateBuyButton();
-
-
-        await loadCountries();
-
-      }
-    );
-
+    await loadCountries();
   });
+});
 
 
 /* =====================================================
    API REQUEST
 ===================================================== */
 
-async function requestJSON(
-  url,
-  options = {}
-){
-
-  console.log(
-    "SMS API REQUEST:",
-    url
-  );
-
+async function requestJSON(url, options = {}) {
+  console.log("SMS API REQUEST:", url);
 
   let response;
-
-
-  try{
-
-    response =
-      await fetch(
-        url,
-        {
-          ...options,
-          cache: "no-store"
-        }
-      );
-
-  }catch(error){
-
-    console.error(
-      "SMS API CONNECTION ERROR:",
-      error
-    );
-
-    throw new Error(
-      "Unable to connect to the SMS server."
-    );
-
+  try {
+    response = await fetch(url, { ...options, cache: "no-store" });
+  } catch (error) {
+    console.error("SMS API CONNECTION ERROR:", error);
+    throw new Error("Unable to connect to the SMS server.");
   }
 
-
-  const rawText =
-    await response.text();
-
-
-  console.log(
-    "SMS API STATUS:",
-    response.status
-  );
-
-
-  console.log(
-    "SMS API RESPONSE:",
-    rawText
-  );
-
+  const rawText = await response.text();
+  console.log("SMS API STATUS:", response.status);
+  console.log("SMS API RESPONSE:", rawText);
 
   let data;
-
-
-  try{
-
-    data =
-      rawText
-        ? JSON.parse(rawText)
-        : {};
-
-  }catch(error){
-
-    throw new Error(
-      "SMS server returned an invalid response."
-    );
-
+  try {
+    data = rawText ? JSON.parse(rawText) : {};
+  } catch (error) {
+    throw new Error("SMS server returned an invalid response.");
   }
 
-
-  if(!response.ok){
-
-    throw new Error(
-      data?.error ||
-      data?.message ||
-      `SMS server error (${response.status}).`
-    );
-
+  if (!response.ok) {
+    throw new Error(data?.error || data?.message || `SMS server error (${response.status}).`);
   }
 
-
-  if(data?.success === false){
-
-    throw new Error(
-      data?.error ||
-      data?.message ||
-      "SMS request failed."
-    );
-
+  if (data?.success === false) {
+    throw new Error(data?.error || data?.message || "SMS request failed.");
   }
-
 
   return data;
-
 }
 
 
@@ -1447,69 +1235,18 @@ async function requestJSON(
    EXTRACT ARRAY
 ===================================================== */
 
-function extractArray(
-  data,
-  keys = []
-){
+function extractArray(data, keys = []) {
+  if (Array.isArray(data)) return data;
 
-  if(Array.isArray(data)){
-
-    return data;
-
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key];
   }
 
-
-  for(
-    const key of keys
-  ){
-
-    if(
-      Array.isArray(
-        data?.[key]
-      )
-    ){
-
-      return data[key];
-
-    }
-
-  }
-
-
-  if(
-    data?.data &&
-    Array.isArray(data.data)
-  ){
-
-    return data.data;
-
-  }
-
-
-  if(
-    data?.result &&
-    Array.isArray(data.result)
-  ){
-
-    return data.result;
-
-  }
-
-
-  if(
-    data?.result?.data &&
-    Array.isArray(
-      data.result.data
-    )
-  ){
-
-    return data.result.data;
-
-  }
-
+  if (data?.data && Array.isArray(data.data)) return data.data;
+  if (data?.result && Array.isArray(data.result)) return data.result;
+  if (data?.result?.data && Array.isArray(data.result.data)) return data.result.data;
 
   return [];
-
 }
 
 
@@ -1517,174 +1254,53 @@ function extractArray(
    LOAD COUNTRIES
 ===================================================== */
 
-async function loadCountries(){
+async function loadCountries() {
+  if (!selectedProvider) return;
 
-  if(!selectedProvider){
+  countrySelect.innerHTML = `<option value="">Loading countries...</option>`;
 
-    return;
-
-  }
-
-
-  countrySelect.innerHTML =
-    `<option value="">
-       Loading countries...
-     </option>`;
-
-
-  try{
-
+  try {
     hideError();
 
+    const url = `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
+    const data = await requestJSON(url);
 
-    const url =
-      `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
+    console.log("COUNTRIES:", data);
 
+    const countries = extractArray(data, ["countries", "items", "results"]);
 
-    const data =
-      await requestJSON(url);
+    countrySelect.innerHTML = `<option value="">Select country...</option>`;
 
+    countries.forEach(country => {
+      let code = "";
+      let name = "";
 
-    console.log(
-      "COUNTRIES:",
-      data
-    );
-
-
-    const countries =
-      extractArray(
-        data,
-        [
-          "countries",
-          "items",
-          "results"
-        ]
-      );
-
-
-    countrySelect.innerHTML =
-      `<option value="">
-         Select country...
-       </option>`;
-
-
-    countries.forEach(
-      country => {
-
-        let code = "";
-
-        let name = "";
-
-
-        if(
-          typeof country === "string"
-        ){
-
-          code =
-            country.trim();
-
-          name =
-            country.trim();
-
-        }else if(
-          country &&
-          typeof country === "object"
-        ){
-
-          code =
-            String(
-              country.code ??
-              country.country_code ??
-              country.countryCode ??
-              country.id ??
-              country.value ??
-              country.iso ??
-              country.iso2 ??
-              ""
-            ).trim();
-
-
-          name =
-            String(
-              country.name ??
-              country.country_name ??
-              country.countryName ??
-              country.title ??
-              country.label ??
-              country.country ??
-              code
-            ).trim();
-
-        }
-
-
-        if(!code){
-
-          return;
-
-        }
-
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          code;
-
-
-        option.textContent =
-          name || code;
-
-
-        countrySelect.appendChild(
-          option
-        );
-
+      if (typeof country === "string") {
+        code = country.trim();
+        name = country.trim();
+      } else if (country && typeof country === "object") {
+        code = String(country.code ?? country.country_code ?? country.countryCode ?? country.id ?? country.value ?? country.iso ?? country.iso2 ?? "").trim();
+        name = String(country.name ?? country.country_name ?? country.countryName ?? country.title ?? country.label ?? country.country ?? code).trim();
       }
-    );
 
+      if (!code) return;
 
-    if(
-      countrySelect.options.length <= 1
-    ){
+      const option = document.createElement("option");
+      option.value = code;
+      option.textContent = name || code;
+      countrySelect.appendChild(option);
+    });
 
-      countrySelect.innerHTML =
-        `<option value="">
-           No countries available
-         </option>`;
-
-
-      throw new Error(
-        "The SMS provider returned no countries."
-      );
-
+    if (countrySelect.options.length <= 1) {
+      countrySelect.innerHTML = `<option value="">No countries available</option>`;
+      throw new Error("The SMS provider returned no countries.");
     }
 
-
-  }catch(error){
-
-    console.error(
-      "COUNTRIES ERROR:",
-      error
-    );
-
-
-    countrySelect.innerHTML =
-      `<option value="">
-         Unable to load countries
-       </option>`;
-
-
-    showError(
-      "Unable to load countries: " +
-      error.message
-    );
-
+  } catch (error) {
+    console.error("COUNTRIES ERROR:", error);
+    countrySelect.innerHTML = `<option value="">Unable to load countries</option>`;
+    showError("Unable to load countries: " + error.message);
   }
-
 }
 
 
@@ -1692,206 +1308,68 @@ async function loadCountries(){
    COUNTRY CHANGE
 ===================================================== */
 
-countrySelect.addEventListener(
-  "change",
-  async () => {
+countrySelect.addEventListener("change", async () => {
+  selectedCountry = String(countrySelect.value || "").trim();
+  selectedService = null;
+  allServices = [];
 
-    selectedCountry =
-      String(
-        countrySelect.value || ""
-      ).trim();
+  serviceSearch.value = "";
+  serviceSelect.innerHTML = `<option value="">Select service...</option>`;
+  price.textContent = "--";
+  priceNote.textContent = "Select a service to see the price.";
+  updateBuyButton();
 
+  if (!selectedCountry) return;
 
-    selectedService = null;
-
-    allServices = [];
-
-
-    serviceSearch.value = "";
-
-
-    serviceSelect.innerHTML =
-      `<option value="">
-         Select service...
-       </option>`;
-
-
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Select a service to see the price.";
-
-
-    updateBuyButton();
-
-
-    if(!selectedCountry){
-
-      return;
-
-    }
-
-
-    await loadServices();
-
-  }
-);
+  await loadServices();
+});
 
 
 /* =====================================================
    LOAD SERVICES
 ===================================================== */
 
-async function loadServices(){
+async function loadServices() {
+  if (!selectedProvider || !selectedCountry) return;
 
-  if(
-    !selectedProvider ||
-    !selectedCountry
-  ){
+  serviceSelect.innerHTML = `<option value="">Loading services...</option>`;
 
-    return;
-
-  }
-
-
-  serviceSelect.innerHTML =
-    `<option value="">
-       Loading services...
-     </option>`;
-
-
-  try{
-
+  try {
     hideError();
 
+    const url = `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`;
+    const data = await requestJSON(url);
 
-    const url =
-      `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`;
+    console.log("SERVICES:", data);
 
+    allServices = extractArray(data, ["services", "items", "results"]);
+    renderServices(allServices);
 
-    const data =
-      await requestJSON(url);
-
-
-    console.log(
-      "SERVICES:",
-      data
-    );
-
-
-    allServices =
-      extractArray(
-        data,
-        [
-          "services",
-          "items",
-          "results"
-        ]
-      );
-
-
-    renderServices(
-      allServices
-    );
-
-
-    if(
-      allServices.length === 0
-    ){
-
-      price.textContent =
-        "--";
-
-
-      priceNote.textContent =
-        "No services are available for this country.";
-
+    if (allServices.length === 0) {
+      price.textContent = "--";
+      priceNote.textContent = "No services are available for this country.";
     }
 
-
-  }catch(error){
-
-    console.error(
-      "SERVICES ERROR:",
-      error
-    );
-
-
-    serviceSelect.innerHTML =
-      `<option value="">
-         Unable to load services
-       </option>`;
-
-
-    showError(
-      "Unable to load SMS services: " +
-      error.message
-    );
-
+  } catch (error) {
+    console.error("SERVICES ERROR:", error);
+    serviceSelect.innerHTML = `<option value="">Unable to load services</option>`;
+    showError("Unable to load SMS services: " + error.message);
   }
-
 }
 
 
 /* =====================================================
-   SERVICE CODE
+   SERVICE HELPERS
 ===================================================== */
 
-function getServiceCode(
-  service
-){
-
-  if(
-    typeof service === "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.code ??
-    service?.service_id ??
-    service?.serviceId ??
-    service?.service ??
-    service?.id ??
-    service?.value ??
-    ""
-  ).trim();
-
+function getServiceCode(service) {
+  if (typeof service === "string") return service.trim();
+  return String(service?.code ?? service?.service_id ?? service?.serviceId ?? service?.service ?? service?.id ?? service?.value ?? "").trim();
 }
 
-
-/* =====================================================
-   SERVICE NAME
-===================================================== */
-
-function getServiceName(
-  service
-){
-
-  if(
-    typeof service === "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.name ??
-    service?.service_name ??
-    service?.serviceName ??
-    service?.title ??
-    service?.label ??
-    service?.service ??
-    getServiceCode(service)
-  ).trim();
-
+function getServiceName(service) {
+  if (typeof service === "string") return service.trim();
+  return String(service?.name ?? service?.service_name ?? service?.serviceName ?? service?.title ?? service?.label ?? service?.service ?? getServiceCode(service)).trim();
 }
 
 
@@ -1899,84 +1377,27 @@ function getServiceName(
    RENDER SERVICES
 ===================================================== */
 
-function renderServices(
-  services
-){
+function renderServices(services) {
+  serviceSelect.innerHTML = `<option value="">Select service...</option>`;
 
-  serviceSelect.innerHTML =
-    `<option value="">
-       Select service...
-     </option>`;
+  services.forEach(service => {
+    if (!service) return;
 
+    const code = getServiceCode(service);
+    const name = getServiceName(service);
 
-  services.forEach(
-    service => {
+    if (!code) return;
 
-      if(!service){
+    const option = document.createElement("option");
+    option.value = code;
+    option.textContent = name || code;
+    option.dataset.service = JSON.stringify(service);
+    serviceSelect.appendChild(option);
+  });
 
-        return;
-
-      }
-
-
-      const code =
-        getServiceCode(
-          service
-        );
-
-
-      const name =
-        getServiceName(
-          service
-        );
-
-
-      if(!code){
-
-        return;
-
-      }
-
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-
-      option.value =
-        code;
-
-
-      option.textContent =
-        name || code;
-
-
-      option.dataset.service =
-        JSON.stringify(
-          service
-        );
-
-
-      serviceSelect.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  if(
-    serviceSelect.options.length <= 1
-  ){
-
-    serviceSelect.innerHTML =
-      `<option value="">
-         No matching services
-       </option>`;
-
+  if (serviceSelect.options.length <= 1) {
+    serviceSelect.innerHTML = `<option value="">No matching services</option>`;
   }
-
 }
 
 
@@ -1984,174 +1405,69 @@ function renderServices(
    SERVICE SEARCH
 ===================================================== */
 
-serviceSearch.addEventListener(
-  "input",
-  () => {
+serviceSearch.addEventListener("input", () => {
+  const search = serviceSearch.value.trim().toLowerCase();
 
-    const search =
-      serviceSearch.value
-        .trim()
-        .toLowerCase();
-
-
-    if(!search){
-
-      renderServices(
-        allServices
-      );
-
-      return;
-
-    }
-
-
-    const filtered =
-      allServices.filter(
-        service => {
-
-          const name =
-            getServiceName(
-              service
-            ).toLowerCase();
-
-
-          const code =
-            getServiceCode(
-              service
-            ).toLowerCase();
-
-
-          return (
-            name.includes(search) ||
-            code.includes(search)
-          );
-
-        }
-      );
-
-
-    renderServices(
-      filtered
-    );
-
+  if (!search) {
+    renderServices(allServices);
+    return;
   }
-);
+
+  const filtered = allServices.filter(service => {
+    const name = getServiceName(service).toLowerCase();
+    const code = getServiceCode(service).toLowerCase();
+    return name.includes(search) || code.includes(search);
+  });
+
+  renderServices(filtered);
+});
 
 
 /* =====================================================
    SERVICE CHANGE
 ===================================================== */
 
-serviceSelect.addEventListener(
-  "change",
-  () => {
+serviceSelect.addEventListener("change", () => {
+  const option = serviceSelect.options[serviceSelect.selectedIndex];
 
-    const option =
-      serviceSelect.options[
-        serviceSelect.selectedIndex
-      ];
-
-
-    if(
-      !option ||
-      !option.value
-    ){
-
-      selectedService = null;
-
-
-      price.textContent =
-        "--";
-
-
-      priceNote.textContent =
-        "Select a service to see the price.";
-
-
-      updateBuyButton();
-
-      return;
-
-    }
-
-
-    try{
-
-      selectedService =
-        JSON.parse(
-          option.dataset.service ||
-          "{}"
-        );
-
-    }catch{
-
-      selectedService = {
-
-        code:
-          option.value,
-
-        name:
-          option.textContent
-
-      };
-
-    }
-
-
-    /*
-      The services endpoint returns
-      service code + service name.
-
-      The actual price is confirmed
-      by the purchase endpoint.
-    */
-
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Price will be confirmed when you buy.";
-
-
+  if (!option || !option.value) {
+    selectedService = null;
+    price.textContent = "--";
+    priceNote.textContent = "Select a service to see the price.";
     updateBuyButton();
-
+    return;
   }
-);
+
+  try {
+    selectedService = JSON.parse(option.dataset.service || "{}");
+  } catch {
+    selectedService = {
+      code: option.value,
+      name: option.textContent
+    };
+  }
+
+  // Price is confirmed only after purchase (API does not return price in services)
+  price.textContent = "--";
+  priceNote.textContent = "Price will be confirmed when you buy.";
+  updateBuyButton();
+});
 
 
 /* =====================================================
-   BUY BUTTON
+   BUY BUTTON STATE
 ===================================================== */
 
-function updateBuyButton(){
+function updateBuyButton() {
+  const ready = Boolean(selectedProvider && selectedCountry && selectedService);
 
-  const ready =
-    Boolean(
-      selectedProvider &&
-      selectedCountry &&
-      selectedService
-    );
-
-
-  if(ready){
-
-    buyBtn.disabled =
-      false;
-
-    buyBtn.textContent =
-      "Buy Number";
-
-  }else{
-
-    buyBtn.disabled =
-      true;
-
-    buyBtn.textContent =
-      "Select Provider, Country & Service";
-
+  if (ready) {
+    buyBtn.disabled = false;
+    buyBtn.textContent = "Buy Number";
+  } else {
+    buyBtn.disabled = true;
+    buyBtn.textContent = "Select Provider, Country & Service";
   }
-
 }
 
 
@@ -2159,31 +1475,16 @@ function updateBuyButton(){
    FIREBASE TOKEN
 ===================================================== */
 
-async function getFirebaseToken(){
-
-  if(!currentUser){
-
-    throw new Error(
-      "Your session has expired. Please sign in again."
-    );
-
+async function getFirebaseToken() {
+  if (!currentUser) {
+    throw new Error("Your session has expired. Please sign in again.");
   }
 
-
-  try{
-
-    return await currentUser.getIdToken(
-      true
-    );
-
-  }catch{
-
-    throw new Error(
-      "Unable to verify your account."
-    );
-
+  try {
+    return await currentUser.getIdToken(true);
+  } catch {
+    throw new Error("Unable to verify your account.");
   }
-
 }
 
 
@@ -2191,398 +1492,127 @@ async function getFirebaseToken(){
    BUY NUMBER
 ===================================================== */
 
-buyBtn.addEventListener(
-  "click",
-  buyNumber
-);
+buyBtn.addEventListener("click", buyNumber);
 
+async function buyNumber() {
+  if (!selectedProvider || !selectedCountry || !selectedService) return;
 
-async function buyNumber(){
-
-  if(
-    !selectedProvider ||
-    !selectedCountry ||
-    !selectedService
-  ){
-
+  if (!currentUser) {
+    showError("Please sign in before buying a number.");
     return;
-
   }
 
+  buyBtn.disabled = true;
+  buyBtn.textContent = "Buying Number...";
 
-  if(!currentUser){
-
-    showError(
-      "Please sign in before buying a number."
-    );
-
-    return;
-
-  }
-
-
-  buyBtn.disabled =
-    true;
-
-  buyBtn.textContent =
-    "Buying Number...";
-
-
-  try{
-
+  try {
     hideError();
-
     hideSuccess();
 
+    const token = await getFirebaseToken();
+    const serviceCode = getServiceCode(selectedService);
+    const serviceName = getServiceName(selectedService);
 
-    const token =
-      await getFirebaseToken();
-
-
-    const serviceCode =
-      getServiceCode(
-        selectedService
-      );
-
-
-    const serviceName =
-      getServiceName(
-        selectedService
-      );
-
-
-    if(!serviceCode){
-
-      throw new Error(
-        "Invalid service selected."
-      );
-
+    if (!serviceCode) {
+      throw new Error("Invalid service selected.");
     }
 
+    const data = await requestJSON(API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        action: "buy",
+        provider: selectedProvider,
+        country: selectedCountry,
+        service: serviceCode,
+        serviceName: serviceName
+      })
+    });
 
-    const data =
-      await requestJSON(
-        API_URL,
-        {
+    console.log("BUY RESPONSE:", data);
 
-          method:
-            "POST",
+    currentOrder = data;
+    const responseData = getResponseObject(data);
 
-          headers:{
-            "Content-Type":
-              "application/json",
+    // Phone Number
+    const purchasedNumber = findValue(responseData, data, [
+      "number", "phone", "phoneNumber", "phone_number", "msisdn", "mobile", "mobile_number"
+    ]);
 
-            "Authorization":
-              `Bearer ${token}`
-          },
+    numberValue.textContent = purchasedNumber ? String(purchasedNumber) : "--";
 
-          body:
-            JSON.stringify({
+    // SMS Code
+    const initialCode = findValue(responseData, data, [
+      "smsCode", "sms_code", "otp", "code", "sms"
+    ]);
 
-              action:
-                "buy",
+    smsCode.textContent = initialCode ? String(initialCode) : "Waiting...";
 
-              provider:
-                selectedProvider,
+    // Modal
+    modalSubtitle.textContent = `${selectedCountry} • ${serviceName}`;
+    numberModal.classList.add("active");
 
-              country:
-                selectedCountry,
+    // Balance
+    const newBalance = findValue(responseData, data, [
+      "balance", "wallet_balance", "walletBalance"
+    ]);
 
-              service:
-                serviceCode,
-
-              serviceName:
-                serviceName
-
-            })
-
-        }
-      );
-
-
-    console.log(
-      "BUY RESPONSE:",
-      data
-    );
-
-
-    currentOrder =
-      data;
-
-
-    const responseData =
-      getResponseObject(
-        data
-      );
-
-
-    /* PHONE NUMBER */
-
-    const purchasedNumber =
-      findValue(
-        responseData,
-        data,
-        [
-          "number",
-          "phone",
-          "phoneNumber",
-          "phone_number",
-          "msisdn",
-          "mobile",
-          "mobile_number"
-        ]
-      );
-
-
-    numberValue.textContent =
-      purchasedNumber
-        ? String(purchasedNumber)
-        : "--";
-
-
-    /* SMS CODE */
-
-    const initialCode =
-      findValue(
-        responseData,
-        data,
-        [
-          "smsCode",
-          "sms_code",
-          "otp",
-          "code",
-          "sms"
-        ]
-      );
-
-
-    smsCode.textContent =
-      initialCode
-        ? String(initialCode)
-        : "Waiting...";
-
-
-    /* MODAL */
-
-    modalSubtitle.textContent =
-      `${selectedCountry} • ${serviceName}`;
-
-
-    numberModal.classList.add(
-      "active"
-    );
-
-
-    /* BALANCE */
-
-    const newBalance =
-      findValue(
-        responseData,
-        data,
-        [
-          "balance",
-          "wallet_balance",
-          "walletBalance"
-        ]
-      );
-
-
-    if(
-      newBalance !== null &&
-      newBalance !== undefined &&
-      newBalance !== ""
-    ){
-
-      walletBalance.textContent =
-        formatNaira(
-          newBalance
-        );
-
-    }else{
-
+    if (newBalance !== null && newBalance !== undefined && newBalance !== "") {
+      walletBalance.textContent = formatNaira(newBalance);
+    } else {
       await loadWalletBalance();
-
     }
 
+    // Order ID + Start Polling
+    const orderId = findValue(responseData, data, [
+      "order_id", "orderId", "orderID", "activation_id", "activationId", "id"
+    ]);
 
-    /* ORDER ID */
-
-    const orderId =
-      findValue(
-        responseData,
-        data,
-        [
-          "order_id",
-          "orderId",
-          "orderID",
-          "activation_id",
-          "activationId",
-          "id"
-        ]
-      );
-
-
-    if(orderId){
-
-      currentOrder = {
-
-        ...data,
-
-        order_id:
-          orderId
-
-      };
-
-
-      startStatusPolling(
-        orderId
-      );
-
+    if (orderId) {
+      currentOrder = { ...data, order_id: orderId };
+      startStatusPolling(orderId);
     }
 
+    // Show selling price
+    const sellingPrice = findValue(responseData, data, [
+      "selling_price", "price", "cost", "amount", "total", "total_price", "totalPrice"
+    ]);
 
-    /*
-      PRICE
-
-      If the buy endpoint sends
-      price/cost/amount, display it.
-    */
-
-    const purchasedPrice =
-      findValue(
-        responseData,
-        data,
-        [
-          "price",
-          "cost",
-          "amount",
-          "total",
-          "total_price",
-          "totalPrice"
-        ]
-      );
-
-
-    if(
-      purchasedPrice !== null &&
-      purchasedPrice !== undefined &&
-      purchasedPrice !== ""
-    ){
-
-      price.textContent =
-        formatNaira(
-          purchasedPrice
-        );
-
-
-      priceNote.textContent =
-        "Purchase price";
-
+    if (sellingPrice !== null && sellingPrice !== undefined && sellingPrice !== "") {
+      price.textContent = formatNaira(sellingPrice);
+      priceNote.textContent = "Purchase price";
     }
 
+    showSuccess("Number purchased successfully.");
 
-    showSuccess(
-      "Number purchased successfully."
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "PURCHASE ERROR:",
-      error
-    );
-
-
-    showError(
-      error?.message ||
-      "Purchase failed. Please try again."
-    );
-
-  }finally{
-
+  } catch (error) {
+    console.error("PURCHASE ERROR:", error);
+    showError(error?.message || "Purchase failed. Please try again.");
+  } finally {
     updateBuyButton();
-
   }
-
 }
 
 
 /* =====================================================
-   RESPONSE OBJECT
+   RESPONSE HELPERS
 ===================================================== */
 
-function getResponseObject(
-  data
-){
-
-  if(
-    data?.data &&
-    typeof data.data === "object" &&
-    !Array.isArray(data.data)
-  ){
-
-    return data.data;
-
-  }
-
-
-  if(
-    data?.result &&
-    typeof data.result === "object" &&
-    !Array.isArray(data.result)
-  ){
-
-    return data.result;
-
-  }
-
-
+function getResponseObject(data) {
+  if (data?.data && typeof data.data === "object" && !Array.isArray(data.data)) return data.data;
+  if (data?.result && typeof data.result === "object" && !Array.isArray(data.result)) return data.result;
   return data || {};
-
 }
 
-
-/* =====================================================
-   FIND VALUE
-===================================================== */
-
-function findValue(
-  object1,
-  object2,
-  keys
-){
-
-  for(
-    const key of keys
-  ){
-
-    if(
-      object1?.[key] !== undefined &&
-      object1?.[key] !== null &&
-      object1?.[key] !== ""
-    ){
-
-      return object1[key];
-
-    }
-
-
-    if(
-      object2?.[key] !== undefined &&
-      object2?.[key] !== null &&
-      object2?.[key] !== ""
-    ){
-
-      return object2[key];
-
-    }
-
+function findValue(object1, object2, keys) {
+  for (const key of keys) {
+    if (object1?.[key] !== undefined && object1?.[key] !== null && object1?.[key] !== "") return object1[key];
+    if (object2?.[key] !== undefined && object2?.[key] !== null && object2?.[key] !== "") return object2[key];
   }
-
-
   return null;
-
 }
 
 
@@ -2590,143 +1620,51 @@ function findValue(
    STATUS POLLING
 ===================================================== */
 
-function startStatusPolling(
-  orderId
-){
-
+function startStatusPolling(orderId) {
   stopStatusPolling();
 
+  let attempts = 0;
+  const maxAttempts = 60; // 5 minutes (every 5 seconds)
 
-  let attempts =
-    0;
+  statusTimer = setInterval(async () => {
+    attempts++;
 
+    if (attempts > maxAttempts) {
+      stopStatusPolling();
+      return;
+    }
 
-  const maxAttempts =
-    60;
+    try {
+      const url = `${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`;
+      const data = await requestJSON(url);
+      const responseData = getResponseObject(data);
 
+      const code = findValue(responseData, data, [
+        "smsCode", "sms_code", "otp", "code", "sms", "full_sms"
+      ]);
 
-  statusTimer =
-    setInterval(
-      async () => {
+      if (code !== null && code !== undefined && String(code).trim() !== "") {
+        smsCode.textContent = String(code);
+        stopStatusPolling();
+      }
 
-        attempts++;
+      const status = String(responseData?.status ?? data?.status ?? "").toLowerCase();
 
+      if (["cancelled", "canceled", "expired", "completed", "success", "received", "refunded"].includes(status)) {
+        stopStatusPolling();
+      }
 
-        if(
-          attempts > maxAttempts
-        ){
-
-          stopStatusPolling();
-
-          return;
-
-        }
-
-
-        try{
-
-          const url =
-            `${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}&provider=${encodeURIComponent(selectedProvider)}`;
-
-
-          const data =
-            await requestJSON(
-              url
-            );
-
-
-          const responseData =
-            getResponseObject(
-              data
-            );
-
-
-          const code =
-            findValue(
-              responseData,
-              data,
-              [
-                "smsCode",
-                "sms_code",
-                "otp",
-                "code",
-                "sms"
-              ]
-            );
-
-
-          if(
-            code !== null &&
-            code !== undefined &&
-            String(code).trim() !== ""
-          ){
-
-            smsCode.textContent =
-              String(code);
-
-
-            stopStatusPolling();
-
-          }
-
-
-          const status =
-            String(
-              responseData?.status ??
-              data?.status ??
-              ""
-            )
-            .toLowerCase();
-
-
-          if(
-            [
-              "cancelled",
-              "canceled",
-              "expired",
-              "completed",
-              "success"
-            ].includes(status)
-          ){
-
-            stopStatusPolling();
-
-          }
-
-
-        }catch(error){
-
-          console.warn(
-            "STATUS CHECK FAILED:",
-            error
-          );
-
-        }
-
-      },
-      5000
-    );
-
+    } catch (error) {
+      console.warn("STATUS CHECK FAILED:", error);
+    }
+  }, 5000);
 }
 
-
-/* =====================================================
-   STOP STATUS POLLING
-===================================================== */
-
-function stopStatusPolling(){
-
-  if(statusTimer){
-
-    clearInterval(
-      statusTimer
-    );
-
-    statusTimer =
-      null;
-
+function stopStatusPolling() {
+  if (statusTimer) {
+    clearInterval(statusTimer);
+    statusTimer = null;
   }
-
 }
 
 
@@ -2734,39 +1672,15 @@ function stopStatusPolling(){
    MODAL
 ===================================================== */
 
-document
-  .getElementById("closeModal")
-  .addEventListener(
-    "click",
-    closeNumberModal
-  );
+document.getElementById("closeModal").addEventListener("click", closeNumberModal);
 
+numberModal.addEventListener("click", (event) => {
+  if (event.target === numberModal) closeNumberModal();
+});
 
-numberModal.addEventListener(
-  "click",
-  event => {
-
-    if(
-      event.target ===
-      numberModal
-    ){
-
-      closeNumberModal();
-
-    }
-
-  }
-);
-
-
-function closeNumberModal(){
-
-  numberModal.classList.remove(
-    "active"
-  );
-
+function closeNumberModal() {
+  numberModal.classList.remove("active");
   stopStatusPolling();
-
 }
 
 
@@ -2774,166 +1688,77 @@ function closeNumberModal(){
    ESCAPE KEY
 ===================================================== */
 
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key === "Escape"
-    ){
-
-      closeNumberModal();
-
-      closeSidebar();
-
-    }
-
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeNumberModal();
+    closeSidebar();
   }
-);
+});
 
 
 /* =====================================================
-   ERROR
+   ERROR / SUCCESS
 ===================================================== */
 
-function showError(
-  message
-){
+function showError(message) {
+  errorBox.textContent = String(message);
+  errorBox.style.display = "block";
+}
 
-  errorBox.textContent =
-    String(message);
+function hideError() {
+  errorBox.textContent = "";
+  errorBox.style.display = "none";
+}
 
-  errorBox.style.display =
-    "block";
+function showSuccess(message) {
+  successBox.textContent = String(message);
+  successBox.style.display = "block";
+  setTimeout(() => hideSuccess(), 4000);
+}
 
+function hideSuccess() {
+  successBox.textContent = "";
+  successBox.style.display = "none";
 }
 
 
 /* =====================================================
-   HIDE ERROR
+   FORMAT NAIRA
 ===================================================== */
 
-function hideError(){
-
-  errorBox.textContent =
-    "";
-
-  errorBox.style.display =
-    "none";
-
+function formatNaira(amount) {
+  const num = Number(amount) || 0;
+  return "₦" + num.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 
 /* =====================================================
-   SUCCESS
+   LOAD WALLET BALANCE
 ===================================================== */
 
-function showSuccess(
-  message
-){
+async function loadWalletBalance() {
+  if (!currentUser) return;
 
-  successBox.textContent =
-    String(message);
+  try {
+    const userRef = doc(db, "users", currentUser.uid);
+    const userSnap = await getDoc(userRef);
 
-  successBox.style.display =
-    "block";
-
-
-  setTimeout(
-    () => {
-
-      hideSuccess();
-
-    },
-    4000
-  );
-
-}
-
-
-/* =====================================================
-   HIDE SUCCESS
-===================================================== */
-
-function hideSuccess(){
-
-  successBox.textContent =
-    "";
-
-  successBox.style.display =
-    "none";
-
-}
-
-
-/* =====================================================
-   LOAD FIREBASE WALLET BALANCE
-===================================================== */
-
-async function loadWalletBalance(){
-
-  if(!currentUser){
-
-    return;
-
-  }
-
-
-  try{
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        currentUser.uid
-      );
-
-
-    const userSnap =
-      await getDoc(
-        userRef
-      );
-
-
-    if(!userSnap.exists()){
-
-      walletBalance.textContent =
-        "₦0.00";
-
+    if (!userSnap.exists()) {
+      walletBalance.textContent = "₦0.00";
       return;
-
     }
 
+    const userData = userSnap.data();
+    const balance = Number(userData.balance ?? 0);
+    walletBalance.textContent = formatNaira(balance);
 
-    const userData =
-      userSnap.data();
-
-
-    const balance =
-      Number(
-        userData.balance ?? 0
-      );
-
-
-    walletBalance.textContent =
-      formatNaira(
-        balance
-      );
-
-
-  }catch(error){
-
-    console.error(
-      "BALANCE ERROR:",
-      error
-    );
-
-
-    walletBalance.textContent =
-      "₦0.00";
-
+  } catch (error) {
+    console.error("BALANCE ERROR:", error);
+    walletBalance.textContent = "₦0.00";
   }
-
 }
 
 
@@ -2941,73 +1766,27 @@ async function loadWalletBalance(){
    AUTH
 ===================================================== */
 
-onAuthStateChanged(
-  auth,
-  async user => {
-
-    if(!user){
-
-      currentUser =
-        null;
-
-
-      window.location.href =
-        "login.html";
-
-
-      return;
-
-    }
-
-
-    currentUser =
-      user;
-
-
-    const displayName =
-      user.displayName ||
-      user.email?.split("@")[0] ||
-      "User";
-
-
-    const names =
-      displayName
-        .trim()
-        .split(/\s+/);
-
-
-    let initials =
-      names[0]
-        ?.charAt(0)
-        .toUpperCase() ||
-      "";
-
-
-    if(
-      names.length > 1
-    ){
-
-      initials +=
-        names[
-          names.length - 1
-        ]
-        .charAt(0)
-        .toUpperCase();
-
-    }
-
-
-    document.getElementById(
-      "userAvatar"
-    ).textContent =
-      initials ||
-      "U";
-
-
-    await loadWalletBalance();
-
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    currentUser = null;
+    window.location.href = "login.html";
+    return;
   }
-);
+
+  currentUser = user;
+
+  const displayName = user.displayName || user.email?.split("@")[0] || "User";
+  const names = displayName.trim().split(/\s+/);
+
+  let initials = names[0]?.charAt(0).toUpperCase() || "";
+  if (names.length > 1) {
+    initials += names[names.length - 1].charAt(0).toUpperCase();
+  }
+
+  document.getElementById("userAvatar").textContent = initials || "U";
+
+  await loadWalletBalance();
+});
 
 </script>
 
