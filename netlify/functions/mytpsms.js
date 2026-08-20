@@ -5,6 +5,7 @@ const API_BASE = "https://myapps.com/api/v1/";
 const ALLOWED_PROVIDERS = new Set([
   "global",
   "usa",
+  "usa2",
   "us2"
 ]);
 
@@ -23,72 +24,44 @@ const CORS_HEADERS = {
 exports.handler = async (event) => {
 
   if (event.httpMethod === "OPTIONS") {
-
     return {
       statusCode: 204,
       headers: CORS_HEADERS,
       body: ""
     };
-
   }
 
-
-  const API_KEY =
-    process.env.MYTPSMS_API_KEY;
-
+  const API_KEY = process.env.MYTPSMS_API_KEY;
 
   if (!API_KEY) {
-
     return response(500, {
       success: false,
-      error:
-        "MYTPSMS_API_KEY is missing in Netlify environment variables."
+      error: "MYTPSMS_API_KEY is missing in Netlify environment variables."
     });
-
   }
-
 
   try {
 
     if (event.httpMethod === "GET") {
-
-      return await handleGET(
-        event,
-        API_KEY
-      );
-
+      return await handleGET(event, API_KEY);
     }
-
 
     if (event.httpMethod === "POST") {
-
-      return await handlePOST(
-        event,
-        API_KEY
-      );
-
+      return await handlePOST(event, API_KEY);
     }
-
 
     return response(405, {
       success: false,
       error: "Method not allowed."
     });
 
-
   } catch (error) {
 
-    console.error(
-      "MYAPPS SMS FUNCTION ERROR:",
-      error
-    );
-
+    console.error("MYAPPS FUNCTION ERROR:", error);
 
     return response(500, {
       success: false,
-      error:
-        error?.message ||
-        "Internal server error."
+      error: error?.message || "Internal server error."
     });
 
   }
@@ -100,21 +73,13 @@ exports.handler = async (event) => {
 // GET
 // ======================================================
 
-async function handleGET(
-  event,
-  API_KEY
-) {
+async function handleGET(event, API_KEY) {
 
-  const params =
-    event.queryStringParameters || {};
+  const params = event.queryStringParameters || {};
 
-
-  const action =
-    String(
-      params.action || ""
-    )
-      .trim()
-      .toLowerCase();
+  const action = String(
+    params.action || ""
+  ).trim().toLowerCase();
 
 
   // ====================================================
@@ -138,17 +103,11 @@ async function handleGET(
 
   if (action === "countries") {
 
-    const provider =
-      String(
-        params.provider || "global"
-      )
-        .trim()
-        .toLowerCase();
+    const provider = String(
+      params.provider || "global"
+    ).trim().toLowerCase();
 
-
-    if (
-      !ALLOWED_PROVIDERS.has(provider)
-    ) {
+    if (!ALLOWED_PROVIDERS.has(provider)) {
 
       return response(400, {
         success: false,
@@ -156,7 +115,6 @@ async function handleGET(
       });
 
     }
-
 
     return await myAppsGET(
       "countries.php",
@@ -175,25 +133,15 @@ async function handleGET(
 
   if (action === "services") {
 
-    const provider =
-      String(
-        params.provider || "global"
-      )
-        .trim()
-        .toLowerCase();
+    const provider = String(
+      params.provider || "global"
+    ).trim().toLowerCase();
 
+    const country = String(
+      params.country || ""
+    ).trim().toUpperCase();
 
-    const country =
-      String(
-        params.country || ""
-      )
-        .trim()
-        .toUpperCase();
-
-
-    if (
-      !ALLOWED_PROVIDERS.has(provider)
-    ) {
+    if (!ALLOWED_PROVIDERS.has(provider)) {
 
       return response(400, {
         success: false,
@@ -201,7 +149,6 @@ async function handleGET(
       });
 
     }
-
 
     if (!country) {
 
@@ -212,14 +159,18 @@ async function handleGET(
 
     }
 
-
-    return await myAppsGET(
+    const result = await myAppsGETRaw(
       "services.php",
       {
         provider,
         country
       },
       API_KEY
+    );
+
+    return response(
+      result.statusCode,
+      normalizeServicesResponse(result.data)
     );
 
   }
@@ -231,15 +182,12 @@ async function handleGET(
 
   if (action === "status") {
 
-    const orderId =
-      String(
-        params.order_id ||
-        params.orderId ||
-        params.id ||
-        ""
-      )
-        .trim();
-
+    const orderId = String(
+      params.order_id ||
+      params.orderId ||
+      params.id ||
+      ""
+    ).trim();
 
     if (!orderId) {
 
@@ -249,7 +197,6 @@ async function handleGET(
       });
 
     }
-
 
     return await myAppsGET(
       "status.php",
@@ -268,12 +215,9 @@ async function handleGET(
 
   if (action === "history") {
 
-    const page =
-      String(
-        params.page || "1"
-      )
-        .trim();
-
+    const page = String(
+      params.page || "1"
+    ).trim();
 
     return await myAppsGET(
       "history.php",
@@ -298,20 +242,15 @@ async function handleGET(
 // POST
 // ======================================================
 
-async function handlePOST(
-  event,
-  API_KEY
-) {
+async function handlePOST(event, API_KEY) {
 
   let body = {};
 
-
   try {
 
-    body =
-      JSON.parse(
-        event.body || "{}"
-      );
+    body = JSON.parse(
+      event.body || "{}"
+    );
 
   } catch {
 
@@ -322,13 +261,9 @@ async function handlePOST(
 
   }
 
-
-  const action =
-    String(
-      body.action || ""
-    )
-      .trim()
-      .toLowerCase();
+  const action = String(
+    body.action || ""
+  ).trim().toLowerCase();
 
 
   // ====================================================
@@ -337,44 +272,29 @@ async function handlePOST(
 
   if (action === "buy") {
 
-    const provider =
-      String(
-        body.provider || ""
-      )
-        .trim()
-        .toLowerCase();
+    const provider = String(
+      body.provider || ""
+    ).trim().toLowerCase();
+
+    const country = String(
+      body.country || ""
+    ).trim().toUpperCase();
+
+    const service = String(
+      body.service ||
+      body.service_id ||
+      body.serviceId ||
+      ""
+    ).trim();
+
+    const serviceName = String(
+      body.serviceName ||
+      body.service_name ||
+      ""
+    ).trim();
 
 
-    const country =
-      String(
-        body.country || ""
-      )
-        .trim()
-        .toUpperCase();
-
-
-    const service =
-      String(
-        body.service ||
-        body.service_id ||
-        body.serviceId ||
-        ""
-      )
-        .trim();
-
-
-    const serviceName =
-      String(
-        body.serviceName ||
-        body.service_name ||
-        ""
-      )
-        .trim();
-
-
-    if (
-      !ALLOWED_PROVIDERS.has(provider)
-    ) {
+    if (!ALLOWED_PROVIDERS.has(provider)) {
 
       return response(400, {
         success: false,
@@ -382,7 +302,6 @@ async function handlePOST(
       });
 
     }
-
 
     if (!country) {
 
@@ -392,7 +311,6 @@ async function handlePOST(
       });
 
     }
-
 
     if (!service) {
 
@@ -405,21 +323,14 @@ async function handlePOST(
 
 
     const payload = {
-
       provider,
-
       country,
-
       service
-
     };
 
 
     if (serviceName) {
-
-      payload.service_name =
-        serviceName;
-
+      payload.service_name = serviceName;
     }
 
 
@@ -438,14 +349,12 @@ async function handlePOST(
 
   if (action === "cancel") {
 
-    const orderId =
-      String(
-        body.order_id ||
-        body.orderId ||
-        body.id ||
-        ""
-      )
-        .trim();
+    const orderId = String(
+      body.order_id ||
+      body.orderId ||
+      body.id ||
+      ""
+    ).trim();
 
 
     if (!orderId) {
@@ -487,10 +396,33 @@ async function myAppsGET(
   API_KEY
 ) {
 
-  const url =
-    new URL(
-      API_BASE + endpoint
-    );
+  const result = await myAppsGETRaw(
+    endpoint,
+    params,
+    API_KEY
+  );
+
+  return response(
+    result.statusCode,
+    result.data
+  );
+
+}
+
+
+// ======================================================
+// MYAPPS GET RAW
+// ======================================================
+
+async function myAppsGETRaw(
+  endpoint,
+  params,
+  API_KEY
+) {
+
+  const url = new URL(
+    API_BASE + endpoint
+  );
 
 
   for (
@@ -521,29 +453,21 @@ async function myAppsGET(
   );
 
 
-  const result =
-    await fetch(
-      url.toString(),
-      {
+  const upstream = await fetch(
+    url.toString(),
+    {
+      method: "GET",
 
-        method: "GET",
-
-        headers: {
-
-          "API-KEY":
-            API_KEY,
-
-          "Accept":
-            "application/json"
-
-        }
-
+      headers: {
+        "API-KEY": API_KEY,
+        "Accept": "application/json"
       }
-    );
+    }
+  );
 
 
-  return parseUpstreamResponse(
-    result
+  return await parseUpstreamRaw(
+    upstream
   );
 
 }
@@ -566,16 +490,7 @@ async function myAppsPOST(
   );
 
 
-  /*
-   * MYAPPS documentation shows POST
-   * parameters being sent as normal form data.
-   *
-   * Therefore we use URLSearchParams
-   * instead of JSON.
-   */
-
-  const form =
-    new URLSearchParams();
+  const form = new URLSearchParams();
 
 
   for (
@@ -599,45 +514,42 @@ async function myAppsPOST(
   }
 
 
+  const upstream = await fetch(
+    API_BASE + endpoint,
+    {
+      method: "POST",
+
+      headers: {
+        "API-KEY": API_KEY,
+        "Accept": "application/json",
+        "Content-Type":
+          "application/x-www-form-urlencoded"
+      },
+
+      body: form.toString()
+    }
+  );
+
+
   const result =
-    await fetch(
-      API_BASE + endpoint,
-      {
-
-        method: "POST",
-
-        headers: {
-
-          "API-KEY":
-            API_KEY,
-
-          "Accept":
-            "application/json",
-
-          "Content-Type":
-            "application/x-www-form-urlencoded"
-
-        },
-
-        body:
-          form.toString()
-
-      }
+    await parseUpstreamRaw(
+      upstream
     );
 
 
-  return parseUpstreamResponse(
-    result
+  return response(
+    result.statusCode,
+    result.data
   );
 
 }
 
 
 // ======================================================
-// UPSTREAM RESPONSE
+// PARSE RAW RESPONSE
 // ======================================================
 
-async function parseUpstreamResponse(
+async function parseUpstreamRaw(
   upstream
 ) {
 
@@ -650,16 +562,19 @@ async function parseUpstreamResponse(
 
   try {
 
-    text =
-      await upstream.text();
+    text = await upstream.text();
 
   } catch {
 
-    return response(502, {
-      success: false,
-      error:
-        "Could not read MYAPPS response."
-    });
+    return {
+      statusCode: 502,
+
+      data: {
+        success: false,
+        error:
+          "Could not read MYAPPS response."
+      }
+    };
 
   }
 
@@ -681,10 +596,9 @@ async function parseUpstreamResponse(
 
   try {
 
-    data =
-      text
-        ? JSON.parse(text)
-        : null;
+    data = text
+      ? JSON.parse(text)
+      : null;
 
   } catch {
 
@@ -693,17 +607,14 @@ async function parseUpstreamResponse(
   }
 
 
-  // ====================================================
-  // NON-JSON RESPONSE
-  // ====================================================
-
   if (!data) {
 
     if (!upstream.ok) {
 
-      return response(
+      return {
         statusCode,
-        {
+
+        data: {
           success: false,
 
           error:
@@ -713,14 +624,15 @@ async function parseUpstreamResponse(
           upstream_status:
             statusCode
         }
-      );
+      };
 
     }
 
 
-    return response(
-      502,
-      {
+    return {
+      statusCode: 502,
+
+      data: {
         success: false,
 
         error:
@@ -730,14 +642,10 @@ async function parseUpstreamResponse(
         upstream_status:
           statusCode
       }
-    );
+    };
 
   }
 
-
-  // ====================================================
-  // API ERROR
-  // ====================================================
 
   const apiFailed =
     !upstream.ok ||
@@ -750,13 +658,13 @@ async function parseUpstreamResponse(
 
   if (apiFailed) {
 
-    return response(
-      upstream.ok
-        ? 400
-        : statusCode,
+    return {
+      statusCode:
+        upstream.ok
+          ? 400
+          : statusCode,
 
-      {
-
+      data: {
         ...data,
 
         success: false,
@@ -770,32 +678,407 @@ async function parseUpstreamResponse(
 
         upstream_status:
           statusCode
-
       }
-
-    );
+    };
 
   }
 
 
-  // ====================================================
-  // SUCCESS
-  // ====================================================
+  return {
+    statusCode:
+      statusCode >= 200 &&
+      statusCode < 300
+        ? statusCode
+        : 200,
 
-  return response(
-    statusCode >= 200 &&
-    statusCode < 300
-      ? statusCode
-      : 200,
-
-    normalizeResponse(data)
-  );
+    data: normalizeResponse(data)
+  };
 
 }
 
 
 // ======================================================
-// NORMALIZE
+// NORMALIZE SERVICES
+// ======================================================
+
+function normalizeServicesResponse(
+  data
+) {
+
+  const services =
+    extractServices(data);
+
+
+  const normalized =
+    services
+      .map(normalizeService)
+      .filter(Boolean);
+
+
+  return {
+    success: true,
+
+    services: normalized,
+
+    count:
+      normalized.length
+  };
+
+}
+
+
+// ======================================================
+// EXTRACT SERVICES
+// ======================================================
+
+function extractServices(
+  data
+) {
+
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+
+  if (
+    Array.isArray(data?.services)
+  ) {
+
+    return data.services;
+
+  }
+
+
+  if (
+    Array.isArray(data?.items)
+  ) {
+
+    return data.items;
+
+  }
+
+
+  if (
+    Array.isArray(data?.results)
+  ) {
+
+    return data.results;
+
+  }
+
+
+  if (
+    Array.isArray(data?.data)
+  ) {
+
+    return data.data;
+
+  }
+
+
+  if (
+    Array.isArray(data?.result)
+  ) {
+
+    return data.result;
+
+  }
+
+
+  if (
+    Array.isArray(data?.result?.data)
+  ) {
+
+    return data.result.data;
+
+  }
+
+
+  return [];
+
+}
+
+
+// ======================================================
+// NORMALIZE ONE SERVICE
+// ======================================================
+
+function normalizeService(
+  service
+) {
+
+  if (
+    service === null ||
+    service === undefined
+  ) {
+
+    return null;
+
+  }
+
+
+  if (
+    typeof service === "string" ||
+    typeof service === "number"
+  ) {
+
+    return {
+      id: String(service),
+      code: String(service),
+      name: String(service),
+      price: 0
+    };
+
+  }
+
+
+  const code =
+    firstValue(
+      service,
+      [
+        "code",
+        "service_id",
+        "serviceId",
+        "service",
+        "id",
+        "value",
+        "service_code"
+      ]
+    );
+
+
+  const name =
+    firstValue(
+      service,
+      [
+        "name",
+        "service_name",
+        "serviceName",
+        "title",
+        "label",
+        "service",
+        "description"
+      ]
+    );
+
+
+  const rawPrice =
+    findPriceValue(
+      service
+    );
+
+
+  const price =
+    parsePrice(
+      rawPrice
+    );
+
+
+  return {
+    ...service,
+
+    id:
+      code || name || "",
+
+    code:
+      code || name || "",
+
+    name:
+      name || code || "Service",
+
+    price,
+
+    provider_price:
+      price
+  };
+
+}
+
+
+// ======================================================
+// FIND PRICE
+// ======================================================
+
+function findPriceValue(
+  service
+) {
+
+  const directFields = [
+
+    "price",
+    "cost",
+    "amount",
+    "rate",
+    "selling_price",
+    "sellingPrice",
+    "price_ngn",
+    "priceNGN",
+    "ngn",
+    "unit_price",
+    "unitPrice",
+    "activation_price",
+    "activationPrice",
+    "service_price",
+    "servicePrice"
+
+  ];
+
+
+  for (
+    const field
+    of directFields
+  ) {
+
+    if (
+      service[field] !== undefined &&
+      service[field] !== null &&
+      service[field] !== ""
+    ) {
+
+      return service[field];
+
+    }
+
+  }
+
+
+  // Check common nested objects.
+
+  const nestedObjects = [
+
+    service.data,
+    service.result,
+    service.service,
+    service.details,
+    service.pricing,
+    service.price_data,
+    service.priceData
+
+  ];
+
+
+  for (
+    const object
+    of nestedObjects
+  ) {
+
+    if (
+      object &&
+      typeof object === "object" &&
+      !Array.isArray(object)
+    ) {
+
+      const value =
+        findPriceValue(
+          object
+        );
+
+
+      if (
+        value !== null &&
+        value !== undefined &&
+        value !== ""
+      ) {
+
+        return value;
+
+      }
+
+    }
+
+  }
+
+
+  return null;
+
+}
+
+
+// ======================================================
+// PARSE PRICE
+// ======================================================
+
+function parsePrice(
+  value
+) {
+
+  if (
+    value === null ||
+    value === undefined ||
+    value === ""
+  ) {
+
+    return 0;
+
+  }
+
+
+  if (
+    typeof value === "number"
+  ) {
+
+    return Number.isFinite(value)
+      ? value
+      : 0;
+
+  }
+
+
+  const cleaned =
+    String(value)
+      .replace(/₦/g, "")
+      .replace(/NGN/gi, "")
+      .replace(/,/g, "")
+      .trim();
+
+
+  const number =
+    Number(cleaned);
+
+
+  return Number.isFinite(number)
+    ? number
+    : 0;
+
+}
+
+
+// ======================================================
+// FIRST VALUE
+// ======================================================
+
+function firstValue(
+  object,
+  keys
+) {
+
+  for (
+    const key
+    of keys
+  ) {
+
+    if (
+      object?.[key] !== undefined &&
+      object?.[key] !== null &&
+      String(object[key]).trim() !== ""
+    ) {
+
+      return String(
+        object[key]
+      ).trim();
+
+    }
+
+  }
+
+
+  return "";
+
+}
+
+
+// ======================================================
+// NORMALIZE RESPONSE
 // ======================================================
 
 function normalizeResponse(
@@ -822,11 +1105,8 @@ function normalizeResponse(
 
 
   return {
-
     success: true,
-
     data
-
   };
 
 }
