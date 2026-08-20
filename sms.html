@@ -21,10 +21,6 @@
       padding-bottom: 50px;
     }
 
-    /* =========================
-       HEADER
-    ========================= */
-
     .header {
       position: sticky;
       top: 0;
@@ -86,11 +82,6 @@
       font-weight: 600;
       font-size: 14px;
     }
-
-    /* =========================
-       SIDEBAR
-       DO NOT CHANGE
-    ========================= */
 
     .sidebar-overlay {
       position: fixed;
@@ -189,10 +180,6 @@
       color: #d32f2f !important;
     }
 
-    /* =========================
-       MAIN CONTENT
-    ========================= */
-
     .container {
       max-width: 480px;
       margin: 0 auto;
@@ -210,10 +197,6 @@
       font-size: 15px;
       margin-bottom: 24px;
     }
-
-    /* =========================
-       WALLET BALANCE
-    ========================= */
 
     .balance-card {
       background: #f0f7eb;
@@ -238,10 +221,6 @@
       font-weight: 700;
     }
 
-    /* =========================
-       MAIN CARD
-    ========================= */
-
     .buy-card {
       background: white;
       border: 1px solid #e5e5e5;
@@ -255,10 +234,6 @@
       font-weight: 600;
       margin-bottom: 12px;
     }
-
-    /* =========================
-       PROVIDERS
-    ========================= */
 
     .providers {
       display: flex;
@@ -334,10 +309,6 @@
       color: white;
     }
 
-    /* =========================
-       COUNTRY
-    ========================= */
-
     .country-area {
       margin-bottom: 24px;
     }
@@ -371,10 +342,6 @@
       color: #777;
     }
 
-    /* =========================
-       SERVICES
-    ========================= */
-
     .service-area {
       margin-bottom: 24px;
     }
@@ -407,10 +374,6 @@
       border-color: #3d6b1e;
     }
 
-    /* =========================
-       PRICE
-    ========================= */
-
     .price-box {
       background: #f0f7eb;
       border-radius: 14px;
@@ -436,10 +399,6 @@
       margin-top: 4px;
     }
 
-    /* =========================
-       BUY BUTTON
-    ========================= */
-
     .buy-btn {
       width: 100%;
       padding: 16px;
@@ -461,10 +420,6 @@
       background: #ccc;
       cursor: not-allowed;
     }
-
-    /* =========================
-       HOW IT WORKS
-    ========================= */
 
     .how-card {
       background: white;
@@ -511,10 +466,6 @@
       flex-shrink: 0;
     }
 
-    /* =========================
-       ERROR
-    ========================= */
-
     .error-box {
       background: #fff1f1;
       border: 1px solid #f2cccc;
@@ -525,10 +476,6 @@
       margin-bottom: 16px;
       display: none;
     }
-
-    /* =========================
-       SUCCESS / NUMBER POPUP
-    ========================= */
 
     .modal-overlay {
       position: fixed;
@@ -638,10 +585,6 @@
       cursor: pointer;
     }
 
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
     @media (max-width: 360px) {
       .container {
         padding-left: 12px;
@@ -657,10 +600,8 @@
 
 <body>
 
-  <!-- SIDEBAR OVERLAY -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-  <!-- SIDEBAR -->
   <div class="sidebar" id="sidebar">
 
     <div class="sidebar-logo">
@@ -783,7 +724,6 @@
 
   </div>
 
-  <!-- HEADER -->
   <header class="header" id="header">
 
     <button class="menu-toggle" id="menuToggle">
@@ -855,7 +795,6 @@
 
   </header>
 
-  <!-- MAIN -->
   <main class="container">
 
     <h1>SMS Numbers</h1>
@@ -863,8 +802,6 @@
     <p class="subtitle">
       Get temporary numbers for verification
     </p>
-
-    <!-- BALANCE -->
 
     <div class="balance-card">
 
@@ -885,18 +822,12 @@
 
     </div>
 
-    <!-- ERROR -->
-
     <div
       class="error-box"
       id="errorBox"
     ></div>
 
-    <!-- BUY CARD -->
-
     <div class="buy-card">
-
-      <!-- PROVIDER -->
 
       <div class="section-title">
         1. Provider
@@ -990,8 +921,6 @@
 
       </div>
 
-      <!-- COUNTRY -->
-
       <div class="country-area">
 
         <div class="section-title">
@@ -1015,8 +944,6 @@
         </div>
 
       </div>
-
-      <!-- SERVICE -->
 
       <div class="service-area">
 
@@ -1045,8 +972,6 @@
 
       </div>
 
-      <!-- PRICE -->
-
       <div class="price-box">
 
         <div class="price-label">
@@ -1069,8 +994,6 @@
 
       </div>
 
-      <!-- BUY -->
-
       <button
         class="buy-btn"
         id="buyBtn"
@@ -1081,8 +1004,6 @@
       </button>
 
     </div>
-
-    <!-- HOW IT WORKS -->
 
     <div class="how-card">
 
@@ -1148,8 +1069,6 @@
 
   </main>
 
-  <!-- NUMBER MODAL -->
-
   <div
     class="modal-overlay"
     id="numberModal"
@@ -1212,13 +1131,7 @@
 
   </div>
 
-  <!-- FIREBASE -->
-
   <script type="module">
-
-    /* =========================
-       FIREBASE IMPORTS
-    ========================= */
 
     import {
       initializeApp
@@ -1236,10 +1149,6 @@
       getDoc
     } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-    /* =========================
-       FIREBASE CONFIG
-    ========================= */
 
     const firebaseConfig = {
 
@@ -1267,10 +1176,6 @@
     };
 
 
-    /* =========================
-       INITIALIZE FIREBASE
-    ========================= */
-
     const app =
       initializeApp(firebaseConfig);
 
@@ -1281,17 +1186,14 @@
       getFirestore(app);
 
 
-    /* =========================
-       NETLIFY BACKEND
-    ========================= */
+    /* ==================================================
+       IMPORTANT:
+       THIS MUST MATCH YOUR NETLIFY FUNCTION
+    ================================================== */
 
     const API_URL =
       "https://trustsocials.netlify.app/.netlify/functions/mytpsms";
 
-
-    /* =========================
-       VARIABLES
-    ========================= */
 
     let currentUser = null;
 
@@ -1305,10 +1207,8 @@
 
     let currentOrder = null;
 
+    let statusTimer = null;
 
-    /* =========================
-       ELEMENTS
-    ========================= */
 
     const sidebar =
       document.getElementById("sidebar");
@@ -1353,25 +1253,21 @@
       document.getElementById("modalSubtitle");
 
 
-    /* =========================
+    /* ==================================================
        SIDEBAR
-    ========================= */
+    ================================================== */
 
     document
       .getElementById("menuToggle")
-      .addEventListener(
-        "click",
-        () => {
+      .addEventListener("click", () => {
 
-          sidebar.classList.add("active");
+        sidebar.classList.add("active");
 
-          overlay.classList.add("active");
+        overlay.classList.add("active");
 
-          document.body.style.overflow =
-            "hidden";
+        document.body.style.overflow = "hidden";
 
-        }
-      );
+      });
 
 
     overlay.addEventListener(
@@ -1391,9 +1287,9 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        HEADER
-    ========================= */
+    ================================================== */
 
     window.addEventListener(
       "scroll",
@@ -1410,9 +1306,9 @@
     );
 
 
-    /* =========================
+    /* ==================================================
        SIGN OUT
-    ========================= */
+    ================================================== */
 
     document
       .getElementById("signOutBtn")
@@ -1441,9 +1337,9 @@
       );
 
 
-    /* =========================
+    /* ==================================================
        PROVIDER SELECTION
-    ========================= */
+    ================================================== */
 
     document
       .querySelectorAll(".provider-card")
@@ -1464,7 +1360,9 @@
             card.classList.add("active");
 
             selectedProvider =
-              card.dataset.provider || "";
+              String(
+                card.dataset.provider || ""
+              ).trim();
 
             selectedCountry = "";
 
@@ -1485,6 +1383,8 @@
             priceNote.textContent =
               "Select a service to see the price.";
 
+            hideError();
+
             updateBuyButton();
 
             await loadCountries();
@@ -1495,9 +1395,12 @@
       });
 
 
-    /* =========================
+    /* ==================================================
        LOAD COUNTRIES
-    ========================= */
+       
+       CORRECT ROUTE:
+       ?action=countries&provider=global
+    ================================================== */
 
     async function loadCountries() {
 
@@ -1505,14 +1408,36 @@
         return;
       }
 
+      countrySelect.innerHTML =
+        `<option value="">Loading countries...</option>`;
+
       try {
 
         hideError();
 
+        const url =
+          `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
+
+        console.log(
+          "Loading countries:",
+          url
+        );
+
         const response =
           await fetch(
-            `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`
+            url,
+            {
+              method: "GET",
+              headers: {
+                "Accept": "application/json"
+              },
+              cache: "no-store"
+            }
           );
+
+
+        const rawText =
+          await response.text();
 
 
         let data;
@@ -1520,9 +1445,14 @@
         try {
 
           data =
-            await response.json();
+            JSON.parse(rawText);
 
         } catch {
+
+          console.error(
+            "Countries raw response:",
+            rawText
+          );
 
           throw new Error(
             "The server returned an invalid response."
@@ -1531,10 +1461,28 @@
         }
 
 
-        if (!response.ok || data.error) {
+        console.log(
+          "Countries response:",
+          data
+        );
+
+
+        if (!response.ok) {
 
           throw new Error(
             data.error ||
+            data.message ||
+            `Server error ${response.status}`
+          );
+
+        }
+
+
+        if (data.success === false) {
+
+          throw new Error(
+            data.error ||
+            data.message ||
             "Unable to load countries."
           );
 
@@ -1558,30 +1506,49 @@
           }
 
 
+          const code =
+            String(
+              country.code ??
+              country.id ??
+              ""
+            ).trim();
+
+
+          const name =
+            String(
+              country.name ??
+              country.country ??
+              code
+            ).trim();
+
+
+          if (!code) {
+            return;
+          }
+
+
           const option =
             document.createElement("option");
 
 
           option.value =
-            country.code ||
-            country.id ||
-            country.name ||
-            "";
+            code;
 
 
           option.textContent =
-            country.name ||
-            country.code ||
-            country.id ||
-            "Unknown country";
+            name || code;
 
 
-          countrySelect.appendChild(option);
+          countrySelect.appendChild(
+            option
+          );
 
         });
 
 
-        if (countries.length === 0) {
+        if (
+          countrySelect.options.length <= 1
+        ) {
 
           countrySelect.innerHTML =
             `<option value="">No countries available</option>`;
@@ -1597,7 +1564,10 @@
 
         showError(
           "Unable to load countries: " +
-          (error.message || "Unknown error")
+          (
+            error?.message ||
+            "Unknown error"
+          )
         );
 
         countrySelect.innerHTML =
@@ -1608,16 +1578,18 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        COUNTRY CHANGE
-    ========================= */
+    ================================================== */
 
     countrySelect.addEventListener(
       "change",
       async () => {
 
         selectedCountry =
-          countrySelect.value || "";
+          String(
+            countrySelect.value || ""
+          ).trim();
 
         selectedService = null;
 
@@ -1626,7 +1598,7 @@
         serviceSearch.value = "";
 
         serviceSelect.innerHTML =
-          `<option value="">Loading services...</option>`;
+          `<option value="">Select service...</option>`;
 
         price.textContent = "--";
 
@@ -1635,16 +1607,9 @@
 
         updateBuyButton();
 
-
         if (!selectedCountry) {
-
-          serviceSelect.innerHTML =
-            `<option value="">Select service...</option>`;
-
           return;
-
         }
-
 
         await loadServices();
 
@@ -1652,9 +1617,12 @@
     );
 
 
-    /* =========================
+    /* ==================================================
        LOAD SERVICES
-    ========================= */
+       
+       CORRECT ROUTE:
+       ?action=services&provider=global&country=1
+    ================================================== */
 
     async function loadServices() {
 
@@ -1662,21 +1630,42 @@
         !selectedProvider ||
         !selectedCountry
       ) {
-
         return;
-
       }
+
+
+      serviceSelect.innerHTML =
+        `<option value="">Loading services...</option>`;
 
 
       try {
 
         hideError();
 
+        const url =
+          `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`;
+
+        console.log(
+          "Loading services:",
+          url
+        );
+
 
         const response =
           await fetch(
-            `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`
+            url,
+            {
+              method: "GET",
+              headers: {
+                "Accept": "application/json"
+              },
+              cache: "no-store"
+            }
           );
+
+
+        const rawText =
+          await response.text();
 
 
         let data;
@@ -1684,9 +1673,14 @@
         try {
 
           data =
-            await response.json();
+            JSON.parse(rawText);
 
         } catch {
+
+          console.error(
+            "Services raw response:",
+            rawText
+          );
 
           throw new Error(
             "The server returned an invalid response."
@@ -1695,10 +1689,28 @@
         }
 
 
-        if (!response.ok || data.error) {
+        console.log(
+          "Services response:",
+          data
+        );
+
+
+        if (!response.ok) {
 
           throw new Error(
             data.error ||
+            data.message ||
+            `Server error ${response.status}`
+          );
+
+        }
+
+
+        if (data.success === false) {
+
+          throw new Error(
+            data.error ||
+            data.message ||
             "Unable to load services."
           );
 
@@ -1711,10 +1723,14 @@
             : [];
 
 
-        renderServices(allServices);
+        renderServices(
+          allServices
+        );
 
 
-        if (allServices.length === 0) {
+        if (
+          allServices.length === 0
+        ) {
 
           price.textContent = "--";
 
@@ -1732,7 +1748,10 @@
 
         showError(
           "Unable to load SMS services: " +
-          (error.message || "Unknown error")
+          (
+            error?.message ||
+            "Unknown error"
+          )
         );
 
         serviceSelect.innerHTML =
@@ -1743,11 +1762,13 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        RENDER SERVICES
-    ========================= */
+    ================================================== */
 
-    function renderServices(services) {
+    function renderServices(
+      services
+    ) {
 
       serviceSelect.innerHTML =
         `<option value="">Select service...</option>`;
@@ -1761,17 +1782,29 @@
 
 
         const serviceCode =
-          service.code ||
-          service.id ||
-          service.name ||
-          "";
+          String(
+            service.code ??
+            service.id ??
+            service.service ??
+            service.name ??
+            ""
+          ).trim();
 
 
         const serviceName =
-          service.name ||
-          service.code ||
-          service.id ||
-          "Unknown service";
+          String(
+            service.name ??
+            service.service_name ??
+            service.serviceName ??
+            service.code ??
+            service.id ??
+            "Unknown service"
+          ).trim();
+
+
+        if (!serviceCode) {
+          return;
+        }
 
 
         const option =
@@ -1786,28 +1819,20 @@
           serviceName;
 
 
-        try {
-
-          option.dataset.service =
-            JSON.stringify(service);
-
-        } catch {
-
-          option.dataset.service =
-            JSON.stringify({
-              code: serviceCode,
-              name: serviceName
-            });
-
-        }
+        option.dataset.service =
+          JSON.stringify(service);
 
 
-        serviceSelect.appendChild(option);
+        serviceSelect.appendChild(
+          option
+        );
 
       });
 
 
-      if (services.length === 0) {
+      if (
+        serviceSelect.options.length <= 1
+      ) {
 
         serviceSelect.innerHTML =
           `<option value="">No matching services</option>`;
@@ -1817,9 +1842,9 @@
     }
 
 
-    /* =========================
-       SEARCH SERVICES
-    ========================= */
+    /* ==================================================
+       SERVICE SEARCH
+    ================================================== */
 
     serviceSearch.addEventListener(
       "input",
@@ -1833,7 +1858,9 @@
 
         if (!search) {
 
-          renderServices(allServices);
+          renderServices(
+            allServices
+          );
 
           return;
 
@@ -1841,31 +1868,39 @@
 
 
         const filtered =
-          allServices.filter(service => {
+          allServices.filter(
+            service => {
 
-            const name =
-              String(
-                service?.name ||
-                service?.code ||
-                service?.id ||
-                ""
-              ).toLowerCase();
-
-
-            return name.includes(search);
-
-          });
+              const text =
+                String(
+                  service?.name ??
+                  service?.service_name ??
+                  service?.serviceName ??
+                  service?.code ??
+                  service?.id ??
+                  ""
+                ).toLowerCase();
 
 
-        renderServices(filtered);
+              return text.includes(
+                search
+              );
+
+            }
+          );
+
+
+        renderServices(
+          filtered
+        );
 
       }
     );
 
 
-    /* =========================
+    /* ==================================================
        SERVICE CHANGE
-    ========================= */
+    ================================================== */
 
     serviceSelect.addEventListener(
       "change",
@@ -1900,7 +1935,8 @@
 
           selectedService =
             JSON.parse(
-              option.dataset.service || "{}"
+              option.dataset.service ||
+              "{}"
             );
 
         } catch {
@@ -1918,24 +1954,23 @@
         }
 
 
-        const originalPrice =
-          Number(
-            selectedService.price ??
-            selectedService.cost ??
-            selectedService.amount ??
-            0
+        const providerPrice =
+          getServicePrice(
+            selectedService
           );
 
 
         const sellingPrice =
           calculateSellingPrice(
-            originalPrice
+            providerPrice
           );
 
 
         if (
-          !Number.isFinite(originalPrice) ||
-          originalPrice <= 0
+          !Number.isFinite(
+            providerPrice
+          ) ||
+          providerPrice <= 0
         ) {
 
           price.textContent = "--";
@@ -1952,7 +1987,7 @@
 
 
           priceNote.textContent =
-            `Provider price: ${formatNaira(originalPrice)}`;
+            `Provider price: ${formatNaira(providerPrice)}`;
 
         }
 
@@ -1963,20 +1998,78 @@
     );
 
 
-    /* =========================
-       PRICING RULE
+    /* ==================================================
+       GET SERVICE PRICE
+    ================================================== */
+
+    function getServicePrice(
+      service
+    ) {
+
+      const possiblePrices = [
+
+        service?.price,
+
+        service?.cost,
+
+        service?.amount,
+
+        service?.selling_price,
+
+        service?.sellingPrice
+
+      ];
+
+
+      for (
+        const value of possiblePrices
+      ) {
+
+        if (
+          value !== undefined &&
+          value !== null &&
+          value !== ""
+        ) {
+
+          const number =
+            Number(value);
+
+
+          if (
+            Number.isFinite(number) &&
+            number > 0
+          ) {
+
+            return number;
+
+          }
+
+        }
+
+      }
+
+
+      return 0;
+
+    }
+
+
+    /* ==================================================
+       PRICING
        
-       <= ₦500       = x2
-       > ₦500 < ₦1000 = x1.5
-       >= ₦1000      = x1.3
-    ========================= */
+       <= 500 = x2
+       > 500 < 1000 = x1.5
+       >= 1000 = x1.3
+    ================================================== */
 
     function calculateSellingPrice(
       providerPrice
     ) {
 
       const amount =
-        Number(providerPrice);
+        Number(
+          providerPrice
+        );
 
 
       if (
@@ -1989,14 +2082,18 @@
       }
 
 
-      if (amount <= 500) {
+      if (
+        amount <= 500
+      ) {
 
         return amount * 2;
 
       }
 
 
-      if (amount < 1000) {
+      if (
+        amount < 1000
+      ) {
 
         return amount * 1.5;
 
@@ -2008,11 +2105,13 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        FORMAT NAIRA
-    ========================= */
+    ================================================== */
 
-    function formatNaira(amount) {
+    function formatNaira(
+      amount
+    ) {
 
       const number =
         Number(amount);
@@ -2040,9 +2139,9 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        BUY BUTTON
-    ========================= */
+    ================================================== */
 
     function updateBuyButton() {
 
@@ -2073,9 +2172,9 @@
     }
 
 
-    /* =========================
-       GET FIREBASE TOKEN
-    ========================= */
+    /* ==================================================
+       FIREBASE TOKEN
+    ================================================== */
 
     async function getFirebaseToken() {
 
@@ -2094,12 +2193,7 @@
           true
         );
 
-      } catch (error) {
-
-        console.error(
-          "Token error:",
-          error
-        );
+      } catch {
 
         throw new Error(
           "Unable to verify your account. Please sign in again."
@@ -2110,9 +2204,9 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        BUY NUMBER
-    ========================= */
+    ================================================== */
 
     buyBtn.addEventListener(
       "click",
@@ -2127,9 +2221,7 @@
         !selectedCountry ||
         !selectedService
       ) {
-
         return;
-
       }
 
 
@@ -2145,16 +2237,15 @@
 
 
       const providerPrice =
-        Number(
-          selectedService.price ??
-          selectedService.cost ??
-          selectedService.amount ??
-          0
+        getServicePrice(
+          selectedService
         );
 
 
       if (
-        !Number.isFinite(providerPrice) ||
+        !Number.isFinite(
+          providerPrice
+        ) ||
         providerPrice <= 0
       ) {
 
@@ -2173,20 +2264,6 @@
         );
 
 
-      if (
-        !Number.isFinite(sellingPrice) ||
-        sellingPrice <= 0
-      ) {
-
-        showError(
-          "Unable to calculate the purchase price."
-        );
-
-        return;
-
-      }
-
-
       buyBtn.disabled = true;
 
       buyBtn.textContent =
@@ -2202,16 +2279,35 @@
           await getFirebaseToken();
 
 
+        const serviceCode =
+          String(
+            selectedService.code ??
+            selectedService.id ??
+            selectedService.service ??
+            selectedService.name ??
+            ""
+          ).trim();
+
+
+        const serviceName =
+          String(
+            selectedService.name ??
+            selectedService.service_name ??
+            selectedService.serviceName ??
+            serviceCode
+          ).trim();
+
+
         /*
-          IMPORTANT:
+          The current mytpsms.js accepts:
 
-          The backend must verify this Firebase
-          ID token and obtain the real UID from it.
-
-          Do not trust the UID, price or service
-          values sent by the browser for wallet
-          security.
+          action
+          provider
+          country
+          service
+          serviceName
         */
+
 
         const response =
           await fetch(
@@ -2229,54 +2325,32 @@
 
               },
 
-              body: JSON.stringify({
+              body:
+                JSON.stringify({
 
-                action: "buy",
+                  action:
+                    "buy",
 
-                /*
-                  UID is included for compatibility
-                  with the current backend.
+                  provider:
+                    selectedProvider,
 
-                  The backend MUST verify the token
-                  and use the token's UID instead.
-                */
+                  country:
+                    selectedCountry,
 
-                uid:
-                  currentUser.uid,
+                  service:
+                    serviceCode,
 
-                provider:
-                  selectedProvider,
+                  serviceName:
+                    serviceName
 
-                country:
-                  selectedCountry,
-
-                service:
-                  selectedService.code ||
-                  selectedService.id ||
-                  selectedService.name,
-
-                serviceName:
-                  selectedService.name ||
-                  selectedService.code ||
-                  selectedService.id,
-
-                /*
-                  These are informational values.
-                  The backend should recalculate the
-                  actual provider price and selling
-                  price itself.
-                */
-
-                providerPrice:
-                  providerPrice,
-
-                sellingPrice:
-                  sellingPrice
-
-              })
+                })
 
             }
           );
+
+
+        const rawText =
+          await response.text();
 
 
         let data;
@@ -2284,9 +2358,14 @@
         try {
 
           data =
-            await response.json();
+            JSON.parse(rawText);
 
         } catch {
+
+          console.error(
+            "Buy raw response:",
+            rawText
+          );
 
           throw new Error(
             "The server returned an invalid response."
@@ -2295,13 +2374,21 @@
         }
 
 
+        console.log(
+          "Buy response:",
+          data
+        );
+
+
         if (
           !response.ok ||
-          data.error
+          data.error ||
+          data.success === false
         ) {
 
           throw new Error(
             data.error ||
+            data.message ||
             "Unable to purchase number."
           );
 
@@ -2313,10 +2400,13 @@
 
 
         const purchasedNumber =
-          data.number ||
-          data.phone ||
-          data.phoneNumber ||
-          data.msisdn ||
+          data.number ??
+          data.phone ??
+          data.phoneNumber ??
+          data.msisdn ??
+          data.data?.number ??
+          data.data?.phone ??
+          data.data?.phoneNumber ??
           "--";
 
 
@@ -2324,20 +2414,21 @@
           purchasedNumber;
 
 
-        const serviceDisplayName =
-          selectedService.name ||
-          selectedService.code ||
-          selectedService.id ||
-          "SMS Service";
-
-
         modalSubtitle.textContent =
-          `${selectedCountry} • ${serviceDisplayName}`;
+          `${selectedCountry} • ${serviceName}`;
+
+
+        const initialCode =
+          data.smsCode ??
+          data.code ??
+          data.sms_code ??
+          data.data?.smsCode ??
+          data.data?.code ??
+          data.data?.sms_code;
 
 
         smsCode.textContent =
-          data.smsCode ||
-          data.code ||
+          initialCode ||
           "Waiting...";
 
 
@@ -2346,29 +2437,50 @@
         );
 
 
-        /*
-          If the backend returns a new balance,
-          use it immediately.
-        */
+        const newBalance =
+          data.balance ??
+          data.data?.balance;
+
 
         if (
-          data.balance !== undefined &&
-          data.balance !== null
+          newBalance !== undefined &&
+          newBalance !== null
         ) {
 
           walletBalance.textContent =
             formatNaira(
-              data.balance
+              newBalance
             );
 
         } else {
 
-          /*
-            Otherwise refresh the Firebase
-            user document.
-          */
-
           await loadWalletBalance();
+
+        }
+
+
+        /* START STATUS CHECK */
+
+        const orderId =
+          data.order_id ??
+          data.orderId ??
+          data.id ??
+          data.data?.order_id ??
+          data.data?.orderId ??
+          data.data?.id;
+
+
+        if (orderId) {
+
+          currentOrder = {
+            ...data,
+            order_id: orderId
+          };
+
+
+          startStatusPolling(
+            orderId
+          );
 
         }
 
@@ -2380,7 +2492,7 @@
         );
 
         showError(
-          error.message ||
+          error?.message ||
           "Purchase failed. Please try again."
         );
 
@@ -2393,9 +2505,152 @@
     }
 
 
-    /* =========================
-       CLOSE NUMBER MODAL
-    ========================= */
+    /* ==================================================
+       STATUS POLLING
+    ================================================== */
+
+    function startStatusPolling(
+      orderId
+    ) {
+
+      stopStatusPolling();
+
+
+      let attempts = 0;
+
+      const maxAttempts = 60;
+
+
+      statusTimer =
+        setInterval(
+          async () => {
+
+            attempts++;
+
+
+            if (
+              attempts > maxAttempts
+            ) {
+
+              stopStatusPolling();
+
+              return;
+
+            }
+
+
+            try {
+
+              const url =
+                `${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`;
+
+
+              const response =
+                await fetch(
+                  url,
+                  {
+                    method: "GET",
+                    headers: {
+                      "Accept":
+                        "application/json"
+                    },
+                    cache: "no-store"
+                  }
+                );
+
+
+              const data =
+                await response.json();
+
+
+              if (
+                !response.ok ||
+                data.error
+              ) {
+
+                return;
+
+              }
+
+
+              const code =
+                data.smsCode ??
+                data.code ??
+                data.sms_code ??
+                data.sms ??
+                data.data?.smsCode ??
+                data.data?.code ??
+                data.data?.sms_code ??
+                data.data?.sms;
+
+
+              if (
+                code !== undefined &&
+                code !== null &&
+                String(code).trim() !== ""
+              ) {
+
+                smsCode.textContent =
+                  String(code);
+
+                stopStatusPolling();
+
+              }
+
+
+              const status =
+                String(
+                  data.status ??
+                  data.data?.status ??
+                  ""
+                ).toLowerCase();
+
+
+              if (
+                status === "cancelled" ||
+                status === "canceled" ||
+                status === "expired" ||
+                status === "completed"
+              ) {
+
+                stopStatusPolling();
+
+              }
+
+            } catch (error) {
+
+              console.warn(
+                "Status check failed:",
+                error
+              );
+
+            }
+
+          },
+          5000
+        );
+
+    }
+
+
+    function stopStatusPolling() {
+
+      if (statusTimer) {
+
+        clearInterval(
+          statusTimer
+        );
+
+        statusTimer = null;
+
+      }
+
+    }
+
+
+    /* ==================================================
+       CLOSE MODAL
+    ================================================== */
 
     document
       .getElementById("closeModal")
@@ -2428,12 +2683,14 @@
         "active"
       );
 
+      stopStatusPolling();
+
     }
 
 
-    /* =========================
-       ESCAPE KEY
-    ========================= */
+    /* ==================================================
+       ESCAPE
+    ================================================== */
 
     document.addEventListener(
       "keydown",
@@ -2453,11 +2710,13 @@
     );
 
 
-    /* =========================
-       ERROR FUNCTIONS
-    ========================= */
+    /* ==================================================
+       ERROR
+    ================================================== */
 
-    function showError(message) {
+    function showError(
+      message
+    ) {
 
       errorBox.textContent =
         String(message);
@@ -2470,7 +2729,8 @@
 
     function hideError() {
 
-      errorBox.textContent = "";
+      errorBox.textContent =
+        "";
 
       errorBox.style.display =
         "none";
@@ -2478,9 +2738,9 @@
     }
 
 
-    /* =========================
-       LOAD WALLET BALANCE
-    ========================= */
+    /* ==================================================
+       FIREBASE WALLET BALANCE
+    ================================================== */
 
     async function loadWalletBalance() {
 
@@ -2526,7 +2786,9 @@
 
 
         walletBalance.textContent =
-          formatNaira(balance);
+          formatNaira(
+            balance
+          );
 
       } catch (error) {
 
@@ -2543,9 +2805,9 @@
     }
 
 
-    /* =========================
+    /* ==================================================
        AUTH
-    ========================= */
+    ================================================== */
 
     onAuthStateChanged(
       auth,
@@ -2566,10 +2828,6 @@
         currentUser =
           user;
 
-
-        /* =====================
-           AVATAR
-        ===================== */
 
         const displayName =
           user.displayName ||
@@ -2610,10 +2868,6 @@
           initials ||
           "U";
 
-
-        /* =====================
-           LOAD BALANCE
-        ===================== */
 
         await loadWalletBalance();
 
