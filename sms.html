@@ -1207,7 +1207,13 @@ async function loadCountries(){
     const url =
       `${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`;
 
-    const data = await requestJSON(url);
+    const token = await getFirebaseToken();
+
+const data = await requestJSON(url, {
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+});
 
     console.log("COUNTRIES:", data);
 
@@ -1331,7 +1337,13 @@ async function loadServices(){
     const url =
       `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`;
 
-    const data = await requestJSON(url);
+    const token = await getFirebaseToken();
+
+const data = await requestJSON(url, {
+  headers: {
+    "Authorization": `Bearer ${token}`
+  }
+});
 
     console.log("SERVICES:", data);
 
@@ -1796,8 +1808,15 @@ function startStatusPolling(orderId){
         const url =
           `${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`;
 
-        const data =
-          await requestJSON(url);
+        const token =
+  await getFirebaseToken();
+
+const data =
+  await requestJSON(url, {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  });
 
         console.log(
           "STATUS RESPONSE:",
