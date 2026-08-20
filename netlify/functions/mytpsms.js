@@ -1,11 +1,11 @@
 // netlify/functions/mytpsms.js
 
-const API_BASE = "https://mytpsms.com/api/v1";
+const API_BASE = "https://myapps.com/api/v1/";
 
 const ALLOWED_PROVIDERS = new Set([
   "global",
   "usa",
-  "usa2"
+  "us2"
 ]);
 
 const CORS_HEADERS = {
@@ -15,46 +15,84 @@ const CORS_HEADERS = {
   "Content-Type": "application/json"
 };
 
+
+// ======================================================
+// MAIN HANDLER
+// ======================================================
+
 exports.handler = async (event) => {
+
   if (event.httpMethod === "OPTIONS") {
+
     return {
       statusCode: 204,
       headers: CORS_HEADERS,
       body: ""
     };
+
   }
 
-  const API_KEY = process.env.MYTPSMS_API_KEY;
+
+  const API_KEY =
+    process.env.MYTPSMS_API_KEY;
+
 
   if (!API_KEY) {
+
     return response(500, {
       success: false,
-      error: "MYTPSMS_API_KEY is missing in Netlify environment variables."
+      error:
+        "MYTPSMS_API_KEY is missing in Netlify environment variables."
     });
+
   }
 
+
   try {
+
     if (event.httpMethod === "GET") {
-      return await handleGET(event, API_KEY);
+
+      return await handleGET(
+        event,
+        API_KEY
+      );
+
     }
 
+
     if (event.httpMethod === "POST") {
-      return await handlePOST(event, API_KEY);
+
+      return await handlePOST(
+        event,
+        API_KEY
+      );
+
     }
+
 
     return response(405, {
       success: false,
       error: "Method not allowed."
     });
 
+
   } catch (error) {
-    console.error("MYTPSMS FUNCTION ERROR:", error);
+
+    console.error(
+      "MYAPPS SMS FUNCTION ERROR:",
+      error
+    );
+
 
     return response(500, {
       success: false,
-      error: error?.message || "Internal server error."
+      error:
+        error?.message ||
+        "Internal server error."
     });
+
   }
+
 };
 
 
@@ -62,141 +100,189 @@ exports.handler = async (event) => {
 // GET
 // ======================================================
 
-async function handleGET(event, API_KEY) {
+async function handleGET(
+  event,
+  API_KEY
+) {
 
-  const params = event.queryStringParameters || {};
-
-  const action = String(
-    params.action || ""
-  ).trim().toLowerCase();
+  const params =
+    event.queryStringParameters || {};
 
 
-  // ----------------------------------------------------
+  const action =
+    String(
+      params.action || ""
+    )
+      .trim()
+      .toLowerCase();
+
+
+  // ====================================================
   // BALANCE
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "balance") {
-    return await myTPSMSGet(
-      "/balance.php",
+
+    return await myAppsGET(
+      "balance.php",
       {},
       API_KEY
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // COUNTRIES
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "countries") {
 
-    const provider = String(
-      params.provider || "global"
-    ).trim().toLowerCase();
+    const provider =
+      String(
+        params.provider || "global"
+      )
+        .trim()
+        .toLowerCase();
 
-    if (!ALLOWED_PROVIDERS.has(provider)) {
+
+    if (
+      !ALLOWED_PROVIDERS.has(provider)
+    ) {
+
       return response(400, {
         success: false,
         error: "Invalid provider."
       });
+
     }
 
-    return await myTPSMSGet(
-      "/countries.php",
+
+    return await myAppsGET(
+      "countries.php",
       {
         provider
       },
       API_KEY
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // SERVICES
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "services") {
 
-    const provider = String(
-      params.provider || "global"
-    ).trim().toLowerCase();
+    const provider =
+      String(
+        params.provider || "global"
+      )
+        .trim()
+        .toLowerCase();
 
-    const country = String(
-      params.country || ""
-    ).trim();
 
-    if (!ALLOWED_PROVIDERS.has(provider)) {
+    const country =
+      String(
+        params.country || ""
+      )
+        .trim()
+        .toUpperCase();
+
+
+    if (
+      !ALLOWED_PROVIDERS.has(provider)
+    ) {
+
       return response(400, {
         success: false,
         error: "Invalid provider."
       });
+
     }
 
+
     if (!country) {
+
       return response(400, {
         success: false,
         error: "Country is required."
       });
+
     }
 
-    return await myTPSMSGet(
-      "/services.php",
+
+    return await myAppsGET(
+      "services.php",
       {
         provider,
         country
       },
       API_KEY
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // STATUS
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "status") {
 
-    const orderId = String(
-      params.order_id ||
-      params.orderId ||
-      params.id ||
-      ""
-    ).trim();
+    const orderId =
+      String(
+        params.order_id ||
+        params.orderId ||
+        params.id ||
+        ""
+      )
+        .trim();
+
 
     if (!orderId) {
+
       return response(400, {
         success: false,
         error: "order_id is required."
       });
+
     }
 
-    return await myTPSMSGet(
-      "/status.php",
+
+    return await myAppsGET(
+      "status.php",
       {
         order_id: orderId
       },
       API_KEY
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // HISTORY
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "history") {
 
-    const page = String(
-      params.page || "1"
-    ).trim();
+    const page =
+      String(
+        params.page || "1"
+      )
+        .trim();
 
-    return await myTPSMSGet(
-      "/history.php",
+
+    return await myAppsGET(
+      "history.php",
       {
         page
       },
       API_KEY
     );
+
   }
 
 
@@ -204,6 +290,7 @@ async function handleGET(event, API_KEY) {
     success: false,
     error: "Unknown action."
   });
+
 }
 
 
@@ -211,115 +298,174 @@ async function handleGET(event, API_KEY) {
 // POST
 // ======================================================
 
-async function handlePOST(event, API_KEY) {
+async function handlePOST(
+  event,
+  API_KEY
+) {
 
-  let body;
+  let body = {};
+
 
   try {
-    body = JSON.parse(event.body || "{}");
+
+    body =
+      JSON.parse(
+        event.body || "{}"
+      );
+
   } catch {
+
     return response(400, {
       success: false,
       error: "Invalid JSON request."
     });
+
   }
 
-  const action = String(
-    body.action || ""
-  ).trim().toLowerCase();
+
+  const action =
+    String(
+      body.action || ""
+    )
+      .trim()
+      .toLowerCase();
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // BUY
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "buy") {
 
-    const provider = String(
-      body.provider || ""
-    ).trim().toLowerCase();
+    const provider =
+      String(
+        body.provider || ""
+      )
+        .trim()
+        .toLowerCase();
 
-    const country = String(
-      body.country || ""
-    ).trim();
 
-    const service = String(
-      body.service ||
-      body.service_id ||
-      body.serviceId ||
-      ""
-    ).trim();
+    const country =
+      String(
+        body.country || ""
+      )
+        .trim()
+        .toUpperCase();
 
-    if (!ALLOWED_PROVIDERS.has(provider)) {
+
+    const service =
+      String(
+        body.service ||
+        body.service_id ||
+        body.serviceId ||
+        ""
+      )
+        .trim();
+
+
+    const serviceName =
+      String(
+        body.serviceName ||
+        body.service_name ||
+        ""
+      )
+        .trim();
+
+
+    if (
+      !ALLOWED_PROVIDERS.has(provider)
+    ) {
+
       return response(400, {
         success: false,
         error: "Invalid provider."
       });
+
     }
 
+
     if (!country) {
+
       return response(400, {
         success: false,
         error: "Country is required."
       });
+
     }
 
+
     if (!service) {
+
       return response(400, {
         success: false,
         error: "Service is required."
       });
+
     }
 
 
     const payload = {
+
       provider,
+
       country,
+
       service
+
     };
 
 
-    if (body.serviceName) {
+    if (serviceName) {
+
       payload.service_name =
-        String(body.serviceName).trim();
+        serviceName;
+
     }
 
 
-    return await myTPSMSPost(
-      "/buy.php",
+    return await myAppsPOST(
+      "buy.php",
       payload,
       API_KEY
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // CANCEL
-  // ----------------------------------------------------
+  // ====================================================
 
   if (action === "cancel") {
 
-    const orderId = String(
-      body.order_id ||
-      body.orderId ||
-      body.id ||
-      ""
-    ).trim();
+    const orderId =
+      String(
+        body.order_id ||
+        body.orderId ||
+        body.id ||
+        ""
+      )
+        .trim();
+
 
     if (!orderId) {
+
       return response(400, {
         success: false,
         error: "order_id is required."
       });
+
     }
 
-    return await myTPSMSPost(
-      "/cancel.php",
+
+    return await myAppsPOST(
+      "cancel.php",
       {
         order_id: orderId
       },
       API_KEY
     );
+
   }
 
 
@@ -327,98 +473,163 @@ async function handlePOST(event, API_KEY) {
     success: false,
     error: "Unknown action."
   });
+
 }
 
 
 // ======================================================
-// MYTPSMS GET
+// MYAPPS GET
 // ======================================================
 
-async function myTPSMSGet(
+async function myAppsGET(
   endpoint,
   params,
   API_KEY
 ) {
 
-  const url = new URL(
-    API_BASE + endpoint
-  );
+  const url =
+    new URL(
+      API_BASE + endpoint
+    );
 
-  for (const [key, value] of Object.entries(params)) {
+
+  for (
+    const [key, value]
+    of Object.entries(params)
+  ) {
 
     if (
       value !== undefined &&
       value !== null &&
       String(value) !== ""
     ) {
+
       url.searchParams.set(
         key,
         String(value)
       );
+
     }
+
   }
 
 
   console.log(
-    "MYTPSMS GET:",
-    url.pathname,
-    Object.fromEntries(url.searchParams)
+    "MYAPPS GET:",
+    endpoint,
+    params
   );
 
 
-  const result = await fetch(
-    url.toString(),
-    {
-      method: "GET",
-      headers: {
-        "X-API-KEY": API_KEY,
-        "Accept": "application/json"
+  const result =
+    await fetch(
+      url.toString(),
+      {
+
+        method: "GET",
+
+        headers: {
+
+          "API-KEY":
+            API_KEY,
+
+          "Accept":
+            "application/json"
+
+        }
+
       }
-    }
-  );
+    );
 
 
   return parseUpstreamResponse(
     result
   );
+
 }
 
 
 // ======================================================
-// MYTPSMS POST
+// MYAPPS POST
 // ======================================================
 
-async function myTPSMSPost(
+async function myAppsPOST(
   endpoint,
   payload,
   API_KEY
 ) {
 
   console.log(
-    "MYTPSMS POST:",
-    endpoint
+    "MYAPPS POST:",
+    endpoint,
+    payload
   );
 
 
-  const result = await fetch(
-    API_BASE + endpoint,
-    {
-      method: "POST",
+  /*
+   * MYAPPS documentation shows POST
+   * parameters being sent as normal form data.
+   *
+   * Therefore we use URLSearchParams
+   * instead of JSON.
+   */
 
-      headers: {
-        "X-API-KEY": API_KEY,
-        "Accept": "application/json",
-        "Content-Type": "application/json"
-      },
+  const form =
+    new URLSearchParams();
 
-      body: JSON.stringify(payload)
+
+  for (
+    const [key, value]
+    of Object.entries(payload)
+  ) {
+
+    if (
+      value !== undefined &&
+      value !== null &&
+      String(value) !== ""
+    ) {
+
+      form.append(
+        key,
+        String(value)
+      );
+
     }
-  );
+
+  }
+
+
+  const result =
+    await fetch(
+      API_BASE + endpoint,
+      {
+
+        method: "POST",
+
+        headers: {
+
+          "API-KEY":
+            API_KEY,
+
+          "Accept":
+            "application/json",
+
+          "Content-Type":
+            "application/x-www-form-urlencoded"
+
+        },
+
+        body:
+          form.toString()
+
+      }
+    );
 
 
   return parseUpstreamResponse(
     result
   );
+
 }
 
 
@@ -436,41 +647,55 @@ async function parseUpstreamResponse(
 
   let text = "";
 
+
   try {
-    text = await upstream.text();
+
+    text =
+      await upstream.text();
+
   } catch {
+
     return response(502, {
       success: false,
-      error: "Could not read MyTPSMS response."
+      error:
+        "Could not read MYAPPS response."
     });
+
   }
 
 
   console.log(
-    "MYTPSMS STATUS:",
+    "MYAPPS STATUS:",
     statusCode
   );
 
+
   console.log(
-    "MYTPSMS RESPONSE:",
+    "MYAPPS RESPONSE:",
     text
   );
 
 
   let data = null;
 
+
   try {
-    data = text
-      ? JSON.parse(text)
-      : null;
+
+    data =
+      text
+        ? JSON.parse(text)
+        : null;
+
   } catch {
+
     data = null;
+
   }
 
 
-  // ----------------------------------------------------
-  // NON JSON RESPONSE
-  // ----------------------------------------------------
+  // ====================================================
+  // NON-JSON RESPONSE
+  // ====================================================
 
   if (!data) {
 
@@ -483,7 +708,7 @@ async function parseUpstreamResponse(
 
           error:
             text ||
-            `MyTPSMS returned HTTP ${statusCode}.`,
+            `MYAPPS returned HTTP ${statusCode}.`,
 
           upstream_status:
             statusCode
@@ -493,36 +718,45 @@ async function parseUpstreamResponse(
     }
 
 
-    return response(502, {
-      success: false,
+    return response(
+      502,
+      {
+        success: false,
 
-      error:
-        text ||
-        "MyTPSMS returned an invalid response.",
+        error:
+          text ||
+          "MYAPPS returned an invalid response.",
 
-      upstream_status:
-        statusCode
-    });
+        upstream_status:
+          statusCode
+      }
+    );
+
   }
 
 
-  // ----------------------------------------------------
-  // API REPORTED ERROR
-  // ----------------------------------------------------
+  // ====================================================
+  // API ERROR
+  // ====================================================
 
   const apiFailed =
     !upstream.ok ||
     data.success === false ||
     data.status === false ||
-    String(data.status || "")
-      .toLowerCase() === "error";
+    String(
+      data.status || ""
+    ).toLowerCase() === "error";
 
 
   if (apiFailed) {
 
     return response(
-      upstream.ok ? 400 : statusCode,
+      upstream.ok
+        ? 400
+        : statusCode,
+
       {
+
         ...data,
 
         success: false,
@@ -532,18 +766,21 @@ async function parseUpstreamResponse(
           data.message ||
           data.msg ||
           data.detail ||
-          `MyTPSMS request failed (${statusCode}).`,
+          `MYAPPS request failed (${statusCode}).`,
 
         upstream_status:
           statusCode
+
       }
+
     );
+
   }
 
 
-  // ----------------------------------------------------
+  // ====================================================
   // SUCCESS
-  // ----------------------------------------------------
+  // ====================================================
 
   return response(
     statusCode >= 200 &&
@@ -553,18 +790,17 @@ async function parseUpstreamResponse(
 
     normalizeResponse(data)
   );
+
 }
 
 
 // ======================================================
-// NORMALIZE RESPONSE
+// NORMALIZE
 // ======================================================
 
-function normalizeResponse(data) {
-
-  // Keep the original API response intact.
-  // The frontend can therefore handle different
-  // response structures without losing information.
+function normalizeResponse(
+  data
+) {
 
   if (
     data &&
@@ -572,19 +808,27 @@ function normalizeResponse(data) {
   ) {
 
     return {
+
       ...data,
 
       success:
         data.success !== undefined
           ? data.success
           : true
+
     };
+
   }
 
+
   return {
+
     success: true,
+
     data
+
   };
+
 }
 
 
@@ -598,10 +842,15 @@ function response(
 ) {
 
   return {
+
     statusCode,
 
-    headers: CORS_HEADERS,
+    headers:
+      CORS_HEADERS,
 
-    body: JSON.stringify(body)
+    body:
+      JSON.stringify(body)
+
   };
+
 }
