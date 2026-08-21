@@ -4,9 +4,9 @@ function calculateSellingPrice(originalPrice) {
   const price = parseFloat(originalPrice);
   if (isNaN(price)) return 0;
 
-  if (price <= 500) return price * 2;       // ×2
-  if (price < 1000) return price * 1.5;     // +50%
-  return price * 1.3;                       // +30%
+  if (price <= 500) return price * 2;
+  if (price < 1000) return price * 1.5;
+  return price * 1.3;
 }
 
 export default async function handler(req, res) {
@@ -32,7 +32,6 @@ export default async function handler(req, res) {
     if (req.method === "GET") {
       const { action, provider, country, service, order_id } = req.query;
 
-      // Get Countries
       if (action === "countries") {
         const response = await fetch(
           `https://mytpsms.com/api/v1/countries.php?provider=${provider}`,
@@ -42,7 +41,6 @@ export default async function handler(req, res) {
         return res.status(200).json(data);
       }
 
-      // Get Services
       if (action === "services") {
         const response = await fetch(
           `https://mytpsms.com/api/v1/services.php?provider=${provider}&country=${country}`,
@@ -52,7 +50,6 @@ export default async function handler(req, res) {
         return res.status(200).json(data);
       }
 
-      // Get Price (NEW)
       if (action === "price") {
         const response = await fetch(
           `https://mytpsms.com/api/v1/price.php?provider=${provider}&country=${country}&service=${service}`,
@@ -82,7 +79,6 @@ export default async function handler(req, res) {
         });
       }
 
-      // Check Status
       if (action === "status") {
         const response = await fetch(
           `https://mytpsms.com/api/v1/status.php?order_id=${order_id}`,
@@ -98,60 +94,88 @@ export default async function handler(req, res) {
       });
     }
 
-    // ====================== POST (BUY) ======================
+    // ====================== POST ======================
     if (req.method === "POST") {
       const body = req.body || {};
 
-      if (body.action !== "buy") {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid action",
+      // ========== BUY ==========
+      if (body.action === "buy") {
+        const { provider, country, service, serviceName } = body;
+
+        if (!provider || !country || !service) {
+          return res.status(400).json({
+            success: false,
+            message: "provider, country and service are required",
+          });
+        }
+
+        const formData = new URLSearchParams();
+        formData.append("provider", provider);
+        formData.append("country", country);
+        formData.append("service", service);
+        if (serviceName) formData.append("service_name", serviceName);
+
+        const response = await fetch("https://mytpsms.com/api/v1/buy.php", {
+          method: "POST",
+          headers: {
+            "X-API-KEY": apiKey,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString(),
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+          return res.status(400).json(data);
+        }
+
+        const originalPrice = parseFloat(data.price) || 0;
+        const sellingPrice = calculateSellingPrice(originalPrice);
+
+        return res.status(200).json({
+          success: true,
+          order_id: data.order_id,
+          number: data.number,
+          original_price: originalPrice,
+          selling_price: sellingPrice,
+          price: sellingPrice,
+          currency: data.currency || "NGN",
+          expires_at: data.expires_at,
+          status: data.status,
         });
       }
 
-      const { provider, country, service, serviceName } = body;
+      // ========== CANCEL ==========
+      if (body.action === "cancel") {
+        const { order_id } = body;
 
-      if (!provider || !country || !service) {
-        return res.status(400).json({
-          success: false,
-          message: "provider, country and service are required",
+        if (!order_id) {
+          return res.status(400).json({
+            success: false,
+            message: "order_id is required",
+          });
+        }
+
+        const formData = new URLSearchParams();
+        formData.append("order_id", order_id);
+
+        const response = await fetch("https://mytpsms.com/api/v1/cancel.php", {
+          method: "POST",
+          headers: {
+            "X-API-KEY": apiKey,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: formData.toString(),
         });
+
+        const data = await response.json();
+        return res.status(200).json(data);
       }
 
-      const formData = new URLSearchParams();
-      formData.append("provider", provider);
-      formData.append("country", country);
-      formData.append("service", service);
-      if (serviceName) formData.append("service_name", serviceName);
-
-      const response = await fetch("https://mytpsms.com/api/v1/buy.php", {
-        method: "POST",
-        headers: {
-          "X-API-KEY": apiKey,
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: formData.toString(),
-      });
-
-      const data = await response.json();
-
-      if (!data.success) {
-        return res.status(400).json(data);
-      }
-
-      const originalPrice = parseFloat(data.price) || 0;
-      const sellingPrice = calculateSellingPrice(originalPrice);
-
-      return res.status(200).json({
-        success: true,
-        order_id: data.order_id,
-        number: data.number,
-        original_price: originalPrice,
-        selling_price: sellingPrice,
-        price: sellingPrice,
-        currency: data.currency || "NGN",
-        expires_at: data.expires_at,
-        status: data.status,
+      return res.status(400).json({
+        success: false,
+        message: "Invalid action",
       });
     }
 
