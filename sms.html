@@ -6,681 +6,108 @@
 <title>SMS Numbers - Trust Social</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
-
-body{
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-  background:#f8f9fa;
-  color:#111;
-  min-height:100vh;
-  padding-bottom:50px;
-}
-
-.header{
-  position:sticky;
-  top:0;
-  z-index:100;
-  background:#fff;
-  padding:12px 16px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #eee;
-  transition:.3s;
-}
-
-.header.scrolled{
-  background:rgba(255,255,255,.85);
-  backdrop-filter:blur(12px);
-}
-
-.menu-toggle,
-.icon-btn{
-  background:none;
-  border:none;
-  cursor:pointer;
-  padding:4px;
-  color:#333;
-}
-
-.header-right{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.badge-no{
-  background:#f0f0f0;
-  color:#555;
-  font-size:13px;
-  font-weight:500;
-  padding:4px 10px;
-  border-radius:20px;
-}
-
-.avatar{
-  width:36px;
-  height:36px;
-  background:#3d6b1e;
-  color:#fff;
-  border-radius:50%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:600;
-  font-size:14px;
-}
-
-.sidebar-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.4);
-  z-index:200;
-  opacity:0;
-  visibility:hidden;
-  transition:.3s;
-}
-
-.sidebar-overlay.active{
-  opacity:1;
-  visibility:visible;
-}
-
-.sidebar{
-  position:fixed;
-  top:0;
-  left:0;
-  width:300px;
-  height:100%;
-  background:#fff;
-  z-index:300;
-  transform:translateX(-100%);
-  transition:.3s;
-  overflow-y:auto;
-  padding:20px 0 30px;
-}
-
-.sidebar.active{
-  transform:translateX(0);
-}
-
-.sidebar-logo{
-  padding:0 20px 20px;
-  border-bottom:1px solid #eee;
-}
-
-.sidebar-logo img{
-  height:40px;
-}
-
-.menu-section{
-  padding:20px 12px 8px;
-}
-
-.menu-section-title{
-  font-size:13px;
-  color:#888;
-  font-weight:500;
-  padding:0 12px 10px;
-  text-transform:uppercase;
-  letter-spacing:.3px;
-}
-
-.menu-item{
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:12px 14px;
-  border-radius:12px;
-  color:#333;
-  text-decoration:none;
-  font-size:15px;
-  font-weight:500;
-  margin-bottom:2px;
-}
-
-.menu-item:hover{
-  background:#f5f5f5;
-}
-
-.menu-item.active{
-  background:#f0f7eb;
-  color:#3d6b1e;
-}
-
-.menu-item svg{
-  width:20px;
-  height:20px;
-  flex-shrink:0;
-}
-
-.soon-badge{
-  margin-left:auto;
-  background:#e8f5e9;
-  color:#2e7d32;
-  font-size:11px;
-  font-weight:500;
-  padding:2px 8px;
-  border-radius:10px;
-}
-
-.signout-item{
-  color:#d32f2f!important;
-}
-
-.container{
-  max-width:480px;
-  margin:0 auto;
-  padding:24px 16px;
-}
-
-h1{
-  font-size:26px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-
-.subtitle{
-  color:#666;
-  font-size:15px;
-  margin-bottom:24px;
-}
-
-.balance-card{
-  background:#f0f7eb;
-  border:1px solid #dcebd2;
-  border-radius:14px;
-  padding:14px 16px;
-  margin-bottom:24px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.balance-label{
-  color:#666;
-  font-size:13px;
-  margin-bottom:3px;
-}
-
-.balance-value{
-  color:#3d6b1e;
-  font-size:20px;
-  font-weight:700;
-}
-
-.buy-card{
-  background:#fff;
-  border:1px solid #e5e5e5;
-  border-radius:16px;
-  padding:16px;
-  box-shadow:0 2px 8px rgba(0,0,0,.03);
-}
-
-.section-title{
-  font-size:16px;
-  font-weight:600;
-  margin-bottom:12px;
-}
-
-.providers{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  margin-bottom:26px;
-}
-
-.provider-card{
-  background:#fff;
-  border:1.5px solid #ddd;
-  border-radius:14px;
-  padding:13px 12px;
-  display:flex;
-  align-items:center;
-  gap:12px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.provider-card:hover{
-  border-color:#3d6b1e;
-}
-
-.provider-card.active{
-  border-color:#3d6b1e;
-  background:#f0f7eb;
-}
-
-.provider-icon{
-  width:40px;
-  height:40px;
-  border-radius:12px;
-  background:#f0f7eb;
-  color:#3d6b1e;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:21px;
-  flex-shrink:0;
-}
-
-.provider-info{
-  flex:1;
-}
-
-.provider-name{
-  font-size:15px;
-  font-weight:600;
-  margin-bottom:3px;
-}
-
-.provider-description{
-  color:#777;
-  font-size:12px;
-}
-
-.check{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  border:1.5px solid #ccc;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:transparent;
-  font-size:12px;
-}
-
-.provider-card.active .check{
-  background:#3d6b1e;
-  border-color:#3d6b1e;
-  color:#fff;
-}
-
-.country-area,
-.service-area{
-  margin-bottom:24px;
-}
-
-.select-box{
-  position:relative;
-}
-
-.select-box select{
-  width:100%;
-  appearance:none;
-  padding:14px 42px 14px 14px;
-  border:1.5px solid #ddd;
-  border-radius:12px;
-  background:#fff;
-  color:#222;
-  font-size:15px;
-  outline:none;
-}
-
-.select-box select:focus{
-  border-color:#3d6b1e;
-}
-
-.select-arrow{
-  position:absolute;
-  right:15px;
-  top:50%;
-  transform:translateY(-50%);
-  pointer-events:none;
-  color:#777;
-}
-
-.service-search{
-  width:100%;
-  padding:14px;
-  border:1.5px solid #ddd;
-  border-radius:12px;
-  font-size:15px;
-  outline:none;
-  margin-bottom:8px;
-}
-
-.service-search:focus,
-.service-select:focus{
-  border-color:#3d6b1e;
-}
-
-.service-select{
-  width:100%;
-  padding:14px;
-  border:1.5px solid #ddd;
-  border-radius:12px;
-  background:#fff;
-  font-size:15px;
-  outline:none;
-}
-
-.price-box{
-  background:#f0f7eb;
-  border-radius:14px;
-  padding:16px;
-  margin-bottom:16px;
-}
-
-.price-label{
-  color:#666;
-  font-size:13px;
-  margin-bottom:5px;
-}
-
-.price{
-  color:#3d6b1e;
-  font-size:24px;
-  font-weight:700;
-}
-
-.price-note{
-  color:#777;
-  font-size:11px;
-  margin-top:4px;
-}
-
-.buy-btn{
-  width:100%;
-  padding:16px;
-  background:#3d6b1e;
-  color:#fff;
-  border:none;
-  border-radius:14px;
-  font-size:16px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.buy-btn:hover:not(:disabled){
-  background:#315617;
-}
-
-.buy-btn:disabled{
-  background:#ccc;
-  cursor:not-allowed;
-}
-
-.how-card{
-  background:#fff;
-  border:1px solid #e5e5e5;
-  border-radius:16px;
-  padding:17px;
-  margin-top:20px;
-}
-
-.how-title{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  font-size:16px;
-  font-weight:650;
-  margin-bottom:14px;
-}
-
-.how-title-icon{
-  color:#3d6b1e;
-  font-size:20px;
-}
-
-.how-step{
-  display:flex;
-  gap:10px;
-  margin-bottom:12px;
-  color:#555;
-  font-size:14px;
-  line-height:1.4;
-}
-
-.how-step-number{
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  background:#f0f7eb;
-  color:#3d6b1e;
-  font-size:12px;
-  font-weight:700;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-shrink:0;
-}
-
-.error-box{
-  background:#fff1f1;
-  border:1px solid #f2cccc;
-  color:#b3261e;
-  border-radius:12px;
-  padding:14px;
-  font-size:13px;
-  margin-bottom:16px;
-  display:none;
-  word-break:break-word;
-}
-
-.success-box{
-  background:#f0f7eb;
-  border:1px solid #d8e9ce;
-  color:#315617;
-  border-radius:12px;
-  padding:14px;
-  font-size:13px;
-  margin-bottom:16px;
-  display:none;
-}
-
-.modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  z-index:1000;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  opacity:0;
-  visibility:hidden;
-  transition:.3s;
-}
-
-.modal-overlay.active{
-  opacity:1;
-  visibility:visible;
-}
-
-.modal{
-  width:100%;
-  max-width:480px;
-  background:#fff;
-  border-radius:22px 22px 0 0;
-  padding:22px 18px 28px;
-  transform:translateY(100%);
-  transition:.3s;
-}
-
-.modal-overlay.active .modal{
-  transform:translateY(0);
-}
-
-.modal-handle{
-  width:40px;
-  height:4px;
-  background:#ddd;
-  border-radius:5px;
-  margin:0 auto 18px;
-}
-
-.modal-title{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-
-.modal-subtitle{
-  color:#777;
-  font-size:14px;
-  margin-bottom:20px;
-}
-
-.number-box{
-  background:#f0f7eb;
-  border:1px solid #d8e9ce;
-  border-radius:14px;
-  padding:18px;
-  text-align:center;
-  margin-bottom:16px;
-}
-
-.number-label{
-  color:#666;
-  font-size:12px;
-  margin-bottom:5px;
-}
-
-.number-value{
-  color:#3d6b1e;
-  font-size:25px;
-  font-weight:700;
-  word-break:break-word;
-}
-
-.sms-code-box{
-  background:#f8f9fa;
-  border:1px solid #e5e5e5;
-  border-radius:14px;
-  padding:16px;
-  text-align:center;
-  margin-bottom:16px;
-}
-
-.sms-code-label{
-  color:#777;
-  font-size:12px;
-  margin-bottom:5px;
-}
-
-.sms-code{
-  font-size:24px;
-  font-weight:700;
-  color:#111;
-  letter-spacing:2px;
-  word-break:break-word;
-}
-
-.modal-close{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:#eee;
-  color:#333;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-@media(max-width:360px){
-  .container{
-    padding-left:12px;
-    padding-right:12px;
-  }
-
-  h1{
-    font-size:24px;
-  }
-}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#f8f9fa;color:#111;min-height:100vh;padding-bottom:50px}
+.header{position:sticky;top:0;z-index:100;background:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #eee;transition:.3s}
+.header.scrolled{background:rgba(255,255,255,.85);backdrop-filter:blur(12px)}
+.menu-toggle,.icon-btn{background:none;border:none;cursor:pointer;padding:4px;color:#333}
+.header-right{display:flex;align-items:center;gap:12px}
+.badge-no{background:#f0f0f0;color:#555;font-size:13px;font-weight:500;padding:4px 10px;border-radius:20px}
+.avatar{width:36px;height:36px;background:#3d6b1e;color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+.sidebar-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:200;opacity:0;visibility:hidden;transition:.3s}
+.sidebar-overlay.active{opacity:1;visibility:visible}
+.sidebar{position:fixed;top:0;left:0;width:300px;height:100%;background:#fff;z-index:300;transform:translateX(-100%);transition:.3s;overflow-y:auto;padding:20px 0 30px}
+.sidebar.active{transform:translateX(0)}
+.sidebar-logo{padding:0 20px 20px;border-bottom:1px solid #eee}
+.sidebar-logo img{height:40px}
+.menu-section{padding:20px 12px 8px}
+.menu-section-title{font-size:13px;color:#888;font-weight:500;padding:0 12px 10px;text-transform:uppercase;letter-spacing:.3px}
+.menu-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:12px;color:#333;text-decoration:none;font-size:15px;font-weight:500;margin-bottom:2px}
+.menu-item:hover{background:#f5f5f5}
+.menu-item.active{background:#f0f7eb;color:#3d6b1e}
+.menu-item svg{width:20px;height:20px;flex-shrink:0}
+.soon-badge{margin-left:auto;background:#e8f5e9;color:#2e7d32;font-size:11px;font-weight:500;padding:2px 8px;border-radius:10px}
+.signout-item{color:#d32f2f!important}
+.container{max-width:480px;margin:0 auto;padding:24px 16px}
+h1{font-size:26px;font-weight:700;margin-bottom:6px}
+.subtitle{color:#666;font-size:15px;margin-bottom:24px}
+.balance-card{background:#f0f7eb;border:1px solid #dcebd2;border-radius:14px;padding:14px 16px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between}
+.balance-label{color:#666;font-size:13px;margin-bottom:3px}
+.balance-value{color:#3d6b1e;font-size:20px;font-weight:700}
+.buy-card{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.03)}
+.section-title{font-size:16px;font-weight:600;margin-bottom:12px}
+.providers{display:flex;flex-direction:column;gap:8px;margin-bottom:26px}
+.provider-card{background:#fff;border:1.5px solid #ddd;border-radius:14px;padding:13px 12px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:.2s}
+.provider-card:hover{border-color:#3d6b1e}
+.provider-card.active{border-color:#3d6b1e;background:#f0f7eb}
+.provider-icon{width:40px;height:40px;border-radius:12px;background:#f0f7eb;color:#3d6b1e;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0}
+.provider-info{flex:1}
+.provider-name{font-size:15px;font-weight:600;margin-bottom:3px}
+.provider-description{color:#777;font-size:12px}
+.check{width:22px;height:22px;border-radius:50%;border:1.5px solid #ccc;display:flex;align-items:center;justify-content:center;color:transparent;font-size:12px}
+.provider-card.active .check{background:#3d6b1e;border-color:#3d6b1e;color:#fff}
+.country-area,.service-area{margin-bottom:24px}
+.select-box{position:relative}
+.select-box select{width:100%;appearance:none;padding:14px 42px 14px 14px;border:1.5px solid #ddd;border-radius:12px;background:#fff;color:#222;font-size:15px;outline:none}
+.select-box select:focus{border-color:#3d6b1e}
+.select-arrow{position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:#777}
+.service-search{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:12px;font-size:15px;outline:none;margin-bottom:8px}
+.service-search:focus,.service-select:focus{border-color:#3d6b1e}
+.service-select{width:100%;padding:14px;border:1.5px solid #ddd;border-radius:12px;background:#fff;font-size:15px;outline:none}
+.price-box{background:#f0f7eb;border-radius:14px;padding:16px;margin-bottom:16px}
+.price-label{color:#666;font-size:13px;margin-bottom:5px}
+.price{color:#3d6b1e;font-size:24px;font-weight:700}
+.price-note{color:#777;font-size:11px;margin-top:4px}
+.buy-btn{width:100%;padding:16px;background:#3d6b1e;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer}
+.buy-btn:hover:not(:disabled){background:#315617}
+.buy-btn:disabled{background:#ccc;cursor:not-allowed}
+.how-card{background:#fff;border:1px solid #e5e5e5;border-radius:16px;padding:17px;margin-top:20px}
+.how-title{display:flex;align-items:center;gap:8px;font-size:16px;font-weight:650;margin-bottom:14px}
+.how-title-icon{color:#3d6b1e;font-size:20px}
+.how-step{display:flex;gap:10px;margin-bottom:12px;color:#555;font-size:14px;line-height:1.4}
+.how-step-number{width:22px;height:22px;border-radius:50%;background:#f0f7eb;color:#3d6b1e;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.error-box{background:#fff1f1;border:1px solid #f2cccc;color:#b3261e;border-radius:12px;padding:14px;font-size:13px;margin-bottom:16px;display:none;word-break:break-word}
+.success-box{background:#f0f7eb;border:1px solid #d8e9ce;color:#315617;border-radius:12px;padding:14px;font-size:13px;margin-bottom:16px;display:none}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:1000;display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:.3s}
+.modal-overlay.active{opacity:1;visibility:visible}
+.modal{width:100%;max-width:480px;background:#fff;border-radius:22px 22px 0 0;padding:22px 18px 28px;transform:translateY(100%);transition:.3s}
+.modal-overlay.active .modal{transform:translateY(0)}
+.modal-handle{width:40px;height:4px;background:#ddd;border-radius:5px;margin:0 auto 18px}
+.modal-title{font-size:20px;font-weight:700;margin-bottom:6px}
+.modal-subtitle{color:#777;font-size:14px;margin-bottom:20px}
+.number-box{background:#f0f7eb;border:1px solid #d8e9ce;border-radius:14px;padding:18px;text-align:center;margin-bottom:16px}
+.number-label{color:#666;font-size:12px;margin-bottom:5px}
+.number-value{color:#3d6b1e;font-size:25px;font-weight:700;word-break:break-word}
+.sms-code-box{background:#f8f9fa;border:1px solid #e5e5e5;border-radius:14px;padding:16px;text-align:center;margin-bottom:16px}
+.sms-code-label{color:#777;font-size:12px;margin-bottom:5px}
+.sms-code{font-size:24px;font-weight:700;color:#111;letter-spacing:2px;word-break:break-word}
+.timer-box{text-align:center;margin-bottom:16px;font-size:14px;color:#666}
+.timer-value{font-weight:700;color:#3d6b1e}
+.modal-close{width:100%;padding:14px;border:none;border-radius:12px;background:#eee;color:#333;font-size:15px;font-weight:600;cursor:pointer}
+@media(max-width:360px){.container{padding-left:12px;padding-right:12px}h1{font-size:24px}}
 </style>
 </head>
-
 <body>
 
 <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <div class="sidebar" id="sidebar">
-
-  <div class="sidebar-logo">
-    <img src="logo.png" alt="Trust Social">
-  </div>
+  <div class="sidebar-logo"><img src="logo.png" alt="Trust Social"></div>
 
   <div class="menu-section">
     <div class="menu-section-title">Main</div>
-
-    <a href="dashboard.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="3" width="7" height="7" rx="1"/>
-        <rect x="14" y="14" width="7" height="7" rx="1"/>
-        <rect x="3" y="14" width="7" height="7" rx="1"/>
-      </svg>
-      Dashboard
-    </a>
-
-    <a href="wallet.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="2" y="6" width="20" height="12" rx="2"/>
-        <path d="M22 10H2"/>
-        <path d="M6 14h.01"/>
-      </svg>
-      Wallet
-    </a>
-
-    <a href="orders.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 0 1-8 0"/>
-      </svg>
-      Orders
-    </a>
-
-    <a href="transactions.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="17 1 21 5 17 9"/>
-        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
-        <polyline points="7 23 3 19 7 15"/>
-        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
-      </svg>
-      Transactions
-    </a>
+    <a href="dashboard.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>Dashboard</a>
+    <a href="wallet.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M22 10H2"/><path d="M6 14h.01"/></svg>Wallet</a>
+    <a href="orders.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>Orders</a>
+    <a href="transactions.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>Transactions</a>
   </div>
 
   <div class="menu-section">
     <div class="menu-section-title">Store</div>
-
-    <a href="logs.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
-        <line x1="12" y1="22.08" x2="12" y2="12"/>
-      </svg>
-      Logs Store
-    </a>
-
-    <a href="tools.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
-      </svg>
-      Tools Store
-    </a>
-
-    <a href="sms.html" class="menu-item active">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-      </svg>
-      SMS Numbers
-    </a>
-
-    <a href="sme.html" class="menu-item">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
-      </svg>
-      SME Boosting
-      <span class="soon-badge">Soon</span>
-    </a>
+    <a href="logs.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>Logs Store</a>
+    <a href="tools.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>Tools Store</a>
+    <a href="sms.html" class="menu-item active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>SMS Numbers</a>
+    <a href="sme.html" class="menu-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>SME Boosting <span class="soon-badge">Soon</span></a>
   </div>
 
   <div class="menu-section">
@@ -690,45 +117,27 @@ h1{
     <a href="profile.html" class="menu-item">Profile</a>
   </div>
 
-  <div class="menu-section" style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;">
+  <div class="menu-section" style="border-top:1px solid #eee;margin-top:10px;padding-top:10px">
     <a href="login.html" class="menu-item signout-item" id="signOutBtn">Sign out</a>
   </div>
-
 </div>
 
 <header class="header" id="header">
   <button class="menu-toggle" id="menuToggle">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <rect x="3" y="3" width="7" height="7" rx="1"/>
-      <rect x="14" y="3" width="7" height="7" rx="1"/>
-      <rect x="14" y="14" width="7" height="7" rx="1"/>
-      <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/>
+      <rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/>
     </svg>
   </button>
-
   <div class="header-right">
     <span class="badge-no">No</span>
-    <button class="icon-btn" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2"/><path d="M12 20v2"/>
-        <path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
-        <path d="M2 12h2"/><path d="M20 12h2"/>
-        <path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>
-      </svg>
-    </button>
-    <button class="icon-btn" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
-        <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
-      </svg>
-    </button>
+    <button class="icon-btn" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/></svg></button>
+    <button class="icon-btn" type="button"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></button>
     <div class="avatar" id="userAvatar">--</div>
   </div>
 </header>
 
 <main class="container">
-
   <h1>SMS Numbers</h1>
   <p class="subtitle">Get temporary numbers for verification</p>
 
@@ -743,44 +152,17 @@ h1{
   <div class="success-box" id="successBox"></div>
 
   <div class="buy-card">
-
     <div class="section-title">1. Provider</div>
-
-    <div class="providers" id="providers">
-      <div class="provider-card" data-provider="global">
-        <div class="provider-icon">🌐</div>
-        <div class="provider-info">
-          <div class="provider-name">Global Number</div>
-          <div class="provider-description">Global numbers</div>
-        </div>
-        <div class="check">✓</div>
-      </div>
-
-      <div class="provider-card" data-provider="usa">
-        <div class="provider-icon">🇺🇸</div>
-        <div class="provider-info">
-          <div class="provider-name">USA Number</div>
-          <div class="provider-description">USA numbers only</div>
-        </div>
-        <div class="check">✓</div>
-      </div>
-
-      <div class="provider-card" data-provider="usa2">
-        <div class="provider-icon">🌐</div>
-        <div class="provider-info">
-          <div class="provider-name">Global Number (Server 2)</div>
-          <div class="provider-description">Global numbers</div>
-        </div>
-        <div class="check">✓</div>
-      </div>
+    <div class="providers">
+      <div class="provider-card" data-provider="global"><div class="provider-icon">🌐</div><div class="provider-info"><div class="provider-name">Global Number</div><div class="provider-description">Global numbers</div></div><div class="check">✓</div></div>
+      <div class="provider-card" data-provider="usa"><div class="provider-icon">🇺🇸</div><div class="provider-info"><div class="provider-name">USA Number</div><div class="provider-description">USA numbers only</div></div><div class="check">✓</div></div>
+      <div class="provider-card" data-provider="usa2"><div class="provider-icon">🌐</div><div class="provider-info"><div class="provider-name">Global Number (Server 2)</div><div class="provider-description">Global numbers</div></div><div class="check">✓</div></div>
     </div>
 
     <div class="country-area">
       <div class="section-title">2. Country</div>
       <div class="select-box">
-        <select id="countrySelect">
-          <option value="">Select country...</option>
-        </select>
+        <select id="countrySelect"><option value="">Select country...</option></select>
         <div class="select-arrow">▼</div>
       </div>
     </div>
@@ -788,9 +170,7 @@ h1{
     <div class="service-area">
       <div class="section-title">3. Service</div>
       <input type="text" class="service-search" id="serviceSearch" placeholder="Search service..." autocomplete="off">
-      <select class="service-select" id="serviceSelect">
-        <option value="">Select service...</option>
-      </select>
+      <select class="service-select" id="serviceSelect"><option value="">Select service...</option></select>
     </div>
 
     <div class="price-box">
@@ -799,23 +179,16 @@ h1{
       <div class="price-note" id="priceNote">Select a service to see the price.</div>
     </div>
 
-    <button class="buy-btn" id="buyBtn" type="button" disabled>
-      Select Provider, Country & Service
-    </button>
-
+    <button class="buy-btn" id="buyBtn" type="button" disabled>Select Provider, Country & Service</button>
   </div>
 
   <div class="how-card">
-    <div class="how-title">
-      <span class="how-title-icon">ⓘ</span>
-      How it works
-    </div>
+    <div class="how-title"><span class="how-title-icon">ⓘ</span> How it works</div>
     <div class="how-step"><div class="how-step-number">1</div><div>Choose your provider, country and service.</div></div>
     <div class="how-step"><div class="how-step-number">2</div><div>The cost is deducted from your wallet.</div></div>
     <div class="how-step"><div class="how-step-number">3</div><div>Your number appears after a successful purchase.</div></div>
     <div class="how-step"><div class="how-step-number">4</div><div>We automatically check for your SMS code.</div></div>
   </div>
-
 </main>
 
 <div class="modal-overlay" id="numberModal">
@@ -834,14 +207,18 @@ h1{
       <div class="sms-code" id="smsCode">Waiting...</div>
     </div>
 
+    <div class="timer-box" id="timerBox" style="display:none">
+      Expires in: <span class="timer-value" id="timerValue">--:--</span>
+    </div>
+
     <button class="modal-close" id="closeModal" type="button">Close</button>
   </div>
 </div>
 
 <script type="module">
-
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, increment, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
@@ -855,11 +232,10 @@ const firebaseConfig = {
 
 const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-/* ===================== API ===================== */
 const API_URL = "https://trustsocials.vercel.app/api/mytpsms";
 
-/* ===================== STATE ===================== */
 let currentUser = null;
 let selectedProvider = "";
 let selectedCountry = "";
@@ -868,9 +244,9 @@ let allServices = [];
 let currentPrice = null;
 let currentPriceData = null;
 let statusTimer = null;
+let expiryTimer = null;
 let priceRequestId = 0;
 
-/* ===================== ELEMENTS ===================== */
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 const countrySelect = document.getElementById("countrySelect");
@@ -886,11 +262,11 @@ const numberModal = document.getElementById("numberModal");
 const numberValue = document.getElementById("numberValue");
 const smsCode = document.getElementById("smsCode");
 const modalSubtitle = document.getElementById("modalSubtitle");
+const timerBox = document.getElementById("timerBox");
+const timerValue = document.getElementById("timerValue");
 
-/* ===================== HELPERS ===================== */
 function formatNaira(amount) {
-  const num = Number(amount) || 0;
-  return "₦" + num.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return "₦" + (Number(amount) || 0).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function showError(msg) {
@@ -899,16 +275,11 @@ function showError(msg) {
 }
 function hideError() {
   errorBox.style.display = "none";
-  errorBox.textContent = "";
 }
 function showSuccess(msg) {
   successBox.textContent = msg;
   successBox.style.display = "block";
-  setTimeout(hideSuccess, 4000);
-}
-function hideSuccess() {
-  successBox.style.display = "none";
-  successBox.textContent = "";
+  setTimeout(() => successBox.style.display = "none", 4000);
 }
 
 function resetPrice() {
@@ -918,158 +289,113 @@ function resetPrice() {
   currentPriceData = null;
 }
 
-/* ===================== SIDEBAR ===================== */
-document.getElementById("menuToggle").addEventListener("click", () => {
+/* Sidebar */
+document.getElementById("menuToggle").onclick = () => {
   sidebar.classList.add("active");
   overlay.classList.add("active");
   document.body.style.overflow = "hidden";
-});
-overlay.addEventListener("click", () => {
+};
+overlay.onclick = () => {
   sidebar.classList.remove("active");
   overlay.classList.remove("active");
   document.body.style.overflow = "";
-});
+};
 
-/* ===================== SIGN OUT ===================== */
-document.getElementById("signOutBtn").addEventListener("click", async (e) => {
+/* Sign out */
+document.getElementById("signOutBtn").onclick = async (e) => {
   e.preventDefault();
-  try {
-    await signOut(auth);
-    window.location.href = "login.html";
-  } catch {
-    showError("Unable to sign out.");
-  }
-});
+  await signOut(auth);
+  location.href = "login.html";
+};
 
-/* ===================== API REQUEST ===================== */
+/* API helper */
 async function requestJSON(url, options = {}) {
-  let response;
-  try {
-    response = await fetch(url, { ...options, cache: "no-store" });
-  } catch (err) {
-    throw new Error("Unable to connect to the SMS server.");
-  }
-
-  const text = await response.text();
+  const res = await fetch(url, { ...options, cache: "no-store" });
+  const text = await res.text();
   let data;
-  try {
-    data = text ? JSON.parse(text) : {};
-  } catch {
-    throw new Error("Invalid response from server.");
-  }
-
-  if (!response.ok || data.success === false) {
-    throw new Error(data.message || data.error || "Request failed");
-  }
+  try { data = text ? JSON.parse(text) : {}; } catch { throw new Error("Invalid response"); }
+  if (!res.ok || data.success === false) throw new Error(data.message || data.error || "Request failed");
   return data;
 }
 
 function extractArray(data, keys = []) {
   if (Array.isArray(data)) return data;
-  for (const key of keys) {
-    if (Array.isArray(data?.[key])) return data[key];
-  }
+  for (const k of keys) if (Array.isArray(data?.[k])) return data[k];
   return [];
 }
 
-function getServiceCode(service) {
-  if (typeof service === "string") return service.trim();
-  return String(service?.code ?? service?.service_id ?? service?.id ?? service?.value ?? "").trim();
+function getServiceCode(s) {
+  if (typeof s === "string") return s.trim();
+  return String(s?.code ?? s?.service_id ?? s?.id ?? s?.value ?? "").trim();
+}
+function getServiceName(s) {
+  if (typeof s === "string") return s.trim();
+  return String(s?.name ?? s?.service_name ?? s?.title ?? getServiceCode(s)).trim();
 }
 
-function getServiceName(service) {
-  if (typeof service === "string") return service.trim();
-  return String(service?.name ?? service?.service_name ?? service?.title ?? getServiceCode(service)).trim();
-}
-
-/* ===================== PROVIDER ===================== */
+/* Provider */
 document.querySelectorAll(".provider-card").forEach(card => {
-  card.addEventListener("click", async () => {
+  card.onclick = async () => {
     document.querySelectorAll(".provider-card").forEach(c => c.classList.remove("active"));
     card.classList.add("active");
-
     selectedProvider = card.dataset.provider;
     selectedCountry = "";
     selectedService = null;
     allServices = [];
     priceRequestId++;
-
     serviceSearch.value = "";
     serviceSelect.innerHTML = `<option value="">Select service...</option>`;
     countrySelect.innerHTML = `<option value="">Loading countries...</option>`;
     resetPrice();
     hideError();
-    hideSuccess();
     updateBuyButton();
-
     await loadCountries();
-  });
+  };
 });
 
-/* ===================== COUNTRIES ===================== */
+/* Countries */
 async function loadCountries() {
-  if (!selectedProvider) return;
-
   try {
-    hideError();
     const data = await requestJSON(`${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`);
-    const countries = extractArray(data, ["countries", "items", "results"]);
-
+    const list = extractArray(data, ["countries"]);
     countrySelect.innerHTML = `<option value="">Select country...</option>`;
-    countries.forEach(c => {
-      const code = String(c.code ?? c.id ?? c.value ?? "").trim();
-      const name = String(c.name ?? c.country_name ?? code).trim();
+    list.forEach(c => {
+      const code = String(c.code ?? c.id ?? "").trim();
+      const name = String(c.name ?? code).trim();
       if (!code) return;
       const opt = document.createElement("option");
       opt.value = code;
       opt.textContent = name;
       countrySelect.appendChild(opt);
     });
-
-    if (countrySelect.options.length <= 1) {
-      throw new Error("No countries available");
-    }
-  } catch (err) {
-    countrySelect.innerHTML = `<option value="">Unable to load countries</option>`;
-    showError("Unable to load countries: " + err.message);
+  } catch (e) {
+    countrySelect.innerHTML = `<option value="">Unable to load</option>`;
+    showError(e.message);
   }
 }
 
-/* ===================== COUNTRY CHANGE ===================== */
-countrySelect.addEventListener("change", async () => {
+countrySelect.onchange = async () => {
   selectedCountry = countrySelect.value;
   selectedService = null;
   allServices = [];
   priceRequestId++;
-
   serviceSearch.value = "";
   serviceSelect.innerHTML = `<option value="">Select service...</option>`;
   resetPrice();
   updateBuyButton();
-
   if (selectedCountry) await loadServices();
-});
+};
 
-/* ===================== SERVICES ===================== */
+/* Services */
 async function loadServices() {
-  if (!selectedProvider || !selectedCountry) return;
-
-  serviceSelect.innerHTML = `<option value="">Loading services...</option>`;
-
+  serviceSelect.innerHTML = `<option value="">Loading...</option>`;
   try {
-    hideError();
-    const data = await requestJSON(
-      `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`
-    );
-    allServices = extractArray(data, ["services", "items", "results"]);
+    const data = await requestJSON(`${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`);
+    allServices = extractArray(data, ["services"]);
     renderServices(allServices);
-
-    if (allServices.length === 0) {
-      priceNote.textContent = "No services available for this country.";
-    }
-  } catch (err) {
-    serviceSelect.innerHTML = `<option value="">Unable to load services</option>`;
-    showError("Unable to load services: " + err.message);
+  } catch (e) {
+    serviceSelect.innerHTML = `<option value="">Error</option>`;
+    showError(e.message);
   }
 }
 
@@ -1087,44 +413,30 @@ function renderServices(list) {
   });
 }
 
-/* ===================== SERVICE SEARCH ===================== */
-serviceSearch.addEventListener("input", () => {
-  const q = serviceSearch.value.trim().toLowerCase();
-  if (!q) {
-    renderServices(allServices);
-    return;
-  }
-  const filtered = allServices.filter(s => {
-    return getServiceName(s).toLowerCase().includes(q) || getServiceCode(s).toLowerCase().includes(q);
-  });
+serviceSearch.oninput = () => {
+  const q = serviceSearch.value.toLowerCase();
+  const filtered = allServices.filter(s => getServiceName(s).toLowerCase().includes(q) || getServiceCode(s).toLowerCase().includes(q));
   renderServices(filtered);
-});
+};
 
-/* ===================== SERVICE CHANGE + PRICE ===================== */
-serviceSelect.addEventListener("change", async () => {
-  const option = serviceSelect.options[serviceSelect.selectedIndex];
-
-  if (!option || !option.value) {
+/* Price */
+serviceSelect.onchange = async () => {
+  const opt = serviceSelect.selectedOptions[0];
+  if (!opt?.value) {
     selectedService = null;
     resetPrice();
     updateBuyButton();
     return;
   }
-
-  try {
-    selectedService = JSON.parse(option.dataset.service || "{}");
-  } catch {
-    selectedService = { code: option.value, name: option.textContent };
-  }
-
+  try { selectedService = JSON.parse(opt.dataset.service); }
+  catch { selectedService = { code: opt.value, name: opt.textContent }; }
   await loadPrice();
-});
+};
 
 async function loadPrice() {
   if (!selectedProvider || !selectedCountry || !selectedService) return;
-
-  const requestId = ++priceRequestId;
-  const serviceCode = getServiceCode(selectedService);
+  const rid = ++priceRequestId;
+  const code = getServiceCode(selectedService);
 
   priceEl.textContent = "Loading...";
   priceNote.textContent = "Fetching price...";
@@ -1132,13 +444,8 @@ async function loadPrice() {
   buyBtn.textContent = "Checking price...";
 
   try {
-    hideError();
-    const data = await requestJSON(
-      `${API_URL}?action=price&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}&service=${encodeURIComponent(serviceCode)}`
-    );
-
-    // Ignore old request
-    if (requestId !== priceRequestId) return;
+    const data = await requestJSON(`${API_URL}?action=price&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}&service=${encodeURIComponent(code)}`);
+    if (rid !== priceRequestId) return;
 
     currentPriceData = data;
     currentPrice = Number(data.selling_price || data.price) || null;
@@ -1151,63 +458,34 @@ async function loadPrice() {
     }
 
     priceEl.textContent = formatNaira(currentPrice);
-
-    if (data.in_stock === false) {
-      priceNote.textContent = "Out of stock";
-      buyBtn.disabled = true;
-      buyBtn.textContent = "Out of Stock";
-      return;
-    }
-
-    priceNote.textContent = "Price includes service fee";
+    priceNote.textContent = data.in_stock === false ? "Out of stock" : "Price includes service fee";
     updateBuyButton();
-
-  } catch (err) {
-    if (requestId !== priceRequestId) return;
-    console.error(err);
+  } catch (e) {
+    if (rid !== priceRequestId) return;
     priceEl.textContent = "--";
     priceNote.textContent = "Unable to load price";
-    showError("Unable to load price: " + err.message);
+    showError(e.message);
     updateBuyButton();
   }
 }
 
-/* ===================== BUY BUTTON STATE ===================== */
 function updateBuyButton() {
   const ready = selectedProvider && selectedCountry && selectedService && currentPrice && currentPriceData?.in_stock !== false;
-
-  if (ready) {
-    buyBtn.disabled = false;
-    buyBtn.textContent = "Buy Number";
-  } else {
-    buyBtn.disabled = true;
-    if (!selectedService) {
-      buyBtn.textContent = "Select Provider, Country & Service";
-    } else if (!currentPrice) {
-      buyBtn.textContent = "Checking price...";
-    } else {
-      buyBtn.textContent = "Out of Stock";
-    }
-  }
+  buyBtn.disabled = !ready;
+  buyBtn.textContent = ready ? "Buy Number" : (!selectedService ? "Select Provider, Country & Service" : "Checking price...");
 }
 
-/* ===================== BUY NUMBER ===================== */
-buyBtn.addEventListener("click", buyNumber);
+/* Buy + Save to Firestore + Timer */
+buyBtn.onclick = buyNumber;
 
 async function buyNumber() {
-  if (!selectedProvider || !selectedCountry || !selectedService || !currentPrice) return;
-  if (!currentUser) {
-    showError("Please sign in first.");
-    return;
-  }
+  if (!currentUser || !currentPrice) return;
 
   buyBtn.disabled = true;
-  buyBtn.textContent = "Buying Number...";
+  buyBtn.textContent = "Buying...";
 
   try {
     hideError();
-    hideSuccess();
-
     const serviceCode = getServiceCode(selectedService);
     const serviceName = getServiceName(selectedService);
 
@@ -1219,8 +497,29 @@ async function buyNumber() {
         provider: selectedProvider,
         country: selectedCountry,
         service: serviceCode,
-        serviceName: serviceName
+        serviceName
       })
+    });
+
+    // Deduct balance from Firestore
+    const userRef = doc(db, "users", currentUser.uid);
+    await updateDoc(userRef, {
+      balance: increment(-currentPrice)
+    });
+
+    // Save order to Firestore
+    await addDoc(collection(db, "orders"), {
+      userId: currentUser.uid,
+      orderId: data.order_id,
+      number: data.number,
+      provider: selectedProvider,
+      country: selectedCountry,
+      service: serviceCode,
+      serviceName,
+      price: currentPrice,
+      status: data.status || "active",
+      expiresAt: data.expires_at || null,
+      createdAt: serverTimestamp()
     });
 
     // Show modal
@@ -1229,92 +528,104 @@ async function buyNumber() {
     modalSubtitle.textContent = `${selectedCountry} • ${serviceName}`;
     numberModal.classList.add("active");
 
-    // Update price display
-    if (data.selling_price) {
-      priceEl.textContent = formatNaira(data.selling_price);
-      priceNote.textContent = "Purchase price";
-    }
+    // Start expiry timer
+    startExpiryTimer(data.expires_at, data.seconds_remaining);
+
+    // Start SMS polling
+    if (data.order_id) startStatusPolling(data.order_id);
+
+    // Refresh balance
+    await loadWalletBalance();
 
     showSuccess("Number purchased successfully!");
-
-    if (data.order_id) {
-      startStatusPolling(data.order_id);
-    }
-
-  } catch (err) {
-    console.error(err);
-    showError(err.message || "Purchase failed");
+  } catch (e) {
+    showError(e.message || "Purchase failed");
   } finally {
     updateBuyButton();
   }
 }
 
-/* ===================== STATUS POLLING ===================== */
-function startStatusPolling(orderId) {
-  stopStatusPolling();
-  let attempts = 0;
+/* Expiry Timer */
+function startExpiryTimer(expiresAt, secondsRemaining) {
+  clearInterval(expiryTimer);
+  timerBox.style.display = "block";
 
-  statusTimer = setInterval(async () => {
-    attempts++;
-    if (attempts > 60) {
-      stopStatusPolling();
+  let remaining = Number(secondsRemaining) || 0;
+
+  if (expiresAt) {
+    const end = new Date(expiresAt).getTime();
+    remaining = Math.max(0, Math.floor((end - Date.now()) / 1000));
+  }
+
+  function update() {
+    if (remaining <= 0) {
+      timerValue.textContent = "Expired";
+      clearInterval(expiryTimer);
       return;
     }
+    const m = Math.floor(remaining / 60);
+    const s = remaining % 60;
+    timerValue.textContent = `${m}:${s.toString().padStart(2, "0")}`;
+    remaining--;
+  }
 
+  update();
+  expiryTimer = setInterval(update, 1000);
+}
+
+/* Status polling */
+function startStatusPolling(orderId) {
+  clearInterval(statusTimer);
+  let tries = 0;
+  statusTimer = setInterval(async () => {
+    tries++;
+    if (tries > 60) return clearInterval(statusTimer);
     try {
       const data = await requestJSON(`${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`);
       if (data.sms_code || data.full_sms) {
         smsCode.textContent = data.sms_code || data.full_sms;
-        stopStatusPolling();
+        clearInterval(statusTimer);
       }
-      const status = String(data.status || "").toLowerCase();
-      if (["received", "expired", "cancelled", "refunded", "completed"].includes(status)) {
-        stopStatusPolling();
-      }
-    } catch (e) {
-      console.warn("Status check failed", e);
-    }
+    } catch {}
   }, 5000);
 }
 
-function stopStatusPolling() {
-  if (statusTimer) {
-    clearInterval(statusTimer);
-    statusTimer = null;
+/* Modal close */
+document.getElementById("closeModal").onclick = () => {
+  numberModal.classList.remove("active");
+  clearInterval(statusTimer);
+  clearInterval(expiryTimer);
+};
+
+/* Load balance from Firestore */
+async function loadWalletBalance() {
+  if (!currentUser) return;
+  try {
+    const snap = await getDoc(doc(db, "users", currentUser.uid));
+    if (snap.exists()) {
+      walletBalance.textContent = formatNaira(snap.data().balance || 0);
+    }
+  } catch (e) {
+    console.error(e);
   }
 }
 
-/* ===================== MODAL ===================== */
-document.getElementById("closeModal").addEventListener("click", () => {
-  numberModal.classList.remove("active");
-  stopStatusPolling();
-});
-
-numberModal.addEventListener("click", (e) => {
-  if (e.target === numberModal) {
-    numberModal.classList.remove("active");
-    stopStatusPolling();
-  }
-});
-
-/* ===================== AUTH ===================== */
+/* Auth */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    window.location.href = "login.html";
+    location.href = "login.html";
     return;
   }
-
   currentUser = user;
 
-  // Avatar
   const name = user.displayName || user.email?.split("@")[0] || "User";
   const parts = name.trim().split(/\s+/);
-  let initials = parts[0]?.[0]?.toUpperCase() || "";
-  if (parts.length > 1) initials += parts[parts.length - 1][0]?.toUpperCase() || "";
-  document.getElementById("userAvatar").textContent = initials || "U";
+  let ini = parts[0]?.[0]?.toUpperCase() || "";
+  if (parts.length > 1) ini += parts.at(-1)[0]?.toUpperCase() || "";
+  document.getElementById("userAvatar").textContent = ini || "U";
+
+  await loadWalletBalance();
 });
-
 </script>
-
 </body>
 </html>
