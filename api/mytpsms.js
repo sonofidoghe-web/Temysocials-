@@ -2,40 +2,62 @@
 
 import admin from "firebase-admin";
 
-
 /* =====================================================
    FIREBASE ADMIN INITIALIZATION
 ===================================================== */
 
-if (!admin.apps.length) {
+function initializeFirebase() {
 
-  const privateKey =
-    process.env.FIREBASE_PRIVATE_KEY
-      ?.replace(/\\n/g, "\n");
+  if (admin.apps.length) {
+    return admin.app();
+  }
 
-  if (
-    !process.env.FIREBASE_PROJECT_ID ||
-    !process.env.FIREBASE_CLIENT_EMAIL ||
-    !privateKey
-  ) {
+  const projectId =
+    process.env.FIREBASE_PROJECT_ID;
+
+  const clientEmail =
+    process.env.FIREBASE_CLIENT_EMAIL;
+
+  let privateKey =
+    process.env.FIREBASE_PRIVATE_KEY;
+
+  if (!projectId) {
     throw new Error(
-      "Firebase Admin environment variables are missing."
+      "FIREBASE_PROJECT_ID is missing."
     );
   }
 
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId:
-        process.env.FIREBASE_PROJECT_ID,
+  if (!clientEmail) {
+    throw new Error(
+      "FIREBASE_CLIENT_EMAIL is missing."
+    );
+  }
 
-      clientEmail:
-        process.env.FIREBASE_CLIENT_EMAIL,
+  if (!privateKey) {
+    throw new Error(
+      "FIREBASE_PRIVATE_KEY is missing."
+    );
+  }
 
-      privateKey
-    })
+  /*
+   * Vercel environment variables normally contain
+   * escaped newlines: \n
+   */
+  privateKey =
+    privateKey.replace(/\\n/g, "\n");
+
+  return admin.initializeApp({
+    credential:
+      admin.credential.cert({
+        projectId,
+        clientEmail,
+        privateKey
+      })
   });
 
 }
+
+initializeFirebase();
 
 const db =
   admin.firestore();
@@ -48,10 +70,26 @@ const auth =
    PRICING
 ===================================================== */
 
+function roundMoney(value) {
+
+  const number =
+    Number(value);
+
+  if (!Number.isFinite(number)) {
+    return 0;
+  }
+
+  return Math.round(
+    (number + Number.EPSILON) * 100
+  ) / 100;
+
+}
+
+
 function calculateSellingPrice(originalPrice) {
 
   const price =
-    parseFloat(originalPrice);
+    Number(originalPrice);
 
   if (
     !Number.isFinite(price) ||
@@ -60,7 +98,7 @@ function calculateSellingPrice(originalPrice) {
     return 0;
   }
 
-  if(price <= 500){
+  if (price <= 500) {
 
     return roundMoney(
       price * 2
@@ -68,7 +106,7 @@ function calculateSellingPrice(originalPrice) {
 
   }
 
-  if(price < 1000){
+  if (price < 1000) {
 
     return roundMoney(
       price * 1.5
@@ -83,20 +121,11 @@ function calculateSellingPrice(originalPrice) {
 }
 
 
-function roundMoney(value){
-
-  return Math.round(
-    (Number(value) + Number.EPSILON) * 100
-  ) / 100;
-
-}
-
-
 /* =====================================================
    CORS
 ===================================================== */
 
-function setCors(res){
+function setCors(res) {
 
   res.setHeader(
     "Access-Control-Allow-Origin",
@@ -117,81 +146,160 @@ function setCors(res){
 
 
 /* =====================================================
-   FIREBASE AUTH
+   FIREBASE AUTHENTICATION
 ===================================================== */
 
-async function verifyUser(req){
+async function verifyUser(req) {
 
-  const header =
-    req.headers.authorization ||
-    req.headers.Authorization;
+  const authorization =
+    req.headers?.authorization ||
+    req.headers?.Authorization ||
+    "";
 
-  if(!header){
+  if (
+    typeof authorization !== "string" ||
+    !authorization.trim()
+  ) {
 
-    throw new Error(
-      "Authentication required."
-    );
+    const error =
+      new Error(
+        "Authentication required."
+      );
+
+    error.code =
+      "AUTH_REQUIRED";
+
+    throw error;
 
   }
 
-  if(
-    typeof header !== "string" ||
-    !header.startsWith("Bearer ")
-  ){
 
-    throw new Error(
-      "Invalid authorization header."
-    );
+  if (
+    !authorization.startsWith(
+      "Bearer "
+    )
+  ) {
+
+    const error =
+      new Error(
+        "Invalid authorization header."
+      );
+
+    error.code =
+      "AUTH_HEADER_INVALID";
+
+    throw error;
 
   }
+
 
   const token =
-    header.substring(7).trim();
+    authorization
+      .slice(7)
+      .trim();
 
-  if(!token){
 
-    throw new Error(
-      "Authentication token missing."
-    );
+  if (!token) {
+
+    const error =
+      new Error(
+        "Firebase ID token is missing."
+      );
+
+    error.code =
+      "AUTH_TOKEN_MISSING";
+
+    throw error;
 
   }
 
-  try{
 
-    return await auth.verifyIdToken(
-      token
-    );
+  /*
+   * A Firebase ID token is a JWT.
+   * This prevents verifyIdToken() from
+   * receiving an empty/malformed value.
+   */
 
-    }catch(error){
+  const parts =
+    token.split(".");
 
-    console.error(
-      "========== FIREBASE TOKEN ERROR =========="
-    );
-
-    console.error(
-      "Error code:",
-      error?.code
-    );
+  if (parts.length !== 3) {
 
     console.error(
-      "Error message:",
-      error?.message
+      "Received malformed Firebase token."
     );
+
+    const error =
+      new Error(
+        "Invalid Firebase authentication token."
+      );
+
+    error.code =
+      "AUTH_TOKEN_INVALID";
+
+    throw error;
+
+  }
+
+
+  try {
+
+    /*
+     * Do NOT force refresh here.
+     *
+     * The browser already obtains the current
+     * Firebase ID token.
+     */
+
+    const decoded =
+      await auth.verifyIdToken(
+        token
+      );
+
+    if (
+      !decoded ||
+      !decoded.uid
+    ) {
+
+      const error =
+        new Error(
+          "Firebase authentication failed."
+        );
+
+      error.code =
+        "AUTH_DECODE_FAILED";
+
+      throw error;
+
+    }
+
+    return decoded;
+
+  } catch (error) {
 
     console.error(
-      "Project ID:",
-      process.env.FIREBASE_PROJECT_ID
+      "Firebase authentication failed:",
+      {
+        code: error?.code || "",
+        message: error?.message || ""
+      }
     );
 
-    console.error(
-      "=========================================="
-    );
 
-    throw new Error(
-      `Firebase authentication failed: ${
-        error?.code || "unknown"
-      }`
-    );
+    /*
+     * Never expose Firebase Admin internals
+     * to the customer.
+     */
+
+    const authError =
+      new Error(
+        "Invalid or expired authentication."
+      );
+
+    authError.code =
+      "AUTH_INVALID";
+
+    throw authError;
 
   }
 
@@ -205,18 +313,19 @@ async function verifyUser(req){
 async function mytpRequest(
   endpoint,
   options = {}
-){
+) {
 
   const apiKey =
     process.env.MYTPSMS_API_KEY;
 
-  if(!apiKey){
+  if (!apiKey) {
 
     throw new Error(
-      "MYTPSMS API key is not configured."
+      "MYTPSMS_API_KEY is not configured."
     );
 
   }
+
 
   const response =
     await fetch(
@@ -224,29 +333,33 @@ async function mytpRequest(
       {
         ...options,
 
-        headers:{
+        headers: {
           ...(options.headers || {}),
-          "X-API-KEY":apiKey
+
+          "X-API-KEY":
+            apiKey
         }
       }
     );
 
+
   const raw =
     await response.text();
 
+
   let data;
 
-  try{
+  try {
 
     data =
       raw
         ? JSON.parse(raw)
         : {};
 
-  }catch{
+  } catch {
 
     console.error(
-      "MYTPSMS INVALID RESPONSE:",
+      "MYTPSMS invalid response:",
       raw
     );
 
@@ -256,7 +369,8 @@ async function mytpRequest(
 
   }
 
-  if(!response.ok){
+
+  if (!response.ok) {
 
     throw new Error(
       data?.message ||
@@ -266,16 +380,17 @@ async function mytpRequest(
 
   }
 
+
   return data;
 
 }
 
 
 /* =====================================================
-   FIRESTORE USER
+   USER REFERENCE
 ===================================================== */
 
-function userRef(uid){
+function userRef(uid) {
 
   return db
     .collection("users")
@@ -285,26 +400,189 @@ function userRef(uid){
 
 
 /* =====================================================
-   GET WALLET BALANCE
+   GET USER BALANCE
 ===================================================== */
 
-async function getUserBalance(uid){
+async function getUserBalance(uid) {
 
   const snap =
     await userRef(uid).get();
 
-  if(!snap.exists){
-
+  if (!snap.exists) {
     return 0;
-
   }
 
   const data =
     snap.data() || {};
 
-  return Number(
-    data.balance || 0
+  const balance =
+    Number(data.balance || 0);
+
+  return Number.isFinite(balance)
+    ? roundMoney(balance)
+    : 0;
+
+}
+
+
+/* =====================================================
+   DEDUCT WALLET
+===================================================== */
+
+async function deductWallet(
+  uid,
+  amount
+) {
+
+  const amountToDeduct =
+    roundMoney(amount);
+
+  if (
+    !Number.isFinite(amountToDeduct) ||
+    amountToDeduct <= 0
+  ) {
+
+    throw new Error(
+      "Invalid purchase amount."
+    );
+
+  }
+
+
+  const ref =
+    userRef(uid);
+
+  let newBalance = 0;
+
+
+  await db.runTransaction(
+    async transaction => {
+
+      const snap =
+        await transaction.get(ref);
+
+      if (!snap.exists) {
+
+        throw new Error(
+          "User wallet was not found."
+        );
+
+      }
+
+
+      const data =
+        snap.data() || {};
+
+      const balance =
+        Number(data.balance || 0);
+
+
+      if (
+        !Number.isFinite(balance) ||
+        balance < amountToDeduct
+      ) {
+
+        throw new Error(
+          "Insufficient wallet balance."
+        );
+
+      }
+
+
+      newBalance =
+        roundMoney(
+          balance -
+          amountToDeduct
+        );
+
+
+      transaction.update(
+        ref,
+        {
+          balance:
+            newBalance
+        }
+      );
+
+    }
   );
+
+
+  return newBalance;
+
+}
+
+
+/* =====================================================
+   REFUND WALLET
+===================================================== */
+
+async function refundWallet(
+  uid,
+  amount
+) {
+
+  const refundAmount =
+    roundMoney(amount);
+
+  if (
+    !Number.isFinite(refundAmount) ||
+    refundAmount <= 0
+  ) {
+
+    return;
+
+  }
+
+
+  const ref =
+    userRef(uid);
+
+  let newBalance = 0;
+
+
+  await db.runTransaction(
+    async transaction => {
+
+      const snap =
+        await transaction.get(ref);
+
+      if (!snap.exists) {
+
+        throw new Error(
+          "User wallet was not found."
+        );
+
+      }
+
+
+      const data =
+        snap.data() || {};
+
+      const balance =
+        Number(data.balance || 0);
+
+
+      newBalance =
+        roundMoney(
+          balance +
+          refundAmount
+        );
+
+
+      transaction.update(
+        ref,
+        {
+          balance:
+            newBalance
+        }
+      );
+
+    }
+  );
+
+
+  return newBalance;
 
 }
 
@@ -314,7 +592,6 @@ async function getUserBalance(uid){
 ===================================================== */
 
 async function saveSmsOrder({
-
   uid,
   orderId,
   provider,
@@ -327,8 +604,7 @@ async function saveSmsOrder({
   currency,
   expiresAt,
   status
-
-}){
+}) {
 
   await db
     .collection("smsOrders")
@@ -370,6 +646,9 @@ async function saveSmsOrder({
       status:
         status || "active",
 
+      refunded:
+        false,
+
       created_at:
         admin.firestore.FieldValue.serverTimestamp(),
 
@@ -382,160 +661,13 @@ async function saveSmsOrder({
 
 
 /* =====================================================
-   DEDUCT USER WALLET
-===================================================== */
-
-async function deductWallet(
-  uid,
-  amount
-){
-
-  const amountToDeduct =
-    roundMoney(amount);
-
-  if(
-    !Number.isFinite(amountToDeduct) ||
-    amountToDeduct <= 0
-  ){
-
-    throw new Error(
-      "Invalid purchase amount."
-    );
-
-  }
-
-  const ref =
-    userRef(uid);
-
-  let newBalance = 0;
-
-  await db.runTransaction(
-    async transaction => {
-
-      const snap =
-        await transaction.get(ref);
-
-      if(!snap.exists){
-
-        throw new Error(
-          "User wallet was not found."
-        );
-
-      }
-
-      const data =
-        snap.data() || {};
-
-      const balance =
-        Number(data.balance || 0);
-
-      if(
-        !Number.isFinite(balance) ||
-        balance < amountToDeduct
-      ){
-
-        throw new Error(
-          "Insufficient wallet balance."
-        );
-
-      }
-
-      newBalance =
-        roundMoney(
-          balance - amountToDeduct
-        );
-
-      transaction.update(
-        ref,
-        {
-          balance:
-            newBalance
-        }
-      );
-
-    }
-  );
-
-  return newBalance;
-
-}
-
-
-/* =====================================================
-   REFUND USER WALLET
-===================================================== */
-
-async function refundWallet(
-  uid,
-  amount
-){
-
-  const refundAmount =
-    roundMoney(amount);
-
-  if(
-    !Number.isFinite(refundAmount) ||
-    refundAmount <= 0
-  ){
-
-    return;
-
-  }
-
-  const ref =
-    userRef(uid);
-
-  let newBalance = 0;
-
-  await db.runTransaction(
-    async transaction => {
-
-      const snap =
-        await transaction.get(ref);
-
-      if(!snap.exists){
-
-        throw new Error(
-          "User wallet was not found."
-        );
-
-      }
-
-      const data =
-        snap.data() || {};
-
-      const balance =
-        Number(data.balance || 0);
-
-      newBalance =
-        roundMoney(
-          balance + refundAmount
-        );
-
-      transaction.update(
-        ref,
-        {
-          balance:
-            newBalance
-        }
-      );
-
-    }
-  );
-
-  return newBalance;
-
-}
-
-
-/* =====================================================
    UPDATE ORDER
 ===================================================== */
 
 async function updateOrder(
   orderId,
   values
-){
+) {
 
   await db
     .collection("smsOrders")
@@ -548,7 +680,7 @@ async function updateOrder(
           admin.firestore.FieldValue.serverTimestamp()
       },
       {
-        merge:true
+        merge: true
       }
     );
 
@@ -556,14 +688,14 @@ async function updateOrder(
 
 
 /* =====================================================
-   GET
+   GET HANDLER
 ===================================================== */
 
 async function handleGet(
   req,
   res,
-  decodedUser
-){
+  user
+) {
 
   const {
     action,
@@ -571,27 +703,27 @@ async function handleGet(
     country,
     order_id,
     page
-  } = req.query;
+  } = req.query || {};
 
 
   /* ================= BALANCE ================= */
 
-  if(action === "balance"){
+  if (action === "balance") {
 
     const balance =
       await getUserBalance(
-        decodedUser.uid
+        user.uid
       );
 
     return res.status(200).json({
 
-      success:true,
+      success: true,
 
       balance:
-
         roundMoney(balance),
 
-      currency:"NGN"
+      currency:
+        "NGN"
 
     });
 
@@ -600,13 +732,13 @@ async function handleGet(
 
   /* ================= COUNTRIES ================= */
 
-  if(action === "countries"){
+  if (action === "countries") {
 
-    if(!provider){
+    if (!provider) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "provider is required."
@@ -615,25 +747,34 @@ async function handleGet(
 
     }
 
+
     const data =
       await mytpRequest(
-        `countries.php?provider=${encodeURIComponent(provider)}`
+        `countries.php?provider=${encodeURIComponent(
+          provider
+        )}`
       );
 
-    return res.status(200).json(data);
+
+    return res.status(200).json(
+      data
+    );
 
   }
 
 
   /* ================= SERVICES ================= */
 
-  if(action === "services"){
+  if (action === "services") {
 
-    if(!provider || !country){
+    if (
+      !provider ||
+      !country
+    ) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "provider and country are required."
@@ -642,25 +783,33 @@ async function handleGet(
 
     }
 
+
     const data =
       await mytpRequest(
-        `services.php?provider=${encodeURIComponent(provider)}&country=${encodeURIComponent(country)}`
+        `services.php?provider=${encodeURIComponent(
+          provider
+        )}&country=${encodeURIComponent(
+          country
+        )}`
       );
 
-    return res.status(200).json(data);
+
+    return res.status(200).json(
+      data
+    );
 
   }
 
 
   /* ================= STATUS ================= */
 
-  if(action === "status"){
+  if (action === "status") {
 
-    if(!order_id){
+    if (!order_id) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "order_id is required."
@@ -669,22 +818,25 @@ async function handleGet(
 
     }
 
+
     const orderRef =
       db
         .collection("smsOrders")
         .doc(String(order_id));
 
+
     const orderSnap =
       await orderRef.get();
 
-    if(
+
+    if (
       orderSnap.exists &&
-      orderSnap.data()?.uid !== decodedUser.uid
-    ){
+      orderSnap.data()?.uid !== user.uid
+    ) {
 
       return res.status(403).json({
 
-        success:false,
+        success: false,
 
         message:
           "You do not have access to this order."
@@ -693,13 +845,14 @@ async function handleGet(
 
     }
 
+
     const data =
       await mytpRequest(
-        `status.php?order_id=${encodeURIComponent(order_id)}`
+        `status.php?order_id=${encodeURIComponent(
+          order_id
+        )}`
       );
 
-    const status =
-      data?.status || "";
 
     const smsCode =
       data?.sms_code ||
@@ -707,41 +860,51 @@ async function handleGet(
       data?.otp ||
       "";
 
+
     await updateOrder(
       order_id,
       {
+
         status:
-          status || "active",
+          data?.status ||
+          "active",
 
         sms_code:
-          smsCode || "",
+          smsCode,
 
         full_sms:
-          data?.full_sms || "",
+          data?.full_sms ||
+          "",
 
         number:
-          data?.number || ""
+          data?.number ||
+          ""
+
       }
     );
 
+
     return res.status(200).json({
 
-      success:true,
+      success: true,
 
       order_id:
         String(order_id),
 
       status:
-        status || "",
+        data?.status ||
+        "",
 
       sms_code:
-        smsCode || "",
+        smsCode,
 
       full_sms:
-        data?.full_sms || "",
+        data?.full_sms ||
+        "",
 
       number:
-        data?.number || "",
+        data?.number ||
+        "",
 
       seconds_remaining:
         data?.seconds_remaining ??
@@ -754,7 +917,7 @@ async function handleGet(
 
   /* ================= HISTORY ================= */
 
-  if(action === "history"){
+  if (action === "history") {
 
     const requestedPage =
       Math.max(
@@ -762,19 +925,19 @@ async function handleGet(
         Number(page || 1)
       );
 
-    const data =
+
+    return res.status(200).json(
       await mytpRequest(
         `history.php?page=${requestedPage}`
-      );
-
-    return res.status(200).json(data);
+      )
+    );
 
   }
 
 
   return res.status(400).json({
 
-    success:false,
+    success: false,
 
     message:
       "Invalid action."
@@ -785,14 +948,14 @@ async function handleGet(
 
 
 /* =====================================================
-   POST
+   POST HANDLER
 ===================================================== */
 
 async function handlePost(
   req,
   res,
-  decodedUser
-){
+  user
+) {
 
   const body =
     req.body || {};
@@ -801,9 +964,11 @@ async function handlePost(
     body.action;
 
 
-  /* ================= BUY ================= */
+  /* =================================================
+     BUY
+  ================================================= */
 
-  if(action === "buy"){
+  if (action === "buy") {
 
     const {
       provider,
@@ -813,15 +978,15 @@ async function handlePost(
     } = body;
 
 
-    if(
+    if (
       !provider ||
       !country ||
       !service
-    ){
+    ) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "provider, country and service are required."
@@ -831,22 +996,22 @@ async function handlePost(
     }
 
 
-    /* ================= CHECK WALLET FIRST ================= */
+    /* ================= WALLET ================= */
 
     const currentBalance =
       await getUserBalance(
-        decodedUser.uid
+        user.uid
       );
 
 
-    if(
+    if (
       !Number.isFinite(currentBalance) ||
       currentBalance <= 0
-    ){
+    ) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "Your wallet balance is insufficient."
@@ -856,10 +1021,11 @@ async function handlePost(
     }
 
 
-    /* ================= BUY FROM MYTPSMS ================= */
+    /* ================= PROVIDER PURCHASE ================= */
 
     const formData =
       new URLSearchParams();
+
 
     formData.append(
       "provider",
@@ -876,7 +1042,8 @@ async function handlePost(
       String(service)
     );
 
-    if(serviceName){
+
+    if (serviceName) {
 
       formData.append(
         "service_name",
@@ -890,26 +1057,26 @@ async function handlePost(
       await mytpRequest(
         "buy.php",
         {
-          method:"POST",
 
-          headers:{
+          method: "POST",
+
+          headers: {
             "Content-Type":
               "application/x-www-form-urlencoded"
           },
 
           body:
             formData.toString()
+
         }
       );
 
 
-    /* ================= PROVIDER FAILURE ================= */
-
-    if(!data?.success){
+    if (!data?.success) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           data?.message ||
@@ -925,23 +1092,18 @@ async function handlePost(
 
     const originalPrice =
       Number(
-        data.price || 0
+        data.price
       );
 
-    if(
+
+    if (
       !Number.isFinite(originalPrice) ||
       originalPrice <= 0
-    ){
-
-      /*
-       * We do not deduct the customer
-       * when MYTPSMS fails to return
-       * a valid price.
-       */
+    ) {
 
       return res.status(502).json({
 
-        success:false,
+        success: false,
 
         message:
           "MYTPSMS returned an invalid purchase price."
@@ -957,14 +1119,14 @@ async function handlePost(
       );
 
 
-    if(
+    if (
       !Number.isFinite(sellingPrice) ||
       sellingPrice <= 0
-    ){
+    ) {
 
       return res.status(502).json({
 
-        success:false,
+        success: false,
 
         message:
           "Unable to calculate the selling price."
@@ -974,42 +1136,38 @@ async function handlePost(
     }
 
 
-    /* ================= CHECK BALANCE AGAIN ================= */
+    /* ================= BALANCE CHECK ================= */
 
     const balanceBefore =
       await getUserBalance(
-        decodedUser.uid
+        user.uid
       );
 
 
-    if(
+    if (
       balanceBefore < sellingPrice
-    ){
+    ) {
 
-      /*
-       * Customer cannot afford the number.
-       * Cancel the MYTPSMS order so their
-       * provider wallet is refunded.
-       */
+      try {
 
-      try{
-
-        if(data.order_id){
+        if (data.order_id) {
 
           await mytpRequest(
-            `cancel.php?order_id=${encodeURIComponent(data.order_id)}`,
+            `cancel.php?order_id=${encodeURIComponent(
+              data.order_id
+            )}`,
             {
-              method:"POST"
+              method: "POST"
             }
           );
 
         }
 
-      }catch(cancelError){
+      } catch (error) {
 
         console.error(
-          "AUTO CANCEL FAILED:",
-          cancelError
+          "Automatic cancellation failed:",
+          error
         );
 
       }
@@ -1017,60 +1175,58 @@ async function handlePost(
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
-          `Insufficient wallet balance. You need ₦${sellingPrice.toFixed(2)}.`
+          `Insufficient wallet balance. You need ₦${sellingPrice.toFixed(
+            2
+          )}.`
 
       });
 
     }
 
 
-    /* ================= DEDUCT WALLET ================= */
+    /* ================= DEDUCT ================= */
 
     let newBalance;
 
-    try{
+
+    try {
 
       newBalance =
         await deductWallet(
-          decodedUser.uid,
+          user.uid,
           sellingPrice
         );
 
-    }catch(walletError){
-
-      /*
-       * The MYTPSMS number was already
-       * purchased. If the wallet transaction
-       * cannot be completed, cancel the
-       * provider order to prevent a free number.
-       */
+    } catch (walletError) {
 
       console.error(
-        "WALLET DEDUCTION FAILED:",
+        "Wallet deduction failed:",
         walletError
       );
 
 
-      try{
+      try {
 
-        if(data.order_id){
+        if (data.order_id) {
 
           await mytpRequest(
-            `cancel.php?order_id=${encodeURIComponent(data.order_id)}`,
+            `cancel.php?order_id=${encodeURIComponent(
+              data.order_id
+            )}`,
             {
-              method:"POST"
+              method: "POST"
             }
           );
 
         }
 
-      }catch(cancelError){
+      } catch (cancelError) {
 
         console.error(
-          "ROLLBACK CANCEL FAILED:",
+          "Provider rollback failed:",
           cancelError
         );
 
@@ -1079,7 +1235,7 @@ async function handlePost(
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           walletError.message ||
@@ -1090,7 +1246,7 @@ async function handlePost(
     }
 
 
-    /* ================= SAVE ORDER ================= */
+    /* ================= ORDER ID ================= */
 
     const orderId =
       String(
@@ -1099,29 +1255,20 @@ async function handlePost(
       );
 
 
-    if(!orderId){
+    if (!orderId) {
 
-      /*
-       * Extremely unusual situation:
-       * provider says success but did not
-       * return an order ID.
-       *
-       * Refund the customer because we
-       * cannot safely track the order.
-       */
-
-      try{
+      try {
 
         await refundWallet(
-          decodedUser.uid,
+          user.uid,
           sellingPrice
         );
 
-      }catch(refundError){
+      } catch (error) {
 
         console.error(
-          "EMERGENCY REFUND FAILED:",
-          refundError
+          "Emergency refund failed:",
+          error
         );
 
       }
@@ -1129,7 +1276,7 @@ async function handlePost(
 
       return res.status(502).json({
 
-        success:false,
+        success: false,
 
         message:
           "MYTPSMS did not return an order ID. Your purchase was rolled back."
@@ -1139,10 +1286,12 @@ async function handlePost(
     }
 
 
+    /* ================= SAVE ================= */
+
     await saveSmsOrder({
 
       uid:
-        decodedUser.uid,
+        user.uid,
 
       orderId,
 
@@ -1162,13 +1311,16 @@ async function handlePost(
       sellingPrice,
 
       currency:
-        data.currency || "NGN",
+        data.currency ||
+        "NGN",
 
       expiresAt:
-        data.expires_at || null,
+        data.expires_at ||
+        null,
 
       status:
-        data.status || "active"
+        data.status ||
+        "active"
 
     });
 
@@ -1177,7 +1329,7 @@ async function handlePost(
 
     return res.status(200).json({
 
-      success:true,
+      success: true,
 
       message:
         "Number purchased successfully.",
@@ -1186,7 +1338,8 @@ async function handlePost(
         orderId,
 
       number:
-        data.number || "",
+        data.number ||
+        "",
 
       original_price:
         originalPrice,
@@ -1198,13 +1351,16 @@ async function handlePost(
         sellingPrice,
 
       currency:
-        data.currency || "NGN",
+        data.currency ||
+        "NGN",
 
       expires_at:
-        data.expires_at || null,
+        data.expires_at ||
+        null,
 
       status:
-        data.status || "active",
+        data.status ||
+        "active",
 
       balance:
         newBalance
@@ -1214,20 +1370,22 @@ async function handlePost(
   }
 
 
-  /* ================= CANCEL ================= */
+  /* =================================================
+     CANCEL
+  ================================================= */
 
-  if(action === "cancel"){
+  if (action === "cancel") {
 
     const {
       order_id
     } = body;
 
 
-    if(!order_id){
+    if (!order_id) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "order_id is required."
@@ -1242,15 +1400,16 @@ async function handlePost(
         .collection("smsOrders")
         .doc(String(order_id));
 
+
     const orderSnap =
       await orderRef.get();
 
 
-    if(!orderSnap.exists){
+    if (!orderSnap.exists) {
 
       return res.status(404).json({
 
-        success:false,
+        success: false,
 
         message:
           "Order not found."
@@ -1264,14 +1423,14 @@ async function handlePost(
       orderSnap.data();
 
 
-    if(
+    if (
       order.uid !==
-      decodedUser.uid
-    ){
+      user.uid
+    ) {
 
       return res.status(403).json({
 
-        success:false,
+        success: false,
 
         message:
           "You do not have access to this order."
@@ -1281,13 +1440,13 @@ async function handlePost(
     }
 
 
-    if(
+    if (
       order.refunded === true
-    ){
+    ) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           "This order has already been refunded."
@@ -1299,29 +1458,28 @@ async function handlePost(
 
     const providerData =
       await mytpRequest(
-        `cancel.php?order_id=${encodeURIComponent(order_id)}`,
+        `cancel.php?order_id=${encodeURIComponent(
+          order_id
+        )}`,
         {
-          method:"POST"
+          method: "POST"
         }
       );
 
 
     const providerStatus =
       String(
-        providerData?.status || ""
+        providerData?.status ||
+        ""
       ).toLowerCase();
 
 
     const providerMessage =
       String(
-        providerData?.message || ""
+        providerData?.message ||
+        ""
       );
 
-
-    /*
-     * MYTPSMS cancellation normally returns
-     * a successful cancellation/refund state.
-     */
 
     const cancellationSuccessful =
       providerData?.success === true ||
@@ -1335,45 +1493,41 @@ async function handlePost(
       );
 
 
-    if(!cancellationSuccessful){
+    if (!cancellationSuccessful) {
 
       return res.status(400).json({
 
-        success:false,
+        success: false,
 
         message:
           providerMessage ||
-          "MYTPSMS could not cancel this order.",
-
-        provider:
-          providerData
+          "MYTPSMS could not cancel this order."
 
       });
 
     }
 
 
-    /* ================= REFUND CUSTOMER ================= */
-
     let newBalance;
 
-    if(
+
+    if (
       Number(order.selling_price) > 0
-    ){
+    ) {
 
       newBalance =
         await refundWallet(
-          decodedUser.uid,
+          user.uid,
           Number(
             order.selling_price
           )
         );
 
-    }else{
+    } else {
 
       newBalance =
         await getUserBalance(
-          decodedUser.uid
+          user.uid
         );
 
     }
@@ -1382,6 +1536,7 @@ async function handlePost(
     await updateOrder(
       order_id,
       {
+
         status:
           "refunded",
 
@@ -1393,15 +1548,17 @@ async function handlePost(
 
         refund_amount:
           Number(
-            order.selling_price || 0
+            order.selling_price ||
+            0
           )
+
       }
     );
 
 
     return res.status(200).json({
 
-      success:true,
+      success: true,
 
       message:
         "Order cancelled and wallet refunded.",
@@ -1422,7 +1579,7 @@ async function handlePost(
 
   return res.status(400).json({
 
-    success:false,
+    success: false,
 
     message:
       "Invalid action."
@@ -1439,14 +1596,16 @@ async function handlePost(
 export default async function handler(
   req,
   res
-){
+) {
 
   setCors(res);
 
 
-  /* ================= PREFLIGHT ================= */
+  /* ================= OPTIONS ================= */
 
-  if(req.method === "OPTIONS"){
+  if (
+    req.method === "OPTIONS"
+  ) {
 
     return res
       .status(204)
@@ -1457,14 +1616,14 @@ export default async function handler(
 
   /* ================= METHOD ================= */
 
-  if(
+  if (
     req.method !== "GET" &&
     req.method !== "POST"
-  ){
+  ) {
 
     return res.status(405).json({
 
-      success:false,
+      success: false,
 
       message:
         "Method not allowed."
@@ -1474,22 +1633,24 @@ export default async function handler(
   }
 
 
-  try{
+  try {
 
     /* ================= AUTH ================= */
 
-    const decodedUser =
+    const user =
       await verifyUser(req);
 
 
     /* ================= GET ================= */
 
-    if(req.method === "GET"){
+    if (
+      req.method === "GET"
+    ) {
 
       return await handleGet(
         req,
         res,
-        decodedUser
+        user
       );
 
     }
@@ -1500,51 +1661,64 @@ export default async function handler(
     return await handlePost(
       req,
       res,
-      decodedUser
+      user
     );
 
 
-  }catch(error){
+  } catch (error) {
 
     console.error(
       "SMS API ERROR:",
+      error?.code ||
+      "",
+      error?.message ||
       error
     );
 
 
-    const message =
-      error?.message ||
-      "Internal server error.";
+    /* ================= AUTH ERROR ================= */
 
+    if (
+      error?.code ===
+        "AUTH_REQUIRED" ||
 
-    if(
-      message.includes(
-        "Authentication"
-      ) ||
-      message.includes(
-        "Invalid or expired"
-      ) ||
-      message.includes(
-        "authorization"
-      )
-    ){
+      error?.code ===
+        "AUTH_HEADER_INVALID" ||
+
+      error?.code ===
+        "AUTH_TOKEN_MISSING" ||
+
+      error?.code ===
+        "AUTH_TOKEN_INVALID" ||
+
+      error?.code ===
+        "AUTH_INVALID" ||
+
+      error?.code ===
+        "AUTH_DECODE_FAILED"
+    ) {
 
       return res.status(401).json({
 
-        success:false,
+        success: false,
 
-        message
+        message:
+          error.message
 
       });
 
     }
 
 
+    /* ================= SERVER ERROR ================= */
+
     return res.status(500).json({
 
-      success:false,
+      success: false,
 
-      message
+      message:
+        error?.message ||
+        "Internal server error."
 
     });
 
