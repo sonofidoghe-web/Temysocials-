@@ -583,10 +583,6 @@ h1{
   cursor:pointer;
 }
 
-.loading{
-  opacity:.7;
-}
-
 @media(max-width:360px){
   .container{
     padding-left:12px;
@@ -611,7 +607,6 @@ h1{
   </div>
 
   <div class="menu-section">
-
     <div class="menu-section-title">Main</div>
 
     <a href="dashboard.html" class="menu-item">
@@ -651,11 +646,9 @@ h1{
       </svg>
       Transactions
     </a>
-
   </div>
 
   <div class="menu-section">
-
     <div class="menu-section-title">Store</div>
 
     <a href="logs.html" class="menu-item">
@@ -688,311 +681,167 @@ h1{
       SME Boosting
       <span class="soon-badge">Soon</span>
     </a>
-
   </div>
 
   <div class="menu-section">
-
     <div class="menu-section-title">Account</div>
-
     <a href="support.html" class="menu-item">Support</a>
     <a href="notification.html" class="menu-item">Notification</a>
     <a href="profile.html" class="menu-item">Profile</a>
-
   </div>
 
-  <div class="menu-section"
-       style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;">
-
-    <a href="login.html"
-       class="menu-item signout-item"
-       id="signOutBtn">
-      Sign out
-    </a>
-
+  <div class="menu-section" style="border-top:1px solid #eee;margin-top:10px;padding-top:10px;">
+    <a href="login.html" class="menu-item signout-item" id="signOutBtn">Sign out</a>
   </div>
 
 </div>
 
 <header class="header" id="header">
-
   <button class="menu-toggle" id="menuToggle">
-
-    <svg width="24" height="24" viewBox="0 0 24 24"
-         fill="none" stroke="currentColor" stroke-width="2">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
       <rect x="3" y="3" width="7" height="7" rx="1"/>
       <rect x="14" y="3" width="7" height="7" rx="1"/>
       <rect x="14" y="14" width="7" height="7" rx="1"/>
       <rect x="3" y="14" width="7" height="7" rx="1"/>
     </svg>
-
   </button>
 
   <div class="header-right">
-
     <span class="badge-no">No</span>
-
     <button class="icon-btn" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="4"/>
-        <path d="M12 2v2"/>
-        <path d="M12 20v2"/>
-        <path d="M4.93 4.93l1.41 1.41"/>
-        <path d="M17.66 17.66l1.41 1.41"/>
-        <path d="M2 12h2"/>
-        <path d="M20 12h2"/>
-        <path d="M6.34 17.66l-1.41 1.41"/>
-        <path d="M19.07 4.93l-1.41 1.41"/>
+        <path d="M12 2v2"/><path d="M12 20v2"/>
+        <path d="M4.93 4.93l1.41 1.41"/><path d="M17.66 17.66l1.41 1.41"/>
+        <path d="M2 12h2"/><path d="M20 12h2"/>
+        <path d="M6.34 17.66l-1.41 1.41"/><path d="M19.07 4.93l-1.41 1.41"/>
       </svg>
     </button>
-
     <button class="icon-btn" type="button">
-      <svg width="20" height="20" viewBox="0 0 24 24"
-           fill="none" stroke="currentColor" stroke-width="2">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
       </svg>
     </button>
-
     <div class="avatar" id="userAvatar">--</div>
-
   </div>
-
 </header>
 
 <main class="container">
 
   <h1>SMS Numbers</h1>
-
-  <p class="subtitle">
-    Get temporary numbers for verification
-  </p>
+  <p class="subtitle">Get temporary numbers for verification</p>
 
   <div class="balance-card">
-
     <div>
       <div class="balance-label">Wallet Balance</div>
-
-      <div class="balance-value" id="walletBalance">
-        ₦0.00
-      </div>
+      <div class="balance-value" id="walletBalance">₦0.00</div>
     </div>
-
   </div>
 
   <div class="error-box" id="errorBox"></div>
-
   <div class="success-box" id="successBox"></div>
 
   <div class="buy-card">
 
-    <div class="section-title">
-      1. Provider
-    </div>
+    <div class="section-title">1. Provider</div>
 
     <div class="providers" id="providers">
-
       <div class="provider-card" data-provider="global">
-
         <div class="provider-icon">🌐</div>
-
         <div class="provider-info">
           <div class="provider-name">Global Number</div>
           <div class="provider-description">Global numbers</div>
         </div>
-
         <div class="check">✓</div>
-
       </div>
 
       <div class="provider-card" data-provider="usa">
-
         <div class="provider-icon">🇺🇸</div>
-
         <div class="provider-info">
           <div class="provider-name">USA Number</div>
           <div class="provider-description">USA numbers only</div>
         </div>
-
         <div class="check">✓</div>
-
       </div>
 
       <div class="provider-card" data-provider="usa2">
-
         <div class="provider-icon">🌐</div>
-
         <div class="provider-info">
           <div class="provider-name">Global Number (Server 2)</div>
           <div class="provider-description">Global numbers</div>
         </div>
-
         <div class="check">✓</div>
-
       </div>
-
     </div>
 
     <div class="country-area">
-
-      <div class="section-title">
-        2. Country
-      </div>
-
+      <div class="section-title">2. Country</div>
       <div class="select-box">
-
         <select id="countrySelect">
           <option value="">Select country...</option>
         </select>
-
         <div class="select-arrow">▼</div>
-
       </div>
-
     </div>
 
     <div class="service-area">
-
-      <div class="section-title">
-        3. Service
-      </div>
-
-      <input
-        type="text"
-        class="service-search"
-        id="serviceSearch"
-        placeholder="Search service..."
-        autocomplete="off"
-      >
-
+      <div class="section-title">3. Service</div>
+      <input type="text" class="service-search" id="serviceSearch" placeholder="Search service..." autocomplete="off">
       <select class="service-select" id="serviceSelect">
         <option value="">Select service...</option>
       </select>
-
     </div>
 
     <div class="price-box">
-
       <div class="price-label">Price</div>
-
       <div class="price" id="price">--</div>
-
-      <div class="price-note" id="priceNote">
-        Select a service to see the price.
-      </div>
-
+      <div class="price-note" id="priceNote">Select a service to see the price.</div>
     </div>
 
-    <button
-      class="buy-btn"
-      id="buyBtn"
-      type="button"
-      disabled
-    >
+    <button class="buy-btn" id="buyBtn" type="button" disabled>
       Select Provider, Country & Service
     </button>
 
   </div>
 
   <div class="how-card">
-
     <div class="how-title">
       <span class="how-title-icon">ⓘ</span>
       How it works
     </div>
-
-    <div class="how-step">
-      <div class="how-step-number">1</div>
-      <div>Choose your provider, country and service.</div>
-    </div>
-
-    <div class="how-step">
-      <div class="how-step-number">2</div>
-      <div>The cost is deducted from your wallet.</div>
-    </div>
-
-    <div class="how-step">
-      <div class="how-step-number">3</div>
-      <div>Your number appears after a successful purchase.</div>
-    </div>
-
-    <div class="how-step">
-      <div class="how-step-number">4</div>
-      <div>We automatically check for your SMS code.</div>
-    </div>
-
+    <div class="how-step"><div class="how-step-number">1</div><div>Choose your provider, country and service.</div></div>
+    <div class="how-step"><div class="how-step-number">2</div><div>The cost is deducted from your wallet.</div></div>
+    <div class="how-step"><div class="how-step-number">3</div><div>Your number appears after a successful purchase.</div></div>
+    <div class="how-step"><div class="how-step-number">4</div><div>We automatically check for your SMS code.</div></div>
   </div>
 
 </main>
 
 <div class="modal-overlay" id="numberModal">
-
   <div class="modal">
-
     <div class="modal-handle"></div>
-
-    <div class="modal-title">
-      Your SMS Number
-    </div>
-
-    <div class="modal-subtitle" id="modalSubtitle">
-      Your number is ready.
-    </div>
+    <div class="modal-title">Your SMS Number</div>
+    <div class="modal-subtitle" id="modalSubtitle">Your number is ready.</div>
 
     <div class="number-box">
-
-      <div class="number-label">
-        Phone Number
-      </div>
-
-      <div class="number-value" id="numberValue">
-        --
-      </div>
-
+      <div class="number-label">Phone Number</div>
+      <div class="number-value" id="numberValue">--</div>
     </div>
 
     <div class="sms-code-box">
-
-      <div class="sms-code-label">
-        SMS Code
-      </div>
-
-      <div class="sms-code" id="smsCode">
-        Waiting...
-      </div>
-
+      <div class="sms-code-label">SMS Code</div>
+      <div class="sms-code" id="smsCode">Waiting...</div>
     </div>
 
-    <button
-      class="modal-close"
-      id="closeModal"
-      type="button"
-    >
-      Close
-    </button>
-
+    <button class="modal-close" id="closeModal" type="button">Close</button>
   </div>
-
 </div>
 
 <script type="module">
 
-import {
-  initializeApp,
-  getApps
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-/* =====================================================
-   FIREBASE
-===================================================== */
+import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
@@ -1004,2593 +853,466 @@ const firebaseConfig = {
   measurementId: "G-KDVYRV55JD"
 };
 
-const app =
-  getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig);
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-const auth =
-  getAuth(app);
+/* ===================== API ===================== */
+const API_URL = "https://trustsocials.vercel.app/api/mytpsms";
 
-
-/* =====================================================
-   API
-===================================================== */
-
-const API_URL =
-  "https://trustsocials.vercel.app/api/mytpsms";
-
-/*
- * Price endpoint.
- *
- * If price.php is hosted somewhere else,
- * change only this URL.
- */
-const PRICE_API_URL =
-  "https://trustsocials.vercel.app/price.php";
-
-
-/* =====================================================
-   VARIABLES
-===================================================== */
-
+/* ===================== STATE ===================== */
 let currentUser = null;
-
 let selectedProvider = "";
-
 let selectedCountry = "";
-
 let selectedService = null;
-
 let allServices = [];
-
 let currentPrice = null;
-
 let currentPriceData = null;
-
-let currentOrder = null;
-
 let statusTimer = null;
-
 let priceRequestId = 0;
 
+/* ===================== ELEMENTS ===================== */
+const sidebar = document.getElementById("sidebar");
+const overlay = document.getElementById("sidebarOverlay");
+const countrySelect = document.getElementById("countrySelect");
+const serviceSelect = document.getElementById("serviceSelect");
+const serviceSearch = document.getElementById("serviceSearch");
+const buyBtn = document.getElementById("buyBtn");
+const priceEl = document.getElementById("price");
+const priceNote = document.getElementById("priceNote");
+const errorBox = document.getElementById("errorBox");
+const successBox = document.getElementById("successBox");
+const walletBalance = document.getElementById("walletBalance");
+const numberModal = document.getElementById("numberModal");
+const numberValue = document.getElementById("numberValue");
+const smsCode = document.getElementById("smsCode");
+const modalSubtitle = document.getElementById("modalSubtitle");
 
-/* =====================================================
-   ELEMENTS
-===================================================== */
+/* ===================== HELPERS ===================== */
+function formatNaira(amount) {
+  const num = Number(amount) || 0;
+  return "₦" + num.toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
 
-const sidebar =
-  document.getElementById("sidebar");
+function showError(msg) {
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+}
+function hideError() {
+  errorBox.style.display = "none";
+  errorBox.textContent = "";
+}
+function showSuccess(msg) {
+  successBox.textContent = msg;
+  successBox.style.display = "block";
+  setTimeout(hideSuccess, 4000);
+}
+function hideSuccess() {
+  successBox.style.display = "none";
+  successBox.textContent = "";
+}
 
-const overlay =
-  document.getElementById("sidebarOverlay");
+function resetPrice() {
+  priceEl.textContent = "--";
+  priceNote.textContent = "Select a service to see the price.";
+  currentPrice = null;
+  currentPriceData = null;
+}
 
-const countrySelect =
-  document.getElementById("countrySelect");
-
-const serviceSelect =
-  document.getElementById("serviceSelect");
-
-const serviceSearch =
-  document.getElementById("serviceSearch");
-
-const buyBtn =
-  document.getElementById("buyBtn");
-
-const price =
-  document.getElementById("price");
-
-const priceNote =
-  document.getElementById("priceNote");
-
-const errorBox =
-  document.getElementById("errorBox");
-
-const successBox =
-  document.getElementById("successBox");
-
-const walletBalance =
-  document.getElementById("walletBalance");
-
-const numberModal =
-  document.getElementById("numberModal");
-
-const numberValue =
-  document.getElementById("numberValue");
-
-const smsCode =
-  document.getElementById("smsCode");
-
-const modalSubtitle =
-  document.getElementById("modalSubtitle");
-
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-document
-  .getElementById("menuToggle")
-  .addEventListener(
-    "click",
-    () => {
-
-      sidebar.classList.add("active");
-
-      overlay.classList.add("active");
-
-      document.body.style.overflow =
-        "hidden";
-
-    }
-  );
-
-
-overlay.addEventListener(
-  "click",
-  closeSidebar
-);
-
-
-function closeSidebar(){
-
+/* ===================== SIDEBAR ===================== */
+document.getElementById("menuToggle").addEventListener("click", () => {
+  sidebar.classList.add("active");
+  overlay.classList.add("active");
+  document.body.style.overflow = "hidden";
+});
+overlay.addEventListener("click", () => {
   sidebar.classList.remove("active");
-
   overlay.classList.remove("active");
-
   document.body.style.overflow = "";
+});
 
-}
-
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-window.addEventListener(
-  "scroll",
-  () => {
-
-    document
-      .getElementById("header")
-      .classList.toggle(
-        "scrolled",
-        window.scrollY > 10
-      );
-
+/* ===================== SIGN OUT ===================== */
+document.getElementById("signOutBtn").addEventListener("click", async (e) => {
+  e.preventDefault();
+  try {
+    await signOut(auth);
+    window.location.href = "login.html";
+  } catch {
+    showError("Unable to sign out.");
   }
-);
+});
 
-
-/* =====================================================
-   SIGN OUT
-===================================================== */
-
-document
-  .getElementById("signOutBtn")
-  .addEventListener(
-    "click",
-    async event => {
-
-      event.preventDefault();
-
-      try{
-
-        await signOut(auth);
-
-        window.location.href =
-          "login.html";
-
-      }catch(error){
-
-        console.error(
-          "SIGN OUT ERROR:",
-          error
-        );
-
-        showError(
-          "Unable to sign out."
-        );
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   API REQUEST
-===================================================== */
-
-async function requestJSON(
-  url,
-  options = {}
-){
-
+/* ===================== API REQUEST ===================== */
+async function requestJSON(url, options = {}) {
   let response;
-
-  try{
-
-    response =
-      await fetch(
-        url,
-        {
-          ...options,
-          cache:"no-store"
-        }
-      );
-
-  }catch(error){
-
-    console.error(
-      "NETWORK ERROR:",
-      error
-    );
-
-    throw new Error(
-      "Unable to connect to the SMS server."
-    );
-
+  try {
+    response = await fetch(url, { ...options, cache: "no-store" });
+  } catch (err) {
+    throw new Error("Unable to connect to the SMS server.");
   }
 
-
-  const rawText =
-    await response.text();
-
-
+  const text = await response.text();
   let data;
-
-  try{
-
-    data =
-      rawText
-        ? JSON.parse(rawText)
-        : {};
-
-  }catch(error){
-
-    console.error(
-      "INVALID API RESPONSE:",
-      rawText
-    );
-
-    throw new Error(
-      "SMS server returned an invalid response."
-    );
-
+  try {
+    data = text ? JSON.parse(text) : {};
+  } catch {
+    throw new Error("Invalid response from server.");
   }
 
-
-  if(!response.ok){
-
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      `SMS server error (${response.status}).`
-    );
-
+  if (!response.ok || data.success === false) {
+    throw new Error(data.message || data.error || "Request failed");
   }
-
-
-  if(data?.success === false){
-
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      "SMS request failed."
-    );
-
-  }
-
-
   return data;
-
 }
 
-
-/* =====================================================
-   ARRAY HELPER
-===================================================== */
-
-function extractArray(
-  data,
-  keys = []
-){
-
-  if(Array.isArray(data))
-    return data;
-
-
-  for(
-    const key of keys
-  ){
-
-    if(
-      Array.isArray(
-        data?.[key]
-      )
-    ){
-
-      return data[key];
-
-    }
-
+function extractArray(data, keys = []) {
+  if (Array.isArray(data)) return data;
+  for (const key of keys) {
+    if (Array.isArray(data?.[key])) return data[key];
   }
-
-
-  if(
-    Array.isArray(
-      data?.data
-    )
-  ){
-
-    return data.data;
-
-  }
-
-
-  if(
-    Array.isArray(
-      data?.result
-    )
-  ){
-
-    return data.result;
-
-  }
-
-
   return [];
-
 }
 
-
-/* =====================================================
-   FIREBASE TOKEN
-===================================================== */
-
-async function getFirebaseToken(){
-
-  if(!currentUser){
-
-    throw new Error(
-      "Your login session has expired. Please sign in again."
-    );
-
-  }
-
-
-  try{
-
-    const token =
-      await currentUser.getIdToken(
-        true
-      );
-
-
-    if(
-      typeof token !== "string" ||
-      !token.trim()
-    ){
-
-      throw new Error(
-        "Firebase did not return an authentication token."
-      );
-
-    }
-
-
-    const parts =
-      token.split(".");
-
-
-    if(parts.length !== 3){
-
-      console.error(
-        "INVALID FIREBASE TOKEN FORMAT"
-      );
-
-      throw new Error(
-        "Firebase returned an invalid authentication token."
-      );
-
-    }
-
-
-    return token.trim();
-
-  }catch(error){
-
-    console.error(
-      "FIREBASE TOKEN ERROR:",
-      error
-    );
-
-
-    if(
-      error?.code ===
-        "auth/user-token-expired" ||
-
-      error?.code ===
-        "auth/user-token-revoked" ||
-
-      error?.code ===
-        "auth/user-disabled" ||
-
-      error?.code ===
-        "auth/invalid-user-token"
-    ){
-
-      currentUser = null;
-
-    }
-
-
-    throw new Error(
-      "Unable to verify your account. Please sign in again."
-    );
-
-  }
-
+function getServiceCode(service) {
+  if (typeof service === "string") return service.trim();
+  return String(service?.code ?? service?.service_id ?? service?.id ?? service?.value ?? "").trim();
 }
 
-
-/* =====================================================
-   AUTH HEADER
-===================================================== */
-
-async function authenticatedHeaders(){
-
-  const token =
-    await getFirebaseToken();
-
-
-  return {
-
-    "Authorization":
-      `Bearer ${token}`,
-
-    "Accept":
-      "application/json"
-
-  };
-
+function getServiceName(service) {
+  if (typeof service === "string") return service.trim();
+  return String(service?.name ?? service?.service_name ?? service?.title ?? getServiceCode(service)).trim();
 }
 
-
-/* =====================================================
-   PROVIDER
-===================================================== */
-
-document
-  .querySelectorAll(".provider-card")
-  .forEach(
-    card => {
-
-      card.addEventListener(
-        "click",
-        async () => {
-
-          document
-            .querySelectorAll(".provider-card")
-            .forEach(
-              item =>
-                item.classList.remove(
-                  "active"
-                )
-            );
-
-
-          card.classList.add(
-            "active"
-          );
-
-
-          selectedProvider =
-            String(
-              card.dataset.provider ||
-              ""
-            ).trim();
-
-
-          selectedCountry = "";
-
-          selectedService = null;
-
-          allServices = [];
-
-          currentPrice = null;
-
-          currentPriceData = null;
-
-          priceRequestId++;
-
-
-          serviceSearch.value = "";
-
-          serviceSelect.innerHTML =
-            `<option value="">Select service...</option>`;
-
-          countrySelect.innerHTML =
-            `<option value="">Loading countries...</option>`;
-
-
-          resetPrice();
-
-          hideError();
-
-          hideSuccess();
-
-          updateBuyButton();
-
-
-          await loadCountries();
-
-        }
-      );
-
-    }
-  );
-
-
-/* =====================================================
-   COUNTRIES
-===================================================== */
-
-async function loadCountries(){
-
-  if(!selectedProvider)
-    return;
-
-
-  countrySelect.innerHTML =
-    `<option value="">Loading countries...</option>`;
-
-
-  try{
-
-    hideError();
-
-
-    const headers =
-      await authenticatedHeaders();
-
-
-    const url =
-      `${API_URL}?action=countries&provider=${encodeURIComponent(
-        selectedProvider
-      )}`;
-
-
-    console.log(
-      "REQUESTING COUNTRIES:",
-      selectedProvider
-    );
-
-
-    const data =
-      await requestJSON(
-        url,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    console.log(
-      "COUNTRIES RESPONSE:",
-      data
-    );
-
-
-    const countries =
-      extractArray(
-        data,
-        [
-          "countries",
-          "items",
-          "results"
-        ]
-      );
-
-
-    countrySelect.innerHTML =
-      `<option value="">Select country...</option>`;
-
-
-    countries.forEach(
-      country => {
-
-        let code = "";
-
-        let name = "";
-
-
-        if(
-          typeof country ===
-          "string"
-        ){
-
-          code =
-            country.trim();
-
-          name =
-            country.trim();
-
-        }else if(
-          country &&
-          typeof country ===
-          "object"
-        ){
-
-          code =
-            String(
-              country.code ??
-              country.country_code ??
-              country.countryCode ??
-              country.id ??
-              country.value ??
-              country.iso ??
-              country.iso2 ??
-              ""
-            ).trim();
-
-
-          name =
-            String(
-              country.name ??
-              country.country_name ??
-              country.countryName ??
-              country.title ??
-              country.label ??
-              country.country ??
-              code
-            ).trim();
-
-        }
-
-
-        if(!code)
-          return;
-
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          code;
-
-
-        option.textContent =
-          name || code;
-
-
-        countrySelect.appendChild(
-          option
-        );
-
-      }
-    );
-
-
-    if(
-      countrySelect.options.length <= 1
-    ){
-
-      countrySelect.innerHTML =
-        `<option value="">No countries available</option>`;
-
-
-      throw new Error(
-        "The SMS provider returned no countries."
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "COUNTRIES ERROR:",
-      error
-    );
-
-
-    countrySelect.innerHTML =
-      `<option value="">Unable to load countries</option>`;
-
-
-    showError(
-      "Unable to load countries: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   COUNTRY CHANGE
-===================================================== */
-
-countrySelect.addEventListener(
-  "change",
-  async () => {
-
-    selectedCountry =
-      String(
-        countrySelect.value ||
-        ""
-      ).trim();
-
-
+/* ===================== PROVIDER ===================== */
+document.querySelectorAll(".provider-card").forEach(card => {
+  card.addEventListener("click", async () => {
+    document.querySelectorAll(".provider-card").forEach(c => c.classList.remove("active"));
+    card.classList.add("active");
+
+    selectedProvider = card.dataset.provider;
+    selectedCountry = "";
     selectedService = null;
-
     allServices = [];
-
-    currentPrice = null;
-
-    currentPriceData = null;
-
     priceRequestId++;
 
-
     serviceSearch.value = "";
-
-    serviceSelect.innerHTML =
-      `<option value="">Select service...</option>`;
-
-
+    serviceSelect.innerHTML = `<option value="">Select service...</option>`;
+    countrySelect.innerHTML = `<option value="">Loading countries...</option>`;
     resetPrice();
-
+    hideError();
+    hideSuccess();
     updateBuyButton();
 
+    await loadCountries();
+  });
+});
 
-    if(!selectedCountry)
-      return;
+/* ===================== COUNTRIES ===================== */
+async function loadCountries() {
+  if (!selectedProvider) return;
 
-
-    await loadServices();
-
-  }
-);
-
-
-/* =====================================================
-   SERVICES
-===================================================== */
-
-async function loadServices(){
-
-  if(
-    !selectedProvider ||
-    !selectedCountry
-  ){
-
-    return;
-
-  }
-
-
-  serviceSelect.innerHTML =
-    `<option value="">Loading services...</option>`;
-
-
-  try{
-
+  try {
     hideError();
+    const data = await requestJSON(`${API_URL}?action=countries&provider=${encodeURIComponent(selectedProvider)}`);
+    const countries = extractArray(data, ["countries", "items", "results"]);
 
+    countrySelect.innerHTML = `<option value="">Select country...</option>`;
+    countries.forEach(c => {
+      const code = String(c.code ?? c.id ?? c.value ?? "").trim();
+      const name = String(c.name ?? c.country_name ?? code).trim();
+      if (!code) return;
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = name;
+      countrySelect.appendChild(opt);
+    });
 
-    const headers =
-      await authenticatedHeaders();
-
-
-    const url =
-      `${API_URL}?action=services&provider=${encodeURIComponent(
-        selectedProvider
-      )}&country=${encodeURIComponent(
-        selectedCountry
-      )}`;
-
-
-    const data =
-      await requestJSON(
-        url,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    console.log(
-      "SERVICES:",
-      data
-    );
-
-
-    allServices =
-      extractArray(
-        data,
-        [
-          "services",
-          "items",
-          "results"
-        ]
-      );
-
-
-    renderServices(
-      allServices
-    );
-
-
-    if(
-      allServices.length === 0
-    ){
-
-      resetPrice();
-
-      priceNote.textContent =
-        "No services are available for this country.";
-
+    if (countrySelect.options.length <= 1) {
+      throw new Error("No countries available");
     }
+  } catch (err) {
+    countrySelect.innerHTML = `<option value="">Unable to load countries</option>`;
+    showError("Unable to load countries: " + err.message);
+  }
+}
 
-  }catch(error){
+/* ===================== COUNTRY CHANGE ===================== */
+countrySelect.addEventListener("change", async () => {
+  selectedCountry = countrySelect.value;
+  selectedService = null;
+  allServices = [];
+  priceRequestId++;
 
-    console.error(
-      "SERVICES ERROR:",
-      error
+  serviceSearch.value = "";
+  serviceSelect.innerHTML = `<option value="">Select service...</option>`;
+  resetPrice();
+  updateBuyButton();
+
+  if (selectedCountry) await loadServices();
+});
+
+/* ===================== SERVICES ===================== */
+async function loadServices() {
+  if (!selectedProvider || !selectedCountry) return;
+
+  serviceSelect.innerHTML = `<option value="">Loading services...</option>`;
+
+  try {
+    hideError();
+    const data = await requestJSON(
+      `${API_URL}?action=services&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}`
     );
+    allServices = extractArray(data, ["services", "items", "results"]);
+    renderServices(allServices);
 
-
-    serviceSelect.innerHTML =
-      `<option value="">Unable to load services</option>`;
-
-
-    resetPrice();
-
-
-    showError(
-      "Unable to load SMS services: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   SERVICE CODE
-===================================================== */
-
-function getServiceCode(
-  service
-){
-
-  if(
-    typeof service ===
-    "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.code ??
-    service?.service_id ??
-    service?.serviceId ??
-    service?.service ??
-    service?.id ??
-    service?.value ??
-    ""
-  ).trim();
-
-}
-
-
-/* =====================================================
-   SERVICE NAME
-===================================================== */
-
-function getServiceName(
-  service
-){
-
-  if(
-    typeof service ===
-    "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.name ??
-    service?.service_name ??
-    service?.serviceName ??
-    service?.title ??
-    service?.label ??
-    service?.service ??
-    getServiceCode(service)
-  ).trim();
-
-}
-
-
-/* =====================================================
-   RENDER SERVICES
-===================================================== */
-
-function renderServices(
-  services
-){
-
-  serviceSelect.innerHTML =
-    `<option value="">Select service...</option>`;
-
-
-  services.forEach(
-    service => {
-
-      if(!service)
-        return;
-
-
-      const code =
-        getServiceCode(
-          service
-        );
-
-
-      const name =
-        getServiceName(
-          service
-        );
-
-
-      if(!code)
-        return;
-
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-
-      option.value =
-        code;
-
-
-      option.textContent =
-        name || code;
-
-
-      option.dataset.service =
-        JSON.stringify(
-          service
-        );
-
-
-      serviceSelect.appendChild(
-        option
-      );
-
+    if (allServices.length === 0) {
+      priceNote.textContent = "No services available for this country.";
     }
-  );
-
-
-  if(
-    serviceSelect.options.length <= 1
-  ){
-
-    serviceSelect.innerHTML =
-      `<option value="">No matching services</option>`;
-
+  } catch (err) {
+    serviceSelect.innerHTML = `<option value="">Unable to load services</option>`;
+    showError("Unable to load services: " + err.message);
   }
-
 }
 
+function renderServices(list) {
+  serviceSelect.innerHTML = `<option value="">Select service...</option>`;
+  list.forEach(s => {
+    const code = getServiceCode(s);
+    const name = getServiceName(s);
+    if (!code) return;
+    const opt = document.createElement("option");
+    opt.value = code;
+    opt.textContent = name;
+    opt.dataset.service = JSON.stringify(s);
+    serviceSelect.appendChild(opt);
+  });
+}
 
-/* =====================================================
-   SERVICE SEARCH
-===================================================== */
-
-serviceSearch.addEventListener(
-  "input",
-  () => {
-
-    const search =
-      serviceSearch.value
-        .trim()
-        .toLowerCase();
-
-
-    if(!search){
-
-      renderServices(
-        allServices
-      );
-
-      return;
-
-    }
-
-
-    const filtered =
-      allServices.filter(
-        service => {
-
-          const name =
-            getServiceName(
-              service
-            )
-            .toLowerCase();
-
-
-          const code =
-            getServiceCode(
-              service
-            )
-            .toLowerCase();
-
-
-          return (
-            name.includes(search) ||
-            code.includes(search)
-          );
-
-        }
-      );
-
-
-    renderServices(
-      filtered
-    );
-
+/* ===================== SERVICE SEARCH ===================== */
+serviceSearch.addEventListener("input", () => {
+  const q = serviceSearch.value.trim().toLowerCase();
+  if (!q) {
+    renderServices(allServices);
+    return;
   }
-);
+  const filtered = allServices.filter(s => {
+    return getServiceName(s).toLowerCase().includes(q) || getServiceCode(s).toLowerCase().includes(q);
+  });
+  renderServices(filtered);
+});
 
+/* ===================== SERVICE CHANGE + PRICE ===================== */
+serviceSelect.addEventListener("change", async () => {
+  const option = serviceSelect.options[serviceSelect.selectedIndex];
 
-/* =====================================================
-   SERVICE CHANGE
-===================================================== */
-
-serviceSelect.addEventListener(
-  "change",
-  async () => {
-
-    const option =
-      serviceSelect.options[
-        serviceSelect.selectedIndex
-      ];
-
-
+  if (!option || !option.value) {
     selectedService = null;
-
-    currentPrice = null;
-
-    currentPriceData = null;
-
-
-    if(
-      !option ||
-      !option.value
-    ){
-
-      resetPrice();
-
-      updateBuyButton();
-
-      return;
-
-    }
-
-
-    try{
-
-      selectedService =
-        JSON.parse(
-          option.dataset.service ||
-          "{}"
-        );
-
-    }catch{
-
-      selectedService = {
-
-        code:
-          option.value,
-
-        name:
-          option.textContent
-
-      };
-
-    }
-
-
     resetPrice();
+    updateBuyButton();
+    return;
+  }
 
+  try {
+    selectedService = JSON.parse(option.dataset.service || "{}");
+  } catch {
+    selectedService = { code: option.value, name: option.textContent };
+  }
 
+  await loadPrice();
+});
+
+async function loadPrice() {
+  if (!selectedProvider || !selectedCountry || !selectedService) return;
+
+  const requestId = ++priceRequestId;
+  const serviceCode = getServiceCode(selectedService);
+
+  priceEl.textContent = "Loading...";
+  priceNote.textContent = "Fetching price...";
+  buyBtn.disabled = true;
+  buyBtn.textContent = "Checking price...";
+
+  try {
+    hideError();
+    const data = await requestJSON(
+      `${API_URL}?action=price&provider=${encodeURIComponent(selectedProvider)}&country=${encodeURIComponent(selectedCountry)}&service=${encodeURIComponent(serviceCode)}`
+    );
+
+    // Ignore old request
+    if (requestId !== priceRequestId) return;
+
+    currentPriceData = data;
+    currentPrice = Number(data.selling_price || data.price) || null;
+
+    if (!currentPrice) {
+      priceEl.textContent = "--";
+      priceNote.textContent = "Price not available";
+      updateBuyButton();
+      return;
+    }
+
+    priceEl.textContent = formatNaira(currentPrice);
+
+    if (data.in_stock === false) {
+      priceNote.textContent = "Out of stock";
+      buyBtn.disabled = true;
+      buyBtn.textContent = "Out of Stock";
+      return;
+    }
+
+    priceNote.textContent = "Price includes service fee";
     updateBuyButton();
 
-
-    /*
-     * Fetch the real price immediately.
-     */
-    await loadPrice();
-
+  } catch (err) {
+    if (requestId !== priceRequestId) return;
+    console.error(err);
+    priceEl.textContent = "--";
+    priceNote.textContent = "Unable to load price";
+    showError("Unable to load price: " + err.message);
+    updateBuyButton();
   }
-);
+}
 
+/* ===================== BUY BUTTON STATE ===================== */
+function updateBuyButton() {
+  const ready = selectedProvider && selectedCountry && selectedService && currentPrice && currentPriceData?.in_stock !== false;
 
-/* =====================================================
-   PRICE API
-===================================================== */
+  if (ready) {
+    buyBtn.disabled = false;
+    buyBtn.textContent = "Buy Number";
+  } else {
+    buyBtn.disabled = true;
+    if (!selectedService) {
+      buyBtn.textContent = "Select Provider, Country & Service";
+    } else if (!currentPrice) {
+      buyBtn.textContent = "Checking price...";
+    } else {
+      buyBtn.textContent = "Out of Stock";
+    }
+  }
+}
 
-async function loadPrice(){
+/* ===================== BUY NUMBER ===================== */
+buyBtn.addEventListener("click", buyNumber);
 
-  if(
-    !selectedProvider ||
-    !selectedCountry ||
-    !selectedService
-  ){
-
+async function buyNumber() {
+  if (!selectedProvider || !selectedCountry || !selectedService || !currentPrice) return;
+  if (!currentUser) {
+    showError("Please sign in first.");
     return;
-
   }
 
+  buyBtn.disabled = true;
+  buyBtn.textContent = "Buying Number...";
 
-  const requestId =
-    ++priceRequestId;
-
-
-  currentPrice = null;
-
-  currentPriceData = null;
-
-
-  price.textContent =
-    "Loading...";
-
-
-  priceNote.textContent =
-    "Checking price and availability...";
-
-
-  buyBtn.disabled =
-    true;
-
-
-  buyBtn.textContent =
-    "Checking price...";
-
-
-  try{
-
+  try {
     hideError();
-
-
-    const serviceCode =
-      getServiceCode(
-        selectedService
-      );
-
-
-    if(!serviceCode){
-
-      throw new Error(
-        "Invalid service selected."
-      );
-
-    }
-
-
-    /*
-     * Price endpoint:
-     *
-     * GET /price.php
-     *
-     * provider
-     * country
-     * service
-     */
-
-    const url =
-      `${PRICE_API_URL}?provider=${encodeURIComponent(
-        selectedProvider
-      )}&country=${encodeURIComponent(
-        selectedCountry
-      )}&service=${encodeURIComponent(
-        serviceCode
-      )}`;
-
-
-    console.log(
-      "REQUESTING PRICE:",
-      url
-    );
-
-
-    const headers =
-      currentUser
-        ? await authenticatedHeaders()
-        : {
-            "Accept":
-              "application/json"
-          };
-
-
-    const data =
-      await requestJSON(
-        url,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    /*
-     * Ignore an older request if the user
-     * changed the selection while this request
-     * was still running.
-     */
-
-    if(
-      requestId !== priceRequestId
-    ){
-
-      return;
-
-    }
-
-
-    console.log(
-      "PRICE RESPONSE:",
-      data
-    );
-
-
-    currentPriceData =
-      data;
-
-
-    /*
-     * Price can be returned as:
-     *
-     * price
-     *
-     * or the formatted display value.
-     */
-
-    const numericPrice =
-      Number(
-        data?.price
-      );
-
-
-    if(
-      Number.isFinite(
-        numericPrice
-      )
-    ){
-
-      currentPrice =
-        numericPrice;
-
-    }
-
-
-    /*
-     * Update wallet balance if the price
-     * endpoint returns it.
-     */
-
-    if(
-      data?.balance !==
-        undefined &&
-      data?.balance !==
-        null
-    ){
-
-      walletBalance.textContent =
-        formatCurrency(
-          data.balance,
-          data.currency
-        );
-
-    }
-
-
-    /*
-     * OUT OF STOCK
-     */
-
-    if(
-      data?.in_stock === false
-    ){
-
-      price.textContent =
-        getFormattedPrice(
-          data
-        );
-
-
-      const stock =
-        Number(
-          data?.stock
-        );
-
-
-      if(
-        Number.isFinite(stock)
-      ){
-
-        priceNote.textContent =
-          `Out of stock • ${stock} available`;
-
-      }else{
-
-        priceNote.textContent =
-          "Out of stock.";
-
-      }
-
-
-      buyBtn.disabled =
-        true;
-
-
-      buyBtn.textContent =
-        "Out of Stock";
-
-
-      return;
-
-    }
-
-
-    /*
-     * No numeric price.
-     */
-
-    if(
-      !Number.isFinite(
-        currentPrice
-      )
-    ){
-
-      price.textContent =
-        getFormattedPrice(
-          data
-        );
-
-
-      priceNote.textContent =
-        "Price unavailable.";
-
-
-      buyBtn.disabled =
-        true;
-
-
-      buyBtn.textContent =
-        "Price Unavailable";
-
-
-      return;
-
-    }
-
-
-    /*
-     * Display price.
-     */
-
-    price.textContent =
-      getFormattedPrice(
-        data
-      );
-
-
-    /*
-     * Check user's/provider balance
-     * using the API's sufficient field.
-     */
-
-    if(
-      data?.sufficient === false
-    ){
-
-      priceNote.textContent =
-        "Insufficient balance to purchase this number.";
-
-
-      buyBtn.disabled =
-        true;
-
-
-      buyBtn.textContent =
-        "Insufficient Balance";
-
-
-      return;
-
-    }
-
-
-    /*
-     * Stock information.
-     */
-
-    let stockText =
-      "";
-
-
-    const stock =
-      Number(
-        data?.stock
-      );
-
-
-    if(
-      Number.isFinite(stock)
-    ){
-
-      stockText =
-        ` • ${stock} in stock`;
-
-    }
-
-
-    priceNote.textContent =
-      `Purchase price${stockText}`;
-
-
-    buyBtn.disabled =
-      false;
-
-
-    buyBtn.textContent =
-      "Buy Number";
-
-
-  }catch(error){
-
-    if(
-      requestId !== priceRequestId
-    ){
-
-      return;
-
-    }
-
-
-    console.error(
-      "PRICE ERROR:",
-      error
-    );
-
-
-    currentPrice = null;
-
-    currentPriceData = null;
-
-
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Unable to load price.";
-
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Price Unavailable";
-
-
-    showError(
-      "Unable to get number price: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   FORMATTED PRICE
-===================================================== */
-
-function getFormattedPrice(
-  data
-){
-
-  if(
-    data?.formatted !==
-      undefined &&
-    data?.formatted !==
-      null &&
-    String(
-      data.formatted
-    ).trim()
-  ){
-
-    return String(
-      data.formatted
-    );
-
-  }
-
-
-  const amount =
-    Number(
-      data?.price
-    );
-
-
-  if(
-    Number.isFinite(amount)
-  ){
-
-    return formatCurrency(
-      amount,
-      data?.currency
-    );
-
-  }
-
-
-  return "--";
-
-}
-
-
-/* =====================================================
-   CURRENCY FORMAT
-===================================================== */
-
-function formatCurrency(
-  amount,
-  currency = "NGN"
-){
-
-  const num =
-    Number(amount);
-
-
-  if(
-    !Number.isFinite(num)
-  ){
-
-    return "--";
-
-  }
-
-
-  const code =
-    String(
-      currency ||
-      "NGN"
-    )
-    .trim()
-    .toUpperCase();
-
-
-  /*
-   * Keep NGN as Naira.
-   */
-
-  if(
-    code === "NGN" ||
-    code === "Naira"
-  ){
-
-    return "₦" +
-      num.toLocaleString(
-        "en-NG",
-        {
-          minimumFractionDigits:2,
-          maximumFractionDigits:2
-        }
-      );
-
-  }
-
-
-  try{
-
-    return new Intl.NumberFormat(
-      "en-US",
-      {
-        style:"currency",
-        currency:code,
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    ).format(num);
-
-  }catch{
-
-    return `${code} ${num.toFixed(2)}`;
-
-  }
-
-}
-
-
-/* =====================================================
-   RESET PRICE
-===================================================== */
-
-function resetPrice(){
-
-  price.textContent =
-    "--";
-
-
-  priceNote.textContent =
-    "Select a service to see the price.";
-
-}
-
-
-/* =====================================================
-   UPDATE BUY BUTTON
-===================================================== */
-
-function updateBuyButton(){
-
-  const basicReady =
-    Boolean(
-      selectedProvider &&
-      selectedCountry &&
-      selectedService
-    );
-
-
-  /*
-   * Do not allow purchase until the
-   * live price endpoint has confirmed
-   * the service.
-   */
-
-  const ready =
-    basicReady &&
-    Number.isFinite(
-      currentPrice
-    ) &&
-    currentPriceData?.in_stock !== false &&
-    currentPriceData?.sufficient !== false;
-
-
-  if(ready){
-
-    buyBtn.disabled =
-      false;
-
-
-    buyBtn.textContent =
-      "Buy Number";
-
-  }else if(
-    basicReady &&
-    !currentPrice
-  ){
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Checking Price...";
-
-  }else if(
-    currentPriceData?.in_stock === false
-  ){
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Out of Stock";
-
-  }else if(
-    currentPriceData?.sufficient === false
-  ){
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Insufficient Balance";
-
-  }else{
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Select Provider, Country & Service";
-
-  }
-
-}
-
-
-/* =====================================================
-   BUY BUTTON
-===================================================== */
-
-buyBtn.addEventListener(
-  "click",
-  buyNumber
-);
-
-
-/* =====================================================
-   BUY NUMBER
-===================================================== */
-
-async function buyNumber(){
-
-  if(
-    !selectedProvider ||
-    !selectedCountry ||
-    !selectedService
-  ){
-
-    return;
-
-  }
-
-
-  if(!currentUser){
-
-    showError(
-      "Please sign in before buying a number."
-    );
-
-    return;
-
-  }
-
-
-  /*
-   * Make sure we actually have a live price.
-   */
-
-  if(
-    !Number.isFinite(
-      currentPrice
-    )
-  ){
-
-    showError(
-      "Please wait for the number price to load."
-    );
-
-    return;
-
-  }
-
-
-  /*
-   * Never allow purchase if price endpoint
-   * says there is no stock.
-   */
-
-  if(
-    currentPriceData?.in_stock === false
-  ){
-
-    showError(
-      "This service is currently out of stock."
-    );
-
-    return;
-
-  }
-
-
-  /*
-   * Never allow purchase if price endpoint
-   * says the balance is insufficient.
-   */
-
-  if(
-    currentPriceData?.sufficient === false
-  ){
-
-    showError(
-      "Your balance is insufficient for this number."
-    );
-
-    return;
-
-  }
-
-
-  buyBtn.disabled =
-    true;
-
-
-  buyBtn.textContent =
-    "Buying Number...";
-
-
-  try{
-
-    hideError();
-
     hideSuccess();
 
+    const serviceCode = getServiceCode(selectedService);
+    const serviceName = getServiceName(selectedService);
 
-    const headers =
-      await authenticatedHeaders();
+    const data = await requestJSON(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "buy",
+        provider: selectedProvider,
+        country: selectedCountry,
+        service: serviceCode,
+        serviceName: serviceName
+      })
+    });
 
+    // Show modal
+    numberValue.textContent = data.number || "--";
+    smsCode.textContent = data.sms_code || "Waiting...";
+    modalSubtitle.textContent = `${selectedCountry} • ${serviceName}`;
+    numberModal.classList.add("active");
 
-    const serviceCode =
-      getServiceCode(
-        selectedService
-      );
-
-
-    const serviceName =
-      getServiceName(
-        selectedService
-      );
-
-
-    if(!serviceCode){
-
-      throw new Error(
-        "Invalid service selected."
-      );
-
+    // Update price display
+    if (data.selling_price) {
+      priceEl.textContent = formatNaira(data.selling_price);
+      priceNote.textContent = "Purchase price";
     }
 
+    showSuccess("Number purchased successfully!");
 
-    /*
-     * Optional pool.
-     *
-     * If the price endpoint returns pools[],
-     * use the first available pool unless the
-     * backend expects no pool parameter.
-     */
-
-    const pools =
-      Array.isArray(
-        currentPriceData?.pools
-      )
-        ? currentPriceData.pools
-        : [];
-
-
-    let selectedPool =
-      null;
-
-
-    if(pools.length > 0){
-
-      selectedPool =
-        getPoolValue(
-          pools[0]
-        );
-
+    if (data.order_id) {
+      startStatusPolling(data.order_id);
     }
 
-
-    const requestBody = {
-
-      action:
-        "buy",
-
-      provider:
-        selectedProvider,
-
-      country:
-        selectedCountry,
-
-      service:
-        serviceCode,
-
-      serviceName:
-        serviceName,
-
-      /*
-       * Send the price that was displayed
-       * to the user.
-       */
-      price:
-        currentPrice
-
-    };
-
-
-    /*
-     * Only send pool when one exists.
-     */
-
-    if(selectedPool){
-
-      requestBody.pool =
-        selectedPool;
-
-    }
-
-
-    console.log(
-      "BUY REQUEST:",
-      requestBody
-    );
-
-
-    const data =
-      await requestJSON(
-        API_URL,
-        {
-
-          method:"POST",
-
-          headers:{
-            ...headers,
-
-            "Content-Type":
-              "application/json"
-
-          },
-
-          body:
-            JSON.stringify(
-              requestBody
-            )
-
-        }
-      );
-
-
-    console.log(
-      "BUY RESPONSE:",
-      data
-    );
-
-
-    if(!data.success){
-
-      throw new Error(
-        data.message ||
-        "Purchase failed."
-      );
-
-    }
-
-
-    currentOrder =
-      data;
-
-
-    numberValue.textContent =
-      data.number
-        ? String(data.number)
-        : "--";
-
-
-    smsCode.textContent =
-      data.sms_code
-        ? String(data.sms_code)
-        : "Waiting...";
-
-
-    modalSubtitle.textContent =
-      `${selectedCountry} • ${serviceName}`;
-
-
-    numberModal.classList.add(
-      "active"
-    );
-
-
-    if(
-      data.selling_price !==
-        undefined &&
-      data.selling_price !==
-        null
-    ){
-
-      price.textContent =
-        formatCurrency(
-          data.selling_price,
-          data.currency || "NGN"
-        );
-
-
-      priceNote.textContent =
-        "Purchase price";
-
-    }
-
-
-    if(
-      data.balance !==
-        undefined &&
-      data.balance !==
-        null
-    ){
-
-      walletBalance.textContent =
-        formatCurrency(
-          data.balance,
-          data.currency || "NGN"
-        );
-
-    }else{
-
-      await loadWalletBalance();
-
-    }
-
-
-    if(data.order_id){
-
-      startStatusPolling(
-        data.order_id
-      );
-
-    }
-
-
-    showSuccess(
-      "Number purchased successfully."
-    );
-
-
-  }catch(error){
-
-    console.error(
-      "PURCHASE ERROR:",
-      error
-    );
-
-
-    showError(
-      error?.message ||
-      "Purchase failed. Please try again."
-    );
-
-  }finally{
-
-    /*
-     * Do not blindly enable the button.
-     * Re-check the current price state.
-     */
-
+  } catch (err) {
+    console.error(err);
+    showError(err.message || "Purchase failed");
+  } finally {
     updateBuyButton();
-
   }
-
 }
 
-
-/* =====================================================
-   POOL VALUE
-===================================================== */
-
-function getPoolValue(
-  pool
-){
-
-  if(
-    typeof pool ===
-    "string"
-  ){
-
-    return pool.trim();
-
-  }
-
-
-  if(
-    !pool ||
-    typeof pool !==
-    "object"
-  ){
-
-    return "";
-
-  }
-
-
-  return String(
-    pool.id ??
-    pool.code ??
-    pool.pool ??
-    pool.name ??
-    pool.value ??
-    ""
-  ).trim();
-
-}
-
-
-/* =====================================================
-   STATUS POLLING
-===================================================== */
-
-function startStatusPolling(
-  orderId
-){
-
+/* ===================== STATUS POLLING ===================== */
+function startStatusPolling(orderId) {
   stopStatusPolling();
-
-
-  let attempts =
-    0;
-
-
-  const maxAttempts =
-    60;
-
-
-  statusTimer =
-    setInterval(
-      async () => {
-
-        attempts++;
-
-
-        if(
-          attempts >
-          maxAttempts
-        ){
-
-          stopStatusPolling();
-
-          return;
-
-        }
-
-
-        try{
-
-          const headers =
-            await authenticatedHeaders();
-
-
-          const url =
-            `${API_URL}?action=status&order_id=${encodeURIComponent(
-              orderId
-            )}`;
-
-
-          const data =
-            await requestJSON(
-              url,
-              {
-                method:"GET",
-                headers
-              }
-            );
-
-
-          console.log(
-            "STATUS RESPONSE:",
-            data
-          );
-
-
-          if(data.sms_code){
-
-            smsCode.textContent =
-              String(
-                data.sms_code
-              );
-
-
-            stopStatusPolling();
-
-          }else if(
-            data.full_sms
-          ){
-
-            smsCode.textContent =
-              String(
-                data.full_sms
-              );
-
-
-            stopStatusPolling();
-
-          }
-
-
-          const status =
-            String(
-              data.status ||
-              ""
-            ).toLowerCase();
-
-
-          if(
-            [
-              "cancelled",
-              "canceled",
-              "expired",
-              "completed",
-              "success",
-              "received",
-              "refunded"
-            ].includes(status)
-          ){
-
-            stopStatusPolling();
-
-          }
-
-
-        }catch(error){
-
-          console.warn(
-            "STATUS CHECK FAILED:",
-            error
-          );
-
-        }
-
-      },
-      5000
-    );
-
-}
-
-
-function stopStatusPolling(){
-
-  if(statusTimer){
-
-    clearInterval(
-      statusTimer
-    );
-
-
-    statusTimer =
-      null;
-
-  }
-
-}
-
-
-/* =====================================================
-   MODAL
-===================================================== */
-
-document
-  .getElementById("closeModal")
-  .addEventListener(
-    "click",
-    closeNumberModal
-  );
-
-
-numberModal.addEventListener(
-  "click",
-  event => {
-
-    if(
-      event.target ===
-      numberModal
-    ){
-
-      closeNumberModal();
-
-    }
-
-  }
-);
-
-
-function closeNumberModal(){
-
-  numberModal.classList.remove(
-    "active"
-  );
-
-
-  stopStatusPolling();
-
-}
-
-
-/* =====================================================
-   ESC
-===================================================== */
-
-document.addEventListener(
-  "keydown",
-  event => {
-
-    if(
-      event.key ===
-      "Escape"
-    ){
-
-      closeNumberModal();
-
-      closeSidebar();
-
-    }
-
-  }
-);
-
-
-/* =====================================================
-   MESSAGES
-===================================================== */
-
-function showError(
-  message
-){
-
-  errorBox.textContent =
-    String(message);
-
-
-  errorBox.style.display =
-    "block";
-
-}
-
-
-function hideError(){
-
-  errorBox.textContent =
-    "";
-
-
-  errorBox.style.display =
-    "none";
-
-}
-
-
-function showSuccess(
-  message
-){
-
-  successBox.textContent =
-    String(message);
-
-
-  successBox.style.display =
-    "block";
-
-
-  setTimeout(
-    hideSuccess,
-    4000
-  );
-
-}
-
-
-function hideSuccess(){
-
-  successBox.textContent =
-    "";
-
-
-  successBox.style.display =
-    "none";
-
-}
-
-
-/* =====================================================
-   WALLET BALANCE
-===================================================== */
-
-async function loadWalletBalance(){
-
-  if(!currentUser)
-    return;
-
-
-  try{
-
-    const headers =
-      await authenticatedHeaders();
-
-
-    const data =
-      await requestJSON(
-        `${API_URL}?action=balance`,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    if(
-      data.balance !==
-        undefined &&
-      data.balance !==
-        null
-    ){
-
-      walletBalance.textContent =
-        formatCurrency(
-          data.balance,
-          data.currency || "NGN"
-        );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "BALANCE ERROR:",
-      error
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   AUTH STATE
-===================================================== */
-
-onAuthStateChanged(
-  auth,
-  async user => {
-
-    if(!user){
-
-      currentUser =
-        null;
-
-
-      window.location.replace(
-        "login.html"
-      );
-
-
+  let attempts = 0;
+
+  statusTimer = setInterval(async () => {
+    attempts++;
+    if (attempts > 60) {
+      stopStatusPolling();
       return;
-
     }
 
-
-    currentUser =
-      user;
-
-
-    /* ================= AVATAR ================= */
-
-    const displayName =
-      user.displayName ||
-      user.email?.split("@")[0] ||
-      "User";
-
-
-    const names =
-      displayName
-        .trim()
-        .split(/\s+/);
-
-
-    let initials =
-      names[0]?.charAt(0)
-        .toUpperCase() ||
-      "";
-
-
-    if(
-      names.length > 1
-    ){
-
-      initials +=
-        names[
-          names.length - 1
-        ]
-        ?.charAt(0)
-        .toUpperCase() ||
-        "";
-
-    }
-
-
-    document
-      .getElementById(
-        "userAvatar"
-      )
-      .textContent =
-        initials ||
-        "U";
-
-
-    /* ================= VERIFY FIREBASE ================= */
-
-    try{
-
-      const token =
-        await user.getIdToken(
-          true
-        );
-
-
-      if(
-        typeof token !==
-          "string" ||
-        !token.trim()
-      ){
-
-        throw new Error(
-          "No Firebase ID token."
-        );
-
+    try {
+      const data = await requestJSON(`${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`);
+      if (data.sms_code || data.full_sms) {
+        smsCode.textContent = data.sms_code || data.full_sms;
+        stopStatusPolling();
       }
-
-
-      if(
-        token.split(".").length !== 3
-      ){
-
-        throw new Error(
-          "Invalid Firebase ID token format."
-        );
-
+      const status = String(data.status || "").toLowerCase();
+      if (["received", "expired", "cancelled", "refunded", "completed"].includes(status)) {
+        stopStatusPolling();
       }
-
-
-      console.log(
-        "Firebase authentication ready."
-      );
-
-
-      await loadWalletBalance();
-
-
-    }catch(error){
-
-      console.error(
-        "AUTH INITIALIZATION ERROR:",
-        error
-      );
-
-
-      showError(
-        error?.message ||
-        "Unable to verify your account."
-      );
-
+    } catch (e) {
+      console.warn("Status check failed", e);
     }
+  }, 5000);
+}
 
+function stopStatusPolling() {
+  if (statusTimer) {
+    clearInterval(statusTimer);
+    statusTimer = null;
   }
-);
+}
+
+/* ===================== MODAL ===================== */
+document.getElementById("closeModal").addEventListener("click", () => {
+  numberModal.classList.remove("active");
+  stopStatusPolling();
+});
+
+numberModal.addEventListener("click", (e) => {
+  if (e.target === numberModal) {
+    numberModal.classList.remove("active");
+    stopStatusPolling();
+  }
+});
+
+/* ===================== AUTH ===================== */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.location.href = "login.html";
+    return;
+  }
+
+  currentUser = user;
+
+  // Avatar
+  const name = user.displayName || user.email?.split("@")[0] || "User";
+  const parts = name.trim().split(/\s+/);
+  let initials = parts[0]?.[0]?.toUpperCase() || "";
+  if (parts.length > 1) initials += parts[parts.length - 1][0]?.toUpperCase() || "";
+  document.getElementById("userAvatar").textContent = initials || "U";
+});
 
 </script>
 
