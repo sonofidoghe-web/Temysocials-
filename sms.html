@@ -474,10 +474,6 @@ h1{
   display:none;
 }
 
-/* =====================================================
-   EXISTING NUMBER MODAL
-===================================================== */
-
 .modal-overlay{
   position:fixed;
   inset:0;
@@ -576,162 +572,6 @@ h1{
 }
 
 .modal-close{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:#eee;
-  color:#333;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-/* =====================================================
-   PURCHASE CONFIRMATION MODAL
-   NEW — DESIGN MATCHES EXISTING MODAL
-===================================================== */
-
-.confirm-modal-overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.5);
-  z-index:1500;
-  display:flex;
-  align-items:flex-end;
-  justify-content:center;
-  opacity:0;
-  visibility:hidden;
-  transition:.3s;
-}
-
-.confirm-modal-overlay.active{
-  opacity:1;
-  visibility:visible;
-}
-
-.confirm-modal{
-  width:100%;
-  max-width:480px;
-  background:#fff;
-  border-radius:22px 22px 0 0;
-  padding:22px 18px 28px;
-  transform:translateY(100%);
-  transition:.3s;
-}
-
-.confirm-modal-overlay.active .confirm-modal{
-  transform:translateY(0);
-}
-
-.confirm-handle{
-  width:40px;
-  height:4px;
-  background:#ddd;
-  border-radius:5px;
-  margin:0 auto 18px;
-}
-
-.confirm-title{
-  font-size:20px;
-  font-weight:700;
-  margin-bottom:6px;
-}
-
-.confirm-subtitle{
-  color:#777;
-  font-size:14px;
-  margin-bottom:20px;
-}
-
-.confirm-details{
-  background:#f8f9fa;
-  border:1px solid #e5e5e5;
-  border-radius:14px;
-  padding:14px 16px;
-  margin-bottom:16px;
-}
-
-.confirm-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:8px 0;
-  font-size:14px;
-}
-
-.confirm-row:not(:last-child){
-  border-bottom:1px solid #e5e5e5;
-}
-
-.confirm-row-label{
-  color:#777;
-}
-
-.confirm-row-value{
-  color:#111;
-  font-weight:600;
-  text-align:right;
-  word-break:break-word;
-}
-
-.confirm-price{
-  background:#f0f7eb;
-  border:1px solid #d8e9ce;
-  border-radius:14px;
-  padding:16px;
-  text-align:center;
-  margin-bottom:16px;
-}
-
-.confirm-price-label{
-  color:#666;
-  font-size:12px;
-  margin-bottom:5px;
-}
-
-.confirm-price-value{
-  color:#3d6b1e;
-  font-size:28px;
-  font-weight:700;
-}
-
-.confirm-countdown{
-  color:#777;
-  font-size:13px;
-  text-align:center;
-  margin-bottom:12px;
-}
-
-.confirm-countdown strong{
-  color:#3d6b1e;
-  font-size:15px;
-}
-
-.confirm-purchase-btn{
-  width:100%;
-  padding:14px;
-  background:#3d6b1e;
-  color:#fff;
-  border:none;
-  border-radius:12px;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  margin-bottom:9px;
-}
-
-.confirm-purchase-btn:hover:not(:disabled){
-  background:#315617;
-}
-
-.confirm-purchase-btn:disabled{
-  background:#ccc;
-  cursor:not-allowed;
-}
-
-.confirm-cancel-btn{
   width:100%;
   padding:14px;
   border:none;
@@ -1086,84 +926,6 @@ h1{
 
 </main>
 
-<!-- =====================================================
-     PURCHASE CONFIRMATION MODAL
-===================================================== -->
-
-<div class="confirm-modal-overlay" id="confirmModal">
-
-  <div class="confirm-modal">
-
-    <div class="confirm-handle"></div>
-
-    <div class="confirm-title">
-      Confirm Purchase
-    </div>
-
-    <div class="confirm-subtitle">
-      Review the details before purchasing this SMS number.
-    </div>
-
-    <div class="confirm-details">
-
-      <div class="confirm-row">
-        <span class="confirm-row-label">Provider</span>
-        <span class="confirm-row-value" id="confirmProvider">--</span>
-      </div>
-
-      <div class="confirm-row">
-        <span class="confirm-row-label">Country</span>
-        <span class="confirm-row-value" id="confirmCountry">--</span>
-      </div>
-
-      <div class="confirm-row">
-        <span class="confirm-row-label">Service</span>
-        <span class="confirm-row-value" id="confirmService">--</span>
-      </div>
-
-    </div>
-
-    <div class="confirm-price">
-
-      <div class="confirm-price-label">
-        Purchase Price
-      </div>
-
-      <div class="confirm-price-value" id="confirmPrice">
-        ₦0.00
-      </div>
-
-    </div>
-
-    <div class="confirm-countdown" id="confirmCountdown">
-      Please wait <strong>5</strong> seconds...
-    </div>
-
-    <button
-      class="confirm-purchase-btn"
-      id="confirmPurchaseBtn"
-      type="button"
-      disabled
-    >
-      Wait 5 seconds
-    </button>
-
-    <button
-      class="confirm-cancel-btn"
-      id="cancelConfirmBtn"
-      type="button"
-    >
-      Cancel
-    </button>
-
-  </div>
-
-</div>
-
-<!-- =====================================================
-     NUMBER MODAL
-===================================================== -->
-
 <div class="modal-overlay" id="numberModal">
 
   <div class="modal">
@@ -1242,6 +1004,11 @@ const firebaseConfig = {
   measurementId: "G-KDVYRV55JD"
 };
 
+
+/*
+ * Do not initialize Firebase twice.
+ */
+
 const app =
   getApps().length
     ? getApps()[0]
@@ -1270,12 +1037,6 @@ let selectedService = null;
 let allServices = [];
 let currentOrder = null;
 let statusTimer = null;
-
-/* Purchase confirmation */
-let confirmTimer = null;
-let confirmSeconds = 5;
-let confirmedPrice = null;
-let purchaseInProgress = false;
 
 
 /* =====================================================
@@ -1326,35 +1087,6 @@ const smsCode =
 
 const modalSubtitle =
   document.getElementById("modalSubtitle");
-
-
-/* =====================================================
-   PURCHASE CONFIRMATION ELEMENTS
-===================================================== */
-
-const confirmModal =
-  document.getElementById("confirmModal");
-
-const confirmProvider =
-  document.getElementById("confirmProvider");
-
-const confirmCountry =
-  document.getElementById("confirmCountry");
-
-const confirmService =
-  document.getElementById("confirmService");
-
-const confirmPrice =
-  document.getElementById("confirmPrice");
-
-const confirmCountdown =
-  document.getElementById("confirmCountdown");
-
-const confirmPurchaseBtn =
-  document.getElementById("confirmPurchaseBtn");
-
-const cancelConfirmBtn =
-  document.getElementById("cancelConfirmBtn");
 
 
 /* =====================================================
@@ -1593,9 +1325,14 @@ function extractArray(
 
 /* =====================================================
    FIREBASE TOKEN
+   FIXED AUTHENTICATION
 ===================================================== */
 
 async function getFirebaseToken(){
+
+  /*
+   * Always use the current Firebase user.
+   */
 
   if(!currentUser){
 
@@ -1607,6 +1344,13 @@ async function getFirebaseToken(){
 
 
   try{
+
+    /*
+     * Force refresh the ID token.
+     *
+     * This is important when the previous token
+     * is expired, stale or invalid.
+     */
 
     const token =
       await currentUser.getIdToken(true);
@@ -1623,6 +1367,11 @@ async function getFirebaseToken(){
 
     }
 
+
+    /*
+     * Firebase ID tokens are JWTs.
+     * A valid JWT contains three sections.
+     */
 
     const parts =
       token.split(".");
@@ -1650,6 +1399,11 @@ async function getFirebaseToken(){
       error
     );
 
+
+    /*
+     * If the Firebase session itself is invalid,
+     * refresh the local user state.
+     */
 
     if(
       error?.code ===
@@ -1746,9 +1500,6 @@ document
           allServices =
             [];
 
-          confirmedPrice =
-            null;
-
 
           serviceSearch.value =
             "";
@@ -1803,6 +1554,10 @@ async function loadCountries(){
 
     hideError();
 
+
+    /*
+     * Get a freshly refreshed Firebase ID token.
+     */
 
     const headers =
       await authenticatedHeaders();
@@ -1985,9 +1740,6 @@ countrySelect.addEventListener(
 
     allServices =
       [];
-
-    confirmedPrice =
-      null;
 
 
     serviceSearch.value =
@@ -2186,77 +1938,6 @@ function getServiceName(
 
 
 /* =====================================================
-   SERVICE PRICE
-===================================================== */
-
-function getServicePrice(
-  service
-){
-
-  if(
-    !service ||
-    typeof service !== "object"
-  ){
-
-    return null;
-
-  }
-
-
-  const possiblePrices = [
-
-    service.price,
-
-    service.cost,
-
-    service.amount,
-
-    service.selling_price,
-
-    service.sellingPrice,
-
-    service.rate
-
-  ];
-
-
-  for(
-    const value of possiblePrices
-  ){
-
-    if(
-      value !== undefined &&
-      value !== null &&
-      value !== ""
-    ){
-
-      const number =
-        Number(
-          String(value)
-            .replace(/[₦$,]/g,"")
-            .trim()
-        );
-
-
-      if(
-        Number.isFinite(number)
-      ){
-
-        return number;
-
-      }
-
-    }
-
-  }
-
-
-  return null;
-
-}
-
-
-/* =====================================================
    RENDER SERVICES
 ===================================================== */
 
@@ -2413,9 +2094,6 @@ serviceSelect.addEventListener(
       selectedService =
         null;
 
-      confirmedPrice =
-        null;
-
 
       price.textContent =
         "--";
@@ -2456,1317 +2134,12 @@ serviceSelect.addEventListener(
     }
 
 
-    const servicePrice =
-      getServicePrice(
-        selectedService
-      );
-
-
-    if(
-      servicePrice !== null
-    ){
-
-      confirmedPrice =
-        Number(servicePrice);
-
-
-      price.textContent =
-        formatNaira(
-          servicePrice
-        );
-
-
-      priceNote.textContent =
-        "Purchase price.";
-
-    }else{
-
-      confirmedPrice =
-        null;
-
-
-      price.textContent =
-        "--";
-
-
-      priceNote.textContent =
-        "Price unavailable for this service.";
-
-    }
-
-
-    updateBuyButton();
-
-  }
-);
-
-
-/* =====================================================
-   BUY BUTTON
-===================================================== */
-
-function updateBuyButton(){
-
-  const ready =
-    Boolean(
-      selectedProvider &&
-      selectedCountry &&
-      selectedService &&
-      confirmedPrice !== null
-    );
-
-
-  if(ready){
-
-    buyBtn.disabled =
-      false;
-
-
-    buyBtn.textContent =
-      "Buy Number";
-
-  }else{
-
-    buyBtn.disabled =
-      true;
-
-
-    buyBtn.textContent =
-      "Select Provider, Country & Service";
-
-  }
-
-}
-  <script type="module">
-
-import {
-  initializeApp,
-  getApps
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-/* =====================================================
-   FIREBASE
-===================================================== */
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
-  authDomain: "trustsocials-8fc8b.firebaseapp.com",
-  projectId: "trustsocials-8fc8b",
-  storageBucket: "trustsocials-8fc8b.firebasestorage.app",
-  messagingSenderId: "675550258010",
-  appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
-  measurementId: "G-KDVYRV55JD"
-};
-
-const app =
-  getApps().length
-    ? getApps()[0]
-    : initializeApp(firebaseConfig);
-
-const auth = getAuth(app);
-
-
-/* =====================================================
-   API
-===================================================== */
-
-const API_URL =
-  "https://trustsocials.vercel.app/api/mytpsms";
-
-
-/* =====================================================
-   VARIABLES
-===================================================== */
-
-let currentUser = null;
-let selectedProvider = "";
-let selectedCountry = "";
-let selectedService = null;
-let allServices = [];
-let currentOrder = null;
-
-let statusTimer = null;
-let purchaseTimer = null;
-
-let pendingPurchase = null;
-
-
-/* =====================================================
-   ELEMENTS
-===================================================== */
-
-const sidebar =
-  document.getElementById("sidebar");
-
-const overlay =
-  document.getElementById("sidebarOverlay");
-
-const countrySelect =
-  document.getElementById("countrySelect");
-
-const serviceSelect =
-  document.getElementById("serviceSelect");
-
-const serviceSearch =
-  document.getElementById("serviceSearch");
-
-const buyBtn =
-  document.getElementById("buyBtn");
-
-const price =
-  document.getElementById("price");
-
-const priceNote =
-  document.getElementById("priceNote");
-
-const errorBox =
-  document.getElementById("errorBox");
-
-const successBox =
-  document.getElementById("successBox");
-
-const walletBalance =
-  document.getElementById("walletBalance");
-
-const numberModal =
-  document.getElementById("numberModal");
-
-const numberValue =
-  document.getElementById("numberValue");
-
-const smsCode =
-  document.getElementById("smsCode");
-
-const modalSubtitle =
-  document.getElementById("modalSubtitle");
-
-
-/* =====================================================
-   CREATE PURCHASE CONFIRMATION MODAL
-   Design remains consistent with sms.html
-===================================================== */
-
-const purchaseOverlay =
-  document.createElement("div");
-
-purchaseOverlay.className =
-  "modal-overlay";
-
-purchaseOverlay.id =
-  "purchaseConfirmModal";
-
-purchaseOverlay.innerHTML = `
-
-  <div class="modal">
-
-    <div class="modal-handle"></div>
-
-    <div class="modal-title">
-      Confirm Purchase
-    </div>
-
-    <div class="modal-subtitle" id="confirmSubtitle">
-      Review the price before confirming.
-    </div>
-
-    <div class="number-box">
-
-      <div class="number-label">
-        Purchase Price
-      </div>
-
-      <div
-        class="number-value"
-        id="confirmPrice"
-      >
-        ₦0.00
-      </div>
-
-    </div>
-
-    <div
-      style="
-        background:#f8f9fa;
-        border:1px solid #e5e5e5;
-        border-radius:14px;
-        padding:14px;
-        margin-bottom:16px;
-      "
-    >
-
-      <div
-        style="
-          color:#777;
-          font-size:12px;
-          margin-bottom:5px;
-        "
-      >
-        Details
-      </div>
-
-      <div
-        id="confirmDetails"
-        style="
-          font-size:14px;
-          line-height:1.6;
-          color:#333;
-        "
-      >
-        --
-      </div>
-
-    </div>
-
-    <div
-      id="purchaseCountdown"
-      style="
-        text-align:center;
-        color:#777;
-        font-size:13px;
-        margin-bottom:14px;
-      "
-    >
-      Confirming available in 5 seconds...
-    </div>
-
-    <button
-      id="confirmPurchaseBtn"
-      type="button"
-      class="buy-btn"
-      disabled
-      style="margin-bottom:8px;"
-    >
-      Wait 5s
-    </button>
-
-    <button
-      id="cancelPurchaseBtn"
-      type="button"
-      class="modal-close"
-    >
-      Cancel
-    </button>
-
-  </div>
-
-`;
-
-document.body.appendChild(
-  purchaseOverlay
-);
-
-
-const confirmPrice =
-  document.getElementById(
-    "confirmPrice"
-  );
-
-const confirmDetails =
-  document.getElementById(
-    "confirmDetails"
-  );
-
-const confirmSubtitle =
-  document.getElementById(
-    "confirmSubtitle"
-  );
-
-const purchaseCountdown =
-  document.getElementById(
-    "purchaseCountdown"
-  );
-
-const confirmPurchaseBtn =
-  document.getElementById(
-    "confirmPurchaseBtn"
-  );
-
-const cancelPurchaseBtn =
-  document.getElementById(
-    "cancelPurchaseBtn"
-  );
-
-
-/* =====================================================
-   SIDEBAR
-===================================================== */
-
-document
-  .getElementById("menuToggle")
-  .addEventListener(
-    "click",
-    () => {
-
-      sidebar.classList.add("active");
-      overlay.classList.add("active");
-
-      document.body.style.overflow =
-        "hidden";
-
-    }
-  );
-
-
-overlay.addEventListener(
-  "click",
-  closeSidebar
-);
-
-
-function closeSidebar(){
-
-  sidebar.classList.remove(
-    "active"
-  );
-
-  overlay.classList.remove(
-    "active"
-  );
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-/* =====================================================
-   HEADER
-===================================================== */
-
-window.addEventListener(
-  "scroll",
-  () => {
-
-    document
-      .getElementById("header")
-      .classList.toggle(
-        "scrolled",
-        window.scrollY > 10
-      );
-
-  }
-);
-
-
-/* =====================================================
-   SIGN OUT
-===================================================== */
-
-document
-  .getElementById("signOutBtn")
-  .addEventListener(
-    "click",
-    async event => {
-
-      event.preventDefault();
-
-      try{
-
-        await signOut(auth);
-
-        window.location.href =
-          "login.html";
-
-      }catch(error){
-
-        console.error(
-          "SIGN OUT ERROR:",
-          error
-        );
-
-        showError(
-          "Unable to sign out."
-        );
-
-      }
-
-    }
-  );
-
-
-/* =====================================================
-   API REQUEST
-===================================================== */
-
-async function requestJSON(
-  url,
-  options = {}
-){
-
-  let response;
-
-  try{
-
-    response =
-      await fetch(
-        url,
-        {
-          ...options,
-          cache:"no-store"
-        }
-      );
-
-  }catch(error){
-
-    console.error(
-      "NETWORK ERROR:",
-      error
-    );
-
-    throw new Error(
-      "Unable to connect to the SMS server."
-    );
-
-  }
-
-
-  const rawText =
-    await response.text();
-
-
-  let data;
-
-  try{
-
-    data =
-      rawText
-        ? JSON.parse(rawText)
-        : {};
-
-  }catch(error){
-
-    console.error(
-      "INVALID API RESPONSE:",
-      rawText
-    );
-
-    throw new Error(
-      "SMS server returned an invalid response."
-    );
-
-  }
-
-
-  if(!response.ok){
-
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      `SMS server error (${response.status}).`
-    );
-
-  }
-
-
-  if(data?.success === false){
-
-    throw new Error(
-      data?.message ||
-      data?.error ||
-      "SMS request failed."
-    );
-
-  }
-
-
-  return data;
-
-}
-
-
-/* =====================================================
-   ARRAY HELPER
-===================================================== */
-
-function extractArray(
-  data,
-  keys = []
-){
-
-  if(Array.isArray(data))
-    return data;
-
-
-  for(
-    const key of keys
-  ){
-
-    if(
-      Array.isArray(
-        data?.[key]
-      )
-    ){
-
-      return data[key];
-
-    }
-
-  }
-
-
-  if(
-    Array.isArray(
-      data?.data
-    )
-  ){
-
-    return data.data;
-
-  }
-
-
-  if(
-    Array.isArray(
-      data?.result
-    )
-  ){
-
-    return data.result;
-
-  }
-
-
-  return [];
-
-}
-
-
-/* =====================================================
-   FIREBASE TOKEN
-===================================================== */
-
-async function getFirebaseToken(){
-
-  if(!currentUser){
-
-    throw new Error(
-      "Your login session has expired. Please sign in again."
-    );
-
-  }
-
-
-  try{
-
-    const token =
-      await currentUser.getIdToken(true);
-
-
-    if(
-      typeof token !== "string" ||
-      !token.trim()
-    ){
-
-      throw new Error(
-        "Firebase did not return an authentication token."
-      );
-
-    }
-
-
-    if(
-      token.split(".").length !== 3
-    ){
-
-      throw new Error(
-        "Firebase returned an invalid authentication token."
-      );
-
-    }
-
-
-    return token.trim();
-
-  }catch(error){
-
-    console.error(
-      "FIREBASE TOKEN ERROR:",
-      error
-    );
-
-    throw new Error(
-      "Unable to verify your account. Please sign in again."
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   AUTH HEADERS
-===================================================== */
-
-async function authenticatedHeaders(){
-
-  const token =
-    await getFirebaseToken();
-
-
-  return {
-
-    "Authorization":
-      `Bearer ${token}`,
-
-    "Accept":
-      "application/json"
-
-  };
-
-}
-
-
-/* =====================================================
-   PROVIDER
-===================================================== */
-
-document
-  .querySelectorAll(".provider-card")
-  .forEach(
-    card => {
-
-      card.addEventListener(
-        "click",
-        async () => {
-
-          document
-            .querySelectorAll(".provider-card")
-            .forEach(
-              item =>
-                item.classList.remove(
-                  "active"
-                )
-            );
-
-
-          card.classList.add(
-            "active"
-          );
-
-
-          selectedProvider =
-            String(
-              card.dataset.provider ||
-              ""
-            ).trim();
-
-
-          selectedCountry = "";
-
-          selectedService = null;
-
-          allServices = [];
-
-
-          serviceSearch.value = "";
-
-          serviceSelect.innerHTML =
-            `<option value="">Select service...</option>`;
-
-          countrySelect.innerHTML =
-            `<option value="">Loading countries...</option>`;
-
-
-          price.textContent =
-            "--";
-
-          priceNote.textContent =
-            "Select a service to see the price.";
-
-
-          hideError();
-          hideSuccess();
-
-          updateBuyButton();
-
-          await loadCountries();
-
-        }
-      );
-
-    }
-  );
-
-
-/* =====================================================
-   COUNTRIES
-===================================================== */
-
-async function loadCountries(){
-
-  if(!selectedProvider)
-    return;
-
-
-  countrySelect.innerHTML =
-    `<option value="">Loading countries...</option>`;
-
-
-  try{
-
-    hideError();
-
-
-    const headers =
-      await authenticatedHeaders();
-
-
-    const url =
-      `${API_URL}?action=countries&provider=${encodeURIComponent(
-        selectedProvider
-      )}`;
-
-
-    const data =
-      await requestJSON(
-        url,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    const countries =
-      extractArray(
-        data,
-        [
-          "countries",
-          "items",
-          "results"
-        ]
-      );
-
-
-    countrySelect.innerHTML =
-      `<option value="">Select country...</option>`;
-
-
-    countries.forEach(
-      country => {
-
-        let code = "";
-        let name = "";
-
-
-        if(
-          typeof country ===
-          "string"
-        ){
-
-          code =
-            country.trim();
-
-          name =
-            country.trim();
-
-        }else if(
-          country &&
-          typeof country ===
-          "object"
-        ){
-
-          code =
-            String(
-              country.code ??
-              country.country_code ??
-              country.countryCode ??
-              country.id ??
-              country.value ??
-              country.iso ??
-              country.iso2 ??
-              ""
-            ).trim();
-
-
-          name =
-            String(
-              country.name ??
-              country.country_name ??
-              country.countryName ??
-              country.title ??
-              country.label ??
-              country.country ??
-              code
-            ).trim();
-
-        }
-
-
-        if(!code)
-          return;
-
-
-        const option =
-          document.createElement(
-            "option"
-          );
-
-
-        option.value =
-          code;
-
-        option.textContent =
-          name || code;
-
-
-        countrySelect.appendChild(
-          option
-        );
-
-      }
-    );
-
-
-    if(
-      countrySelect.options.length <= 1
-    ){
-
-      countrySelect.innerHTML =
-        `<option value="">No countries available</option>`;
-
-      throw new Error(
-        "The SMS provider returned no countries."
-      );
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "COUNTRIES ERROR:",
-      error
-    );
-
-
-    countrySelect.innerHTML =
-      `<option value="">Unable to load countries</option>`;
-
-
-    showError(
-      "Unable to load countries: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   COUNTRY CHANGE
-===================================================== */
-
-countrySelect.addEventListener(
-  "change",
-  async () => {
-
-    selectedCountry =
-      String(
-        countrySelect.value ||
-        ""
-      ).trim();
-
-
-    selectedService = null;
-
-    allServices = [];
-
-
-    serviceSearch.value = "";
-
-    serviceSelect.innerHTML =
-      `<option value="">Select service...</option>`;
-
-
     price.textContent =
       "--";
 
 
     priceNote.textContent =
-      "Select a service to see the price.";
-
-
-    updateBuyButton();
-
-
-    if(!selectedCountry)
-      return;
-
-
-    await loadServices();
-
-  }
-);
-
-
-/* =====================================================
-   SERVICES
-===================================================== */
-
-async function loadServices(){
-
-  if(
-    !selectedProvider ||
-    !selectedCountry
-  ){
-
-    return;
-
-  }
-
-
-  serviceSelect.innerHTML =
-    `<option value="">Loading services...</option>`;
-
-
-  try{
-
-    hideError();
-
-
-    const headers =
-      await authenticatedHeaders();
-
-
-    const url =
-      `${API_URL}?action=services&provider=${encodeURIComponent(
-        selectedProvider
-      )}&country=${encodeURIComponent(
-        selectedCountry
-      )}`;
-
-
-    const data =
-      await requestJSON(
-        url,
-        {
-          method:"GET",
-          headers
-        }
-      );
-
-
-    allServices =
-      extractArray(
-        data,
-        [
-          "services",
-          "items",
-          "results"
-        ]
-      );
-
-
-    renderServices(
-      allServices
-    );
-
-
-    if(
-      allServices.length === 0
-    ){
-
-      price.textContent =
-        "--";
-
-      priceNote.textContent =
-        "No services are available for this country.";
-
-    }
-
-  }catch(error){
-
-    console.error(
-      "SERVICES ERROR:",
-      error
-    );
-
-
-    serviceSelect.innerHTML =
-      `<option value="">Unable to load services</option>`;
-
-
-    showError(
-      "Unable to load SMS services: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   SERVICE CODE
-===================================================== */
-
-function getServiceCode(
-  service
-){
-
-  if(
-    typeof service ===
-    "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.code ??
-    service?.service_id ??
-    service?.serviceId ??
-    service?.service ??
-    service?.id ??
-    service?.value ??
-    ""
-  ).trim();
-
-}
-
-
-/* =====================================================
-   SERVICE NAME
-===================================================== */
-
-function getServiceName(
-  service
-){
-
-  if(
-    typeof service ===
-    "string"
-  ){
-
-    return service.trim();
-
-  }
-
-
-  return String(
-    service?.name ??
-    service?.service_name ??
-    service?.serviceName ??
-    service?.title ??
-    service?.label ??
-    service?.service ??
-    getServiceCode(service)
-  ).trim();
-
-}
-
-
-/* =====================================================
-   RENDER SERVICES
-===================================================== */
-
-function renderServices(
-  services
-){
-
-  serviceSelect.innerHTML =
-    `<option value="">Select service...</option>`;
-
-
-  services.forEach(
-    service => {
-
-      if(!service)
-        return;
-
-
-      const code =
-        getServiceCode(service);
-
-      const name =
-        getServiceName(service);
-
-
-      if(!code)
-        return;
-
-
-      const option =
-        document.createElement(
-          "option"
-        );
-
-
-      option.value =
-        code;
-
-
-      option.textContent =
-        name || code;
-
-
-      option.dataset.service =
-        JSON.stringify(
-          service
-        );
-
-
-      serviceSelect.appendChild(
-        option
-      );
-
-    }
-  );
-
-
-  if(
-    serviceSelect.options.length <= 1
-  ){
-
-    serviceSelect.innerHTML =
-      `<option value="">No matching services</option>`;
-
-  }
-
-}
-
-
-/* =====================================================
-   SERVICE SEARCH
-===================================================== */
-
-serviceSearch.addEventListener(
-  "input",
-  () => {
-
-    const search =
-      serviceSearch.value
-        .trim()
-        .toLowerCase();
-
-
-    if(!search){
-
-      renderServices(
-        allServices
-      );
-
-      return;
-
-    }
-
-
-    const filtered =
-      allServices.filter(
-        service => {
-
-          const name =
-            getServiceName(
-              service
-            ).toLowerCase();
-
-
-          const code =
-            getServiceCode(
-              service
-            ).toLowerCase();
-
-
-          return (
-            name.includes(search) ||
-            code.includes(search)
-          );
-
-        }
-      );
-
-
-    renderServices(
-      filtered
-    );
-
-  }
-);
-
-
-/* =====================================================
-   SERVICE CHANGE
-===================================================== */
-
-serviceSelect.addEventListener(
-  "change",
-  () => {
-
-    const option =
-      serviceSelect.options[
-        serviceSelect.selectedIndex
-      ];
-
-
-    if(
-      !option ||
-      !option.value
-    ){
-
-      selectedService = null;
-
-      price.textContent =
-        "--";
-
-      priceNote.textContent =
-        "Select a service to see the price.";
-
-      updateBuyButton();
-
-      return;
-
-    }
-
-
-    try{
-
-      selectedService =
-        JSON.parse(
-          option.dataset.service ||
-          "{}"
-        );
-
-    }catch{
-
-      selectedService = {
-
-        code:
-          option.value,
-
-        name:
-          option.textContent
-
-      };
-
-    }
-
-
-    /*
-     * IMPORTANT:
-     *
-     * Do NOT reveal or hard-code the final
-     * selling price here.
-     *
-     * The real price is returned by the API
-     * when the purchase is prepared.
-     */
-
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Price will be confirmed before purchase.";
+      "Price will be confirmed when you buy.";
 
 
     updateBuyButton();
@@ -3794,6 +2167,7 @@ function updateBuyButton(){
     buyBtn.disabled =
       false;
 
+
     buyBtn.textContent =
       "Buy Number";
 
@@ -3801,6 +2175,7 @@ function updateBuyButton(){
 
     buyBtn.disabled =
       true;
+
 
     buyBtn.textContent =
       "Select Provider, Country & Service";
@@ -3811,19 +2186,16 @@ function updateBuyButton(){
 
 
 /* =====================================================
-   BUY BUTTON
-   FIRST STEP = GET PRICE
-   SECOND STEP = SHOW PRICE
-   THIRD STEP = 5 SECOND CONFIRMATION
+   BUY NUMBER
 ===================================================== */
 
 buyBtn.addEventListener(
   "click",
-  preparePurchase
+  buyNumber
 );
 
 
-async function preparePurchase(){
+async function buyNumber(){
 
   if(
     !selectedProvider ||
@@ -3850,8 +2222,9 @@ async function preparePurchase(){
   buyBtn.disabled =
     true;
 
+
   buyBtn.textContent =
-    "Checking Price...";
+    "Buying Number...";
 
 
   try{
@@ -3885,380 +2258,6 @@ async function preparePurchase(){
     }
 
 
-    /*
-     * Ask the API for the current price.
-     *
-     * This does NOT purchase the number.
-     *
-     * Your API must support:
-     *
-     * action = price
-     */
-
-    const data =
-      await requestJSON(
-        API_URL,
-        {
-
-          method:"POST",
-
-          headers:{
-            ...headers,
-            "Content-Type":
-              "application/json"
-          },
-
-          body:
-            JSON.stringify({
-
-              action:
-                "price",
-
-              provider:
-                selectedProvider,
-
-              country:
-                selectedCountry,
-
-              service:
-                serviceCode,
-
-              serviceName:
-                serviceName
-
-            })
-
-        }
-      );
-
-
-    console.log(
-      "PRICE RESPONSE:",
-      data
-    );
-
-
-    const sellingPrice =
-      data.selling_price ??
-      data.price ??
-      data.amount ??
-      data.cost;
-
-
-    if(
-      sellingPrice ===
-        undefined ||
-      sellingPrice ===
-        null ||
-      Number.isNaN(
-        Number(sellingPrice)
-      )
-    ){
-
-      throw new Error(
-        "The SMS server did not return a valid price."
-      );
-
-    }
-
-
-    const numericPrice =
-      Number(
-        sellingPrice
-      );
-
-
-    pendingPurchase = {
-
-      provider:
-        selectedProvider,
-
-      country:
-        selectedCountry,
-
-      service:
-        serviceCode,
-
-      serviceName:
-        serviceName,
-
-      price:
-        numericPrice
-
-    };
-
-
-    /*
-     * Show the price immediately before
-     * the actual purchase.
-     */
-
-    confirmPrice.textContent =
-      formatNaira(
-        numericPrice
-      );
-
-
-    confirmSubtitle.textContent =
-      "Review the price before confirming.";
-
-
-    confirmDetails.innerHTML = `
-      <strong>Provider:</strong>
-      ${escapeHTML(selectedProvider)}
-      <br>
-
-      <strong>Country:</strong>
-      ${escapeHTML(selectedCountry)}
-      <br>
-
-      <strong>Service:</strong>
-      ${escapeHTML(serviceName)}
-    `;
-
-
-    /*
-     * Update the main price box too.
-     */
-
-    price.textContent =
-      formatNaira(
-        numericPrice
-      );
-
-
-    priceNote.textContent =
-      "Price confirmed. Review before purchase.";
-
-
-    openPurchaseConfirmation();
-
-
-  }catch(error){
-
-    console.error(
-      "PRICE CHECK ERROR:",
-      error
-    );
-
-
-    showError(
-      error?.message ||
-      "Unable to confirm the SMS price."
-    );
-
-  }finally{
-
-    if(
-      !purchaseOverlay.classList.contains(
-        "active"
-      )
-    ){
-
-      updateBuyButton();
-
-    }
-
-  }
-
-}
-
-
-/* =====================================================
-   OPEN PURCHASE CONFIRMATION
-===================================================== */
-
-function openPurchaseConfirmation(){
-
-  stopPurchaseCountdown();
-
-
-  purchaseOverlay.classList.add(
-    "active"
-  );
-
-
-  document.body.style.overflow =
-    "hidden";
-
-
-  let remaining =
-    5;
-
-
-  confirmPurchaseBtn.disabled =
-    true;
-
-  confirmPurchaseBtn.textContent =
-    `Wait ${remaining}s`;
-
-
-  purchaseCountdown.textContent =
-    `Confirming available in ${remaining} seconds...`;
-
-
-  purchaseTimer =
-    setInterval(
-      () => {
-
-        remaining--;
-
-
-        if(
-          remaining <= 0
-        ){
-
-          stopPurchaseCountdown();
-
-
-          confirmPurchaseBtn.disabled =
-            false;
-
-
-          confirmPurchaseBtn.textContent =
-            "Confirm Purchase";
-
-
-          purchaseCountdown.textContent =
-            "You can now confirm your purchase.";
-
-
-          return;
-
-        }
-
-
-        confirmPurchaseBtn.textContent =
-          `Wait ${remaining}s`;
-
-
-        purchaseCountdown.textContent =
-          `Confirming available in ${remaining} seconds...`;
-
-      },
-      1000
-    );
-
-}
-
-
-/* =====================================================
-   STOP PURCHASE COUNTDOWN
-===================================================== */
-
-function stopPurchaseCountdown(){
-
-  if(purchaseTimer){
-
-    clearInterval(
-      purchaseTimer
-    );
-
-    purchaseTimer =
-      null;
-
-  }
-
-}
-
-
-/* =====================================================
-   CANCEL PURCHASE
-===================================================== */
-
-cancelPurchaseBtn.addEventListener(
-  "click",
-  cancelPurchaseConfirmation
-);
-
-
-purchaseOverlay.addEventListener(
-  "click",
-  event => {
-
-    if(
-      event.target ===
-      purchaseOverlay
-    ){
-
-      cancelPurchaseConfirmation();
-
-    }
-
-  }
-);
-
-
-function cancelPurchaseConfirmation(){
-
-  stopPurchaseCountdown();
-
-
-  pendingPurchase =
-    null;
-
-
-  purchaseOverlay.classList.remove(
-    "active"
-  );
-
-
-  document.body.style.overflow =
-    "";
-
-
-  updateBuyButton();
-
-}
-
-
-/* =====================================================
-   CONFIRM PURCHASE
-===================================================== */
-
-confirmPurchaseBtn.addEventListener(
-  "click",
-  confirmPurchase
-);
-
-
-async function confirmPurchase(){
-
-  if(!pendingPurchase)
-    return;
-
-
-  if(
-    confirmPurchaseBtn.disabled
-  ){
-
-    return;
-
-  }
-
-
-  confirmPurchaseBtn.disabled =
-    true;
-
-
-  confirmPurchaseBtn.textContent =
-    "Purchasing...";
-
-
-  purchaseCountdown.textContent =
-    "Processing your purchase...";
-
-
-  try{
-
-    const headers =
-      await authenticatedHeaders();
-
-
-    const purchase =
-      pendingPurchase;
-
-
     const data =
       await requestJSON(
         API_URL,
@@ -4279,16 +2278,16 @@ async function confirmPurchase(){
                 "buy",
 
               provider:
-                purchase.provider,
+                selectedProvider,
 
               country:
-                purchase.country,
+                selectedCountry,
 
               service:
-                purchase.service,
+                serviceCode,
 
               serviceName:
-                purchase.serviceName
+                serviceName
 
             })
 
@@ -4329,24 +2328,7 @@ async function confirmPurchase(){
 
 
     modalSubtitle.textContent =
-      `${purchase.country} • ${purchase.serviceName}`;
-
-
-    /*
-     * Close confirmation popup only after
-     * the purchase succeeds.
-     */
-
-    purchaseOverlay.classList.remove(
-      "active"
-    );
-
-
-    stopPurchaseCountdown();
-
-
-    document.body.style.overflow =
-      "";
+      `${selectedCountry} • ${serviceName}`;
 
 
     numberModal.classList.add(
@@ -4366,15 +2348,6 @@ async function confirmPurchase(){
           data.selling_price
         );
 
-      priceNote.textContent =
-        "Purchase price";
-
-    }else{
-
-      price.textContent =
-        formatNaira(
-          purchase.price
-        );
 
       priceNote.textContent =
         "Purchase price";
@@ -4415,10 +2388,6 @@ async function confirmPurchase(){
     );
 
 
-    pendingPurchase =
-      null;
-
-
   }catch(error){
 
     console.error(
@@ -4427,22 +2396,14 @@ async function confirmPurchase(){
     );
 
 
-    purchaseCountdown.textContent =
-      "Purchase could not be completed.";
-
-
     showError(
       error?.message ||
       "Purchase failed. Please try again."
     );
 
+  }finally{
 
-    confirmPurchaseBtn.disabled =
-      false;
-
-
-    confirmPurchaseBtn.textContent =
-      "Try Again";
+    updateBuyButton();
 
   }
 
@@ -4588,6 +2549,7 @@ function stopStatusPolling(){
       statusTimer
     );
 
+
     statusTimer =
       null;
 
@@ -4597,7 +2559,7 @@ function stopStatusPolling(){
 
 
 /* =====================================================
-   NUMBER MODAL
+   MODAL
 ===================================================== */
 
 document
@@ -4651,74 +2613,12 @@ document.addEventListener(
     ){
 
       closeNumberModal();
-
-      closePurchaseConfirmation();
-
       closeSidebar();
 
     }
 
   }
 );
-
-
-/* =====================================================
-   CLOSE PURCHASE CONFIRMATION
-===================================================== */
-
-function closePurchaseConfirmation(){
-
-  stopPurchaseCountdown();
-
-
-  purchaseOverlay.classList.remove(
-    "active"
-  );
-
-
-  pendingPurchase =
-    null;
-
-
-  document.body.style.overflow =
-    "";
-
-}
-
-
-/* =====================================================
-   HTML ESCAPE
-===================================================== */
-
-function escapeHTML(
-  value
-){
-
-  return String(
-    value ?? ""
-  )
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
-
-}
 
 
 /* =====================================================
@@ -4743,6 +2643,7 @@ function hideError(){
 
   errorBox.textContent =
     "";
+
 
   errorBox.style.display =
     "none";
@@ -4774,6 +2675,7 @@ function hideSuccess(){
 
   successBox.textContent =
     "";
+
 
   successBox.style.display =
     "none";
@@ -4933,6 +2835,14 @@ onAuthStateChanged(
 
     try{
 
+      /*
+       * Force refresh here too.
+       *
+       * This makes sure the first request
+       * to Vercel receives a fresh Firebase
+       * ID token.
+       */
+
       const token =
         await user.getIdToken(
           true
@@ -4978,6 +2888,14 @@ onAuthStateChanged(
         error
       );
 
+
+      /*
+       * Do NOT immediately redirect just because
+       * one API request fails.
+       *
+       * This prevents the page from appearing blank
+       * while Firebase is still refreshing the token.
+       */
 
       showError(
         error?.message ||
