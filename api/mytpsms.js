@@ -39,10 +39,6 @@ function initializeFirebase() {
     );
   }
 
-  /*
-   * Vercel environment variables normally contain
-   * escaped newlines: \n
-   */
   privateKey =
     privateKey.replace(/\\n/g, "\n");
 
@@ -85,6 +81,14 @@ function roundMoney(value) {
 
 }
 
+
+/*
+ * Your selling-price markup:
+ *
+ * <= ₦500       → x2
+ * ₦500 - ₦999   → x1.5
+ * ₦1000+        → x1.3
+ */
 
 function calculateSellingPrice(originalPrice) {
 
@@ -148,6 +152,7 @@ function setCors(res) {
 /* =====================================================
    FIREBASE AUTHENTICATION
 ===================================================== */
+
 async function verifyUser(req) {
 
   const authorization =
@@ -155,50 +160,44 @@ async function verifyUser(req) {
     req.headers?.Authorization ||
     "";
 
-  console.log("AUTH HEADER EXISTS:", Boolean(authorization));
-  console.log("AUTH HEADER PREFIX:",
-    typeof authorization === "string"
-      ? authorization.substring(0, 20)
-      : "NOT_STRING"
-  );
-
   if (
     typeof authorization !== "string" ||
     !authorization.startsWith("Bearer ")
   ) {
 
     const error =
-      new Error("Authorization header missing or invalid.");
+      new Error(
+        "Authorization header missing or invalid."
+      );
 
-    error.code = "AUTH_HEADER_INVALID";
+    error.code =
+      "AUTH_HEADER_INVALID";
 
     throw error;
+
   }
+
 
   const token =
     authorization
       .substring(7)
       .trim();
 
-  console.log(
-    "TOKEN EXISTS:",
-    Boolean(token)
-  );
-
-  console.log(
-    "TOKEN LENGTH:",
-    token.length
-  );
 
   if (!token) {
 
     const error =
-      new Error("Firebase token is empty.");
+      new Error(
+        "Firebase token is empty."
+      );
 
-    error.code = "AUTH_TOKEN_MISSING";
+    error.code =
+      "AUTH_TOKEN_MISSING";
 
     throw error;
+
   }
+
 
   try {
 
@@ -211,11 +210,6 @@ async function verifyUser(req) {
     console.log(
       "FIREBASE UID:",
       decoded.uid
-    );
-
-    console.log(
-      "FIREBASE PROJECT:",
-      decoded.firebase?.sign_in_provider || "unknown"
     );
 
     return decoded;
@@ -240,15 +234,19 @@ async function verifyUser(req) {
       "=========================================="
     );
 
+
     const authError =
       new Error(
-        `Firebase authentication failed: ${error?.code || "unknown"}`
+        `Firebase authentication failed: ${
+          error?.code || "unknown"
+        }`
       );
 
     authError.code =
       "AUTH_INVALID";
 
     throw authError;
+
   }
 
 }
@@ -279,14 +277,18 @@ async function mytpRequest(
     await fetch(
       `https://mytpsms.com/api/v1/${endpoint}`,
       {
+
         ...options,
 
         headers: {
+
           ...(options.headers || {}),
 
           "X-API-KEY":
             apiKey
+
         }
+
       }
     );
 
@@ -296,6 +298,7 @@ async function mytpRequest(
 
 
   let data;
+
 
   try {
 
@@ -356,15 +359,21 @@ async function getUserBalance(uid) {
   const snap =
     await userRef(uid).get();
 
+
   if (!snap.exists) {
     return 0;
   }
 
+
   const data =
     snap.data() || {};
 
+
   const balance =
-    Number(data.balance || 0);
+    Number(
+      data.balance || 0
+    );
+
 
   return Number.isFinite(balance)
     ? roundMoney(balance)
@@ -385,6 +394,7 @@ async function deductWallet(
   const amountToDeduct =
     roundMoney(amount);
 
+
   if (
     !Number.isFinite(amountToDeduct) ||
     amountToDeduct <= 0
@@ -400,7 +410,9 @@ async function deductWallet(
   const ref =
     userRef(uid);
 
-  let newBalance = 0;
+
+  let newBalance =
+    0;
 
 
   await db.runTransaction(
@@ -408,6 +420,7 @@ async function deductWallet(
 
       const snap =
         await transaction.get(ref);
+
 
       if (!snap.exists) {
 
@@ -421,8 +434,11 @@ async function deductWallet(
       const data =
         snap.data() || {};
 
+
       const balance =
-        Number(data.balance || 0);
+        Number(
+          data.balance || 0
+        );
 
 
       if (
@@ -473,6 +489,7 @@ async function refundWallet(
   const refundAmount =
     roundMoney(amount);
 
+
   if (
     !Number.isFinite(refundAmount) ||
     refundAmount <= 0
@@ -486,7 +503,9 @@ async function refundWallet(
   const ref =
     userRef(uid);
 
-  let newBalance = 0;
+
+  let newBalance =
+    0;
 
 
   await db.runTransaction(
@@ -494,6 +513,7 @@ async function refundWallet(
 
       const snap =
         await transaction.get(ref);
+
 
       if (!snap.exists) {
 
@@ -507,8 +527,11 @@ async function refundWallet(
       const data =
         snap.data() || {};
 
+
       const balance =
-        Number(data.balance || 0);
+        Number(
+          data.balance || 0
+        );
 
 
       newBalance =
@@ -540,6 +563,7 @@ async function refundWallet(
 ===================================================== */
 
 async function saveSmsOrder({
+
   uid,
   orderId,
   provider,
@@ -552,6 +576,7 @@ async function saveSmsOrder({
   currency,
   expiresAt,
   status
+
 }) {
 
   await db
@@ -580,10 +605,14 @@ async function saveSmsOrder({
         number || "",
 
       original_price:
-        Number(originalPrice || 0),
+        Number(
+          originalPrice || 0
+        ),
 
       selling_price:
-        Number(sellingPrice || 0),
+        Number(
+          sellingPrice || 0
+        ),
 
       currency:
         currency || "NGN",
@@ -621,16 +650,192 @@ async function updateOrder(
     .collection("smsOrders")
     .doc(String(orderId))
     .set(
+
       {
         ...values,
 
         updated_at:
           admin.firestore.FieldValue.serverTimestamp()
       },
+
       {
         merge: true
       }
+
     );
+
+}
+
+
+/* =====================================================
+   GET PRICE
+===================================================== */
+
+async function getSmsPrice({
+
+  provider,
+  country,
+  service
+
+}) {
+
+  const endpoint =
+    `price.php?provider=${encodeURIComponent(
+      provider
+    )}&country=${encodeURIComponent(
+      country
+    )}&service=${encodeURIComponent(
+      service
+    )}`;
+
+
+  const data =
+    await mytpRequest(
+      endpoint
+    );
+
+
+  return data;
+
+}
+
+
+/* =====================================================
+   PRICE HANDLER
+===================================================== */
+
+async function handlePrice(
+  req,
+  res,
+  user
+) {
+
+  const {
+    provider,
+    country,
+    service
+  } = req.query || {};
+
+
+  if (
+    !provider ||
+    !country ||
+    !service
+  ) {
+
+    return res.status(400).json({
+
+      success: false,
+
+      message:
+        "provider, country and service are required."
+
+    });
+
+  }
+
+
+  const data =
+    await getSmsPrice({
+
+      provider,
+      country,
+      service
+
+    });
+
+
+  const originalPrice =
+    Number(
+      data?.price
+    );
+
+
+  if (
+    !Number.isFinite(originalPrice) ||
+    originalPrice <= 0
+  ) {
+
+    return res.status(502).json({
+
+      success: false,
+
+      message:
+        "MYTPSMS returned an invalid price."
+
+    });
+
+  }
+
+
+  const sellingPrice =
+    calculateSellingPrice(
+      originalPrice
+    );
+
+
+  const userBalance =
+    await getUserBalance(
+      user.uid
+    );
+
+
+  const sufficient =
+    userBalance >=
+    sellingPrice;
+
+
+  return res.status(200).json({
+
+    success: true,
+
+    price:
+      originalPrice,
+
+    selling_price:
+      sellingPrice,
+
+    currency:
+      data?.currency ||
+      "NGN",
+
+    formatted:
+      data?.formatted ||
+      null,
+
+    selling_formatted:
+      `₦${sellingPrice.toFixed(2)}`,
+
+    stock:
+      data?.stock ??
+      null,
+
+    in_stock:
+      data?.in_stock ??
+      null,
+
+    pools:
+      Array.isArray(data?.pools)
+        ? data.pools
+        : [],
+
+    balance:
+      userBalance,
+
+    sufficient:
+
+      sufficient,
+
+    provider:
+      provider,
+
+    country:
+      country,
+
+    service:
+      service
+
+  });
 
 }
 
@@ -654,21 +859,28 @@ async function handleGet(
   } = req.query || {};
 
 
-  /* ================= BALANCE ================= */
+  /* ===================================================
+     BALANCE
+  =================================================== */
 
-  if (action === "balance") {
+  if (
+    action === "balance"
+  ) {
 
     const balance =
       await getUserBalance(
         user.uid
       );
 
+
     return res.status(200).json({
 
       success: true,
 
       balance:
-        roundMoney(balance),
+        roundMoney(
+          balance
+        ),
 
       currency:
         "NGN"
@@ -678,9 +890,30 @@ async function handleGet(
   }
 
 
-  /* ================= COUNTRIES ================= */
+  /* ===================================================
+     PRICE
+  =================================================== */
 
-  if (action === "countries") {
+  if (
+    action === "price"
+  ) {
+
+    return handlePrice(
+      req,
+      res,
+      user
+    );
+
+  }
+
+
+  /* ===================================================
+     COUNTRIES
+  =================================================== */
+
+  if (
+    action === "countries"
+  ) {
 
     if (!provider) {
 
@@ -711,9 +944,13 @@ async function handleGet(
   }
 
 
-  /* ================= SERVICES ================= */
+  /* ===================================================
+     SERVICES
+  =================================================== */
 
-  if (action === "services") {
+  if (
+    action === "services"
+  ) {
 
     if (
       !provider ||
@@ -749,9 +986,13 @@ async function handleGet(
   }
 
 
-  /* ================= STATUS ================= */
+  /* ===================================================
+     STATUS
+  =================================================== */
 
-  if (action === "status") {
+  if (
+    action === "status"
+  ) {
 
     if (!order_id) {
 
@@ -863,21 +1104,29 @@ async function handleGet(
   }
 
 
-  /* ================= HISTORY ================= */
+  /* ===================================================
+     HISTORY
+  =================================================== */
 
-  if (action === "history") {
+  if (
+    action === "history"
+  ) {
 
     const requestedPage =
       Math.max(
         1,
-        Number(page || 1)
+        Number(
+          page || 1
+        )
       );
 
 
     return res.status(200).json(
+
       await mytpRequest(
         `history.php?page=${requestedPage}`
       )
+
     );
 
   }
@@ -912,11 +1161,13 @@ async function handlePost(
     body.action;
 
 
-  /* =================================================
+  /* ===================================================
      BUY
-  ================================================= */
+  =================================================== */
 
-  if (action === "buy") {
+  if (
+    action === "buy"
+  ) {
 
     const {
       provider,
@@ -944,103 +1195,23 @@ async function handlePost(
     }
 
 
-    /* ================= WALLET ================= */
+    /* =================================================
+       STEP 1 — GET CURRENT PRICE
+    ================================================= */
 
-    const currentBalance =
-      await getUserBalance(
-        user.uid
-      );
+    const priceData =
+      await getSmsPrice({
 
-
-    if (
-      !Number.isFinite(currentBalance) ||
-      currentBalance <= 0
-    ) {
-
-      return res.status(400).json({
-
-        success: false,
-
-        message:
-          "Your wallet balance is insufficient."
+        provider,
+        country,
+        service
 
       });
 
-    }
-
-
-    /* ================= PROVIDER PURCHASE ================= */
-
-    const formData =
-      new URLSearchParams();
-
-
-    formData.append(
-      "provider",
-      String(provider)
-    );
-
-    formData.append(
-      "country",
-      String(country)
-    );
-
-    formData.append(
-      "service",
-      String(service)
-    );
-
-
-    if (serviceName) {
-
-      formData.append(
-        "service_name",
-        String(serviceName)
-      );
-
-    }
-
-
-    const data =
-      await mytpRequest(
-        "buy.php",
-        {
-
-          method: "POST",
-
-          headers: {
-            "Content-Type":
-              "application/x-www-form-urlencoded"
-          },
-
-          body:
-            formData.toString()
-
-        }
-      );
-
-
-    if (!data?.success) {
-
-      return res.status(400).json({
-
-        success: false,
-
-        message:
-          data?.message ||
-          data?.error ||
-          "MYTPSMS could not provide a number."
-
-      });
-
-    }
-
-
-    /* ================= PRICE ================= */
 
     const originalPrice =
       Number(
-        data.price
+        priceData?.price
       );
 
 
@@ -1060,6 +1231,30 @@ async function handlePost(
 
     }
 
+
+    /* =================================================
+       STEP 2 — CHECK STOCK
+    ================================================= */
+
+    if (
+      priceData?.in_stock === false
+    ) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          "This service is currently out of stock."
+
+      });
+
+    }
+
+
+    /* =================================================
+       STEP 3 — CALCULATE SELLING PRICE
+    ================================================= */
 
     const sellingPrice =
       calculateSellingPrice(
@@ -1084,7 +1279,9 @@ async function handlePost(
     }
 
 
-    /* ================= BALANCE CHECK ================= */
+    /* =================================================
+       STEP 4 — CHECK USER BALANCE
+    ================================================= */
 
     const balanceBefore =
       await getUserBalance(
@@ -1093,33 +1290,9 @@ async function handlePost(
 
 
     if (
-      balanceBefore < sellingPrice
+      balanceBefore <
+      sellingPrice
     ) {
-
-      try {
-
-        if (data.order_id) {
-
-          await mytpRequest(
-            `cancel.php?order_id=${encodeURIComponent(
-              data.order_id
-            )}`,
-            {
-              method: "POST"
-            }
-          );
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Automatic cancellation failed:",
-          error
-        );
-
-      }
-
 
       return res.status(400).json({
 
@@ -1128,14 +1301,155 @@ async function handlePost(
         message:
           `Insufficient wallet balance. You need ₦${sellingPrice.toFixed(
             2
-          )}.`
+          )}.`,
+
+        balance:
+          balanceBefore,
+
+        required:
+          sellingPrice,
+
+        sufficient:
+          false
 
       });
 
     }
 
 
-    /* ================= DEDUCT ================= */
+    /* =================================================
+       STEP 5 — BUY FROM MYTPSMS
+    ================================================= */
+
+    const formData =
+      new URLSearchParams();
+
+
+    formData.append(
+      "provider",
+      String(provider)
+    );
+
+
+    formData.append(
+      "country",
+      String(country)
+    );
+
+
+    formData.append(
+      "service",
+      String(service)
+    );
+
+
+    if (serviceName) {
+
+      formData.append(
+        "service_name",
+        String(serviceName)
+      );
+
+    }
+
+
+    let data;
+
+
+    try {
+
+      data =
+        await mytpRequest(
+          "buy.php",
+          {
+
+            method:
+              "POST",
+
+            headers: {
+
+              "Content-Type":
+                "application/x-www-form-urlencoded"
+
+            },
+
+            body:
+              formData.toString()
+
+          }
+        );
+
+    } catch (error) {
+
+      console.error(
+        "MYTPSMS BUY ERROR:",
+        error
+      );
+
+
+      return res.status(502).json({
+
+        success: false,
+
+        message:
+          error?.message ||
+          "MYTPSMS could not process the purchase."
+
+      });
+
+    }
+
+
+    /* =================================================
+       STEP 6 — PROVIDER PURCHASE FAILED
+    ================================================= */
+
+    if (
+      !data?.success
+    ) {
+
+      return res.status(400).json({
+
+        success: false,
+
+        message:
+          data?.message ||
+          data?.error ||
+          "MYTPSMS could not provide a number."
+
+      });
+
+    }
+
+
+    /* =================================================
+       STEP 7 — VERIFY ORDER ID
+    ================================================= */
+
+    const orderId =
+      String(
+        data.order_id ||
+        ""
+      );
+
+
+    if (!orderId) {
+
+      return res.status(502).json({
+
+        success: false,
+
+        message:
+          "MYTPSMS did not return an order ID. No wallet amount was deducted."
+
+      });
+
+    }
+
+
+    /* =================================================
+       STEP 8 — DEDUCT USER WALLET
+    ================================================= */
 
     let newBalance;
 
@@ -1151,30 +1465,33 @@ async function handlePost(
     } catch (walletError) {
 
       console.error(
-        "Wallet deduction failed:",
+        "WALLET DEDUCTION FAILED:",
         walletError
       );
 
 
+      /*
+       * The provider already gave us a number.
+       * Try to cancel it if the wallet transaction
+       * fails.
+       */
+
       try {
 
-        if (data.order_id) {
-
-          await mytpRequest(
-            `cancel.php?order_id=${encodeURIComponent(
-              data.order_id
-            )}`,
-            {
-              method: "POST"
-            }
-          );
-
-        }
+        await mytpRequest(
+          `cancel.php?order_id=${encodeURIComponent(
+            orderId
+          )}`,
+          {
+            method:
+              "POST"
+          }
+        );
 
       } catch (cancelError) {
 
         console.error(
-          "Provider rollback failed:",
+          "PROVIDER ROLLBACK FAILED:",
           cancelError
         );
 
@@ -1186,94 +1503,79 @@ async function handlePost(
         success: false,
 
         message:
-          walletError.message ||
-          "Unable to charge your wallet."
+          walletError?.message ||
+          "Unable to charge your wallet. The number purchase was cancelled."
 
       });
 
     }
 
 
-    /* ================= ORDER ID ================= */
+    /* =================================================
+       STEP 9 — SAVE ORDER
+    ================================================= */
 
-    const orderId =
-      String(
-        data.order_id ||
-        ""
+    try {
+
+      await saveSmsOrder({
+
+        uid:
+          user.uid,
+
+        orderId,
+
+        provider,
+
+        country,
+
+        service,
+
+        serviceName,
+
+        number:
+          data.number ||
+          "",
+
+        originalPrice,
+
+        sellingPrice,
+
+        currency:
+          data.currency ||
+          priceData?.currency ||
+          "NGN",
+
+        expiresAt:
+          data.expires_at ||
+          null,
+
+        status:
+          data.status ||
+          "active"
+
+      });
+
+    } catch (saveError) {
+
+      console.error(
+        "ORDER SAVE FAILED:",
+        saveError
       );
 
-
-    if (!orderId) {
-
-      try {
-
-        await refundWallet(
-          user.uid,
-          sellingPrice
-        );
-
-      } catch (error) {
-
-        console.error(
-          "Emergency refund failed:",
-          error
-        );
-
-      }
-
-
-      return res.status(502).json({
-
-        success: false,
-
-        message:
-          "MYTPSMS did not return an order ID. Your purchase was rolled back."
-
-      });
+      /*
+       * Do not automatically refund here because
+       * the provider order already exists and the
+       * wallet has already been charged.
+       *
+       * The order can still be recovered by its ID.
+       */
 
     }
 
 
-    /* ================= SAVE ================= */
-
-    await saveSmsOrder({
-
-      uid:
-        user.uid,
-
-      orderId,
-
-      provider,
-
-      country,
-
-      service,
-
-      serviceName,
-
-      number:
-        data.number || "",
-
-      originalPrice,
-
-      sellingPrice,
-
-      currency:
-        data.currency ||
-        "NGN",
-
-      expiresAt:
-        data.expires_at ||
-        null,
-
-      status:
-        data.status ||
-        "active"
-
-    });
-
-
-    /* ================= RESPONSE ================= */
+    /* =================================================
+       STEP 10 — RESPONSE
+    ================================================= */
 
     return res.status(200).json({
 
@@ -1300,6 +1602,7 @@ async function handlePost(
 
       currency:
         data.currency ||
+        priceData?.currency ||
         "NGN",
 
       expires_at:
@@ -1318,11 +1621,13 @@ async function handlePost(
   }
 
 
-  /* =================================================
+  /* ===================================================
      CANCEL
-  ================================================= */
+  =================================================== */
 
-  if (action === "cancel") {
+  if (
+    action === "cancel"
+  ) {
 
     const {
       order_id
@@ -1410,7 +1715,8 @@ async function handlePost(
           order_id
         )}`,
         {
-          method: "POST"
+          method:
+            "POST"
         }
       );
 
@@ -1435,13 +1741,17 @@ async function handlePost(
         "cancelled",
         "canceled",
         "refunded"
-      ].includes(providerStatus) ||
+      ].includes(
+        providerStatus
+      ) ||
       /cancel|refund/i.test(
         providerMessage
       );
 
 
-    if (!cancellationSuccessful) {
+    if (
+      !cancellationSuccessful
+    ) {
 
       return res.status(400).json({
 
@@ -1460,7 +1770,9 @@ async function handlePost(
 
 
     if (
-      Number(order.selling_price) > 0
+      Number(
+        order.selling_price
+      ) > 0
     ) {
 
       newBalance =
@@ -1549,7 +1861,9 @@ export default async function handler(
   setCors(res);
 
 
-  /* ================= OPTIONS ================= */
+  /* ===================================================
+     OPTIONS
+  =================================================== */
 
   if (
     req.method === "OPTIONS"
@@ -1562,7 +1876,9 @@ export default async function handler(
   }
 
 
-  /* ================= METHOD ================= */
+  /* ===================================================
+     METHOD
+  =================================================== */
 
   if (
     req.method !== "GET" &&
@@ -1583,13 +1899,19 @@ export default async function handler(
 
   try {
 
-    /* ================= AUTH ================= */
+    /* =================================================
+       AUTHENTICATION
+    ================================================= */
 
     const user =
-      await verifyUser(req);
+      await verifyUser(
+        req
+      );
 
 
-    /* ================= GET ================= */
+    /* =================================================
+       GET
+    ================================================= */
 
     if (
       req.method === "GET"
@@ -1604,7 +1926,9 @@ export default async function handler(
     }
 
 
-    /* ================= POST ================= */
+    /* =================================================
+       POST
+    ================================================= */
 
     return await handlePost(
       req,
@@ -1624,7 +1948,9 @@ export default async function handler(
     );
 
 
-    /* ================= AUTH ERROR ================= */
+    /* =================================================
+       AUTH ERROR
+    ================================================= */
 
     if (
       error?.code ===
@@ -1658,7 +1984,9 @@ export default async function handler(
     }
 
 
-    /* ================= SERVER ERROR ================= */
+    /* =================================================
+       SERVER ERROR
+    ================================================= */
 
     return res.status(500).json({
 
