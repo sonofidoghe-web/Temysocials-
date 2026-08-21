@@ -84,6 +84,11 @@ h1{font-size:26px;font-weight:700;margin-bottom:6px}
 .timer-box{text-align:center;margin-bottom:16px;font-size:14px;color:#666}
 .timer-value{font-weight:700;color:#3d6b1e}
 .modal-close{width:100%;padding:14px;border:none;border-radius:12px;background:#eee;color:#333;font-size:15px;font-weight:600;cursor:pointer}
+.cancel-btn{width:100%;padding:14px;border:none;border-radius:12px;background:#fff1f1;color:#b3261e;font-size:15px;font-weight:600;margin-bottom:12px;cursor:pointer;display:none}
+.confirm-actions{display:flex;gap:12px;margin-top:8px}
+.confirm-actions button{flex:1;padding:14px;border:none;border-radius:12px;font-weight:600;cursor:pointer}
+.btn-no{background:#eee;color:#333}
+.btn-yes{background:#b3261e;color:#fff}
 @media(max-width:360px){.container{padding-left:12px;padding-right:12px}h1{font-size:24px}}
 </style>
 </head>
@@ -191,6 +196,7 @@ h1{font-size:26px;font-weight:700;margin-bottom:6px}
   </div>
 </main>
 
+<!-- Number Modal -->
 <div class="modal-overlay" id="numberModal">
   <div class="modal">
     <div class="modal-handle"></div>
@@ -211,14 +217,31 @@ h1{font-size:26px;font-weight:700;margin-bottom:6px}
       Expires in: <span class="timer-value" id="timerValue">--:--</span>
     </div>
 
+    <button class="cancel-btn" id="cancelRefundBtn">Cancel & Refund</button>
     <button class="modal-close" id="closeModal" type="button">Close</button>
+  </div>
+</div>
+
+<!-- Confirm Cancel Modal -->
+<div class="modal-overlay" id="confirmModal">
+  <div class="modal" style="max-width:340px;border-radius:18px">
+    <div style="text-align:center;padding:6px 0 18px">
+      <div style="font-size:18px;font-weight:700;margin-bottom:10px">Cancel Order?</div>
+      <div style="color:#666;font-size:15px;line-height:1.5">
+        Are you sure you want to cancel this order and get refunded?
+      </div>
+    </div>
+    <div class="confirm-actions">
+      <button class="btn-no" id="confirmNo">No</button>
+      <button class="btn-yes" id="confirmYes">Yes, Refund</button>
+    </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, serverTimestamp, increment, updateDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, addDoc, updateDoc, increment, serverTimestamp, query, where, getDocs } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
@@ -247,6 +270,11 @@ let statusTimer = null;
 let expiryTimer = null;
 let priceRequestId = 0;
 
+let currentOrderId = null;
+let currentOrderPrice = 0;
+let currentOrderDocId = null;
+let codeReceived = false;
+
 const sidebar = document.getElementById("sidebar");
 const overlay = document.getElementById("sidebarOverlay");
 const countrySelect = document.getElementById("countrySelect");
@@ -264,11 +292,14 @@ const smsCode = document.getElementById("smsCode");
 const modalSubtitle = document.getElementById("modalSubtitle");
 const timerBox = document.getElementById("timerBox");
 const timerValue = document.getElementById("timerValue");
+const cancelRefundBtn = document.getElementById("cancelRefundBtn");
+const confirmModal = document.getElementById("confirmModal");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
 
 function formatNaira(amount) {
   return "₦" + (Number(amount) || 0).toLocaleString("en-NG", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
-
 function showError(msg) {
   errorBox.textContent = msg;
   errorBox.style.display = "block";
@@ -281,7 +312,6 @@ function showSuccess(msg) {
   successBox.style.display = "block";
   setTimeout(() => successBox.style.display = "none", 4000);
 }
-
 function resetPrice() {
   priceEl.textContent = "--";
   priceNote.textContent = "Select a service to see the price.";
@@ -308,7 +338,7 @@ document.getElementById("signOutBtn").onclick = async (e) => {
   location.href = "login.html";
 };
 
-/* API helper */
+/* API */
 async function requestJSON(url, options = {}) {
   const res = await fetch(url, { ...options, cache: "no-store" });
   const text = await res.text();
@@ -323,7 +353,6 @@ function extractArray(data, keys = []) {
   for (const k of keys) if (Array.isArray(data?.[k])) return data[k];
   return [];
 }
-
 function getServiceCode(s) {
   if (typeof s === "string") return s.trim();
   return String(s?.code ?? s?.service_id ?? s?.id ?? s?.value ?? "").trim();
@@ -415,7 +444,9 @@ function renderServices(list) {
 
 serviceSearch.oninput = () => {
   const q = serviceSearch.value.toLowerCase();
-  const filtered = allServices.filter(s => getServiceName(s).toLowerCase().includes(q) || getServiceCode(s).toLowerCase().includes(q));
+  const filtered = allServices.filter(s => 
+    getServiceName(s).toLowerCase().includes(q) || getServiceCode(s).toLowerCase().includes(q)
+  );
   renderServices(filtered);
 };
 
@@ -475,7 +506,7 @@ function updateBuyButton() {
   buyBtn.textContent = ready ? "Buy Number" : (!selectedService ? "Select Provider, Country & Service" : "Checking price...");
 }
 
-/* Buy + Save to Firestore + Timer */
+/* ===================== BUY ===================== */
 buyBtn.onclick = buyNumber;
 
 async function buyNumber() {
@@ -501,14 +532,13 @@ async function buyNumber() {
       })
     });
 
-    // Deduct balance from Firestore
-    const userRef = doc(db, "users", currentUser.uid);
-    await updateDoc(userRef, {
+    // Deduct balance
+    await updateDoc(doc(db, "users", currentUser.uid), {
       balance: increment(-currentPrice)
     });
 
-    // Save order to Firestore
-    await addDoc(collection(db, "orders"), {
+    // Save order
+    const orderRef = await addDoc(collection(db, "orders"), {
       userId: currentUser.uid,
       orderId: data.order_id,
       number: data.number,
@@ -517,26 +547,33 @@ async function buyNumber() {
       service: serviceCode,
       serviceName,
       price: currentPrice,
-      status: data.status || "active",
+      status: "active",
+      smsCode: null,
       expiresAt: data.expires_at || null,
       createdAt: serverTimestamp()
     });
 
+    currentOrderId = data.order_id;
+    currentOrderPrice = currentPrice;
+    currentOrderDocId = orderRef.id;
+    codeReceived = false;
+
     // Show modal
     numberValue.textContent = data.number || "--";
-    smsCode.textContent = data.sms_code || "Waiting...";
+    smsCode.textContent = "Waiting...";
     modalSubtitle.textContent = `${selectedCountry} • ${serviceName}`;
     numberModal.classList.add("active");
 
-    // Start expiry timer
+    // Show Cancel button
+    cancelRefundBtn.style.display = "block";
+
+    // Timer
     startExpiryTimer(data.expires_at, data.seconds_remaining);
 
-    // Start SMS polling
+    // Poll for SMS
     if (data.order_id) startStatusPolling(data.order_id);
 
-    // Refresh balance
     await loadWalletBalance();
-
     showSuccess("Number purchased successfully!");
   } catch (e) {
     showError(e.message || "Purchase failed");
@@ -545,19 +582,69 @@ async function buyNumber() {
   }
 }
 
-/* Expiry Timer */
+/* ===================== CANCEL & REFUND ===================== */
+cancelRefundBtn.onclick = () => {
+  confirmModal.classList.add("active");
+};
+
+confirmNo.onclick = () => {
+  confirmModal.classList.remove("active");
+};
+
+confirmYes.onclick = async () => {
+  confirmYes.disabled = true;
+  confirmYes.textContent = "Processing...";
+
+  try {
+    // Cancel on MYTPSMS
+    await requestJSON(API_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "cancel",
+        order_id: currentOrderId
+      })
+    });
+
+    // Refund user
+    await updateDoc(doc(db, "users", currentUser.uid), {
+      balance: increment(currentOrderPrice)
+    });
+
+    // Update order status
+    if (currentOrderDocId) {
+      await updateDoc(doc(db, "orders", currentOrderDocId), {
+        status: "cancelled",
+        smsCode: null
+      });
+    }
+
+    showSuccess("Order cancelled and refunded!");
+    confirmModal.classList.remove("active");
+    numberModal.classList.remove("active");
+    clearInterval(statusTimer);
+    clearInterval(expiryTimer);
+
+    await loadWalletBalance();
+  } catch (e) {
+    showError(e.message || "Failed to cancel");
+  } finally {
+    confirmYes.disabled = false;
+    confirmYes.textContent = "Yes, Refund";
+  }
+};
+
+/* ===================== TIMER ===================== */
 function startExpiryTimer(expiresAt, secondsRemaining) {
   clearInterval(expiryTimer);
   timerBox.style.display = "block";
 
   let remaining = Number(secondsRemaining) || 0;
-
   if (expiresAt) {
-    const end = new Date(expiresAt).getTime();
-    remaining = Math.max(0, Math.floor((end - Date.now()) / 1000));
+    remaining = Math.max(0, Math.floor((new Date(expiresAt).getTime() - Date.now()) / 1000));
   }
 
-  function update() {
+  function tick() {
     if (remaining <= 0) {
       timerValue.textContent = "Expired";
       clearInterval(expiryTimer);
@@ -568,25 +655,46 @@ function startExpiryTimer(expiresAt, secondsRemaining) {
     timerValue.textContent = `${m}:${s.toString().padStart(2, "0")}`;
     remaining--;
   }
-
-  update();
-  expiryTimer = setInterval(update, 1000);
+  tick();
+  expiryTimer = setInterval(tick, 1000);
 }
 
-/* Status polling */
+/* ===================== STATUS POLLING ===================== */
 function startStatusPolling(orderId) {
   clearInterval(statusTimer);
   let tries = 0;
+
   statusTimer = setInterval(async () => {
     tries++;
     if (tries > 60) return clearInterval(statusTimer);
+
     try {
       const data = await requestJSON(`${API_URL}?action=status&order_id=${encodeURIComponent(orderId)}`);
+
       if (data.sms_code || data.full_sms) {
-        smsCode.textContent = data.sms_code || data.full_sms;
+        const code = data.sms_code || data.full_sms;
+        smsCode.textContent = code;
+        codeReceived = true;
+        cancelRefundBtn.style.display = "none"; // Hide forever
+
+        // Update Firestore order
+        if (currentOrderDocId) {
+          await updateDoc(doc(db, "orders", currentOrderDocId), {
+            status: "received",
+            smsCode: code
+          });
+        }
         clearInterval(statusTimer);
       }
-    } catch {}
+
+      const status = String(data.status || "").toLowerCase();
+      if (["received", "expired", "cancelled", "refunded"].includes(status)) {
+        clearInterval(statusTimer);
+        if (status === "received") {
+          cancelRefundBtn.style.display = "none";
+        }
+      }
+    } catch (e) {}
   }, 5000);
 }
 
@@ -597,7 +705,7 @@ document.getElementById("closeModal").onclick = () => {
   clearInterval(expiryTimer);
 };
 
-/* Load balance from Firestore */
+/* Balance */
 async function loadWalletBalance() {
   if (!currentUser) return;
   try {
