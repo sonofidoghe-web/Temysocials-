@@ -583,6 +583,10 @@ h1{
   cursor:pointer;
 }
 
+.loading{
+  opacity:.7;
+}
+
 @media(max-width:360px){
   .container{
     padding-left:12px;
@@ -611,18 +615,40 @@ h1{
     <div class="menu-section-title">Main</div>
 
     <a href="dashboard.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="3" width="7" height="7" rx="1"/>
+        <rect x="14" y="14" width="7" height="7" rx="1"/>
+        <rect x="3" y="14" width="7" height="7" rx="1"/>
+      </svg>
       Dashboard
     </a>
 
     <a href="wallet.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="2" y="6" width="20" height="12" rx="2"/>
+        <path d="M22 10H2"/>
+        <path d="M6 14h.01"/>
+      </svg>
       Wallet
     </a>
 
     <a href="orders.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <path d="M16 10a4 4 0 0 1-8 0"/>
+      </svg>
       Orders
     </a>
 
     <a href="transactions.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="17 1 21 5 17 9"/>
+        <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
+        <polyline points="7 23 3 19 7 15"/>
+        <path d="M21 13v2a4 4 0 0 1-4 4H3"/>
+      </svg>
       Transactions
     </a>
 
@@ -633,18 +659,32 @@ h1{
     <div class="menu-section-title">Store</div>
 
     <a href="logs.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+        <line x1="12" y1="22.08" x2="12" y2="12"/>
+      </svg>
       Logs Store
     </a>
 
     <a href="tools.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
       Tools Store
     </a>
 
     <a href="sms.html" class="menu-item active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+      </svg>
       SMS Numbers
     </a>
 
     <a href="sme.html" class="menu-item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+      </svg>
       SME Boosting
       <span class="soon-badge">Soon</span>
     </a>
@@ -693,7 +733,6 @@ h1{
     <span class="badge-no">No</span>
 
     <button class="icon-btn" type="button">
-
       <svg width="20" height="20" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2">
         <circle cx="12" cy="12" r="4"/>
@@ -706,17 +745,14 @@ h1{
         <path d="M6.34 17.66l-1.41 1.41"/>
         <path d="M19.07 4.93l-1.41 1.41"/>
       </svg>
-
     </button>
 
     <button class="icon-btn" type="button">
-
       <svg width="20" height="20" viewBox="0 0 24 24"
            fill="none" stroke="currentColor" stroke-width="2">
         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
       </svg>
-
     </button>
 
     <div class="avatar" id="userAvatar">--</div>
@@ -755,20 +791,15 @@ h1{
       1. Provider
     </div>
 
-    <div class="providers">
+    <div class="providers" id="providers">
 
       <div class="provider-card" data-provider="global">
 
         <div class="provider-icon">🌐</div>
 
         <div class="provider-info">
-          <div class="provider-name">
-            Global Number
-          </div>
-
-          <div class="provider-description">
-            Global numbers
-          </div>
+          <div class="provider-name">Global Number</div>
+          <div class="provider-description">Global numbers</div>
         </div>
 
         <div class="check">✓</div>
@@ -780,13 +811,8 @@ h1{
         <div class="provider-icon">🇺🇸</div>
 
         <div class="provider-info">
-          <div class="provider-name">
-            USA Number
-          </div>
-
-          <div class="provider-description">
-            USA numbers only
-          </div>
+          <div class="provider-name">USA Number</div>
+          <div class="provider-description">USA numbers only</div>
         </div>
 
         <div class="check">✓</div>
@@ -798,13 +824,8 @@ h1{
         <div class="provider-icon">🌐</div>
 
         <div class="provider-info">
-          <div class="provider-name">
-            Global Number (Server 2)
-          </div>
-
-          <div class="provider-description">
-            Global numbers
-          </div>
+          <div class="provider-name">Global Number (Server 2)</div>
+          <div class="provider-description">Global numbers</div>
         </div>
 
         <div class="check">✓</div>
@@ -845,26 +866,17 @@ h1{
         autocomplete="off"
       >
 
-      <select
-        class="service-select"
-        id="serviceSelect"
-      >
-        <option value="">
-          Select service...
-        </option>
+      <select class="service-select" id="serviceSelect">
+        <option value="">Select service...</option>
       </select>
 
     </div>
 
     <div class="price-box">
 
-      <div class="price-label">
-        Price
-      </div>
+      <div class="price-label">Price</div>
 
-      <div class="price" id="price">
-        --
-      </div>
+      <div class="price" id="price">--</div>
 
       <div class="price-note" id="priceNote">
         Select a service to see the price.
@@ -892,30 +904,22 @@ h1{
 
     <div class="how-step">
       <div class="how-step-number">1</div>
-      <div>
-        Choose your provider, country and service.
-      </div>
+      <div>Choose your provider, country and service.</div>
     </div>
 
     <div class="how-step">
       <div class="how-step-number">2</div>
-      <div>
-        The cost is deducted from your wallet.
-      </div>
+      <div>The cost is deducted from your wallet.</div>
     </div>
 
     <div class="how-step">
       <div class="how-step-number">3</div>
-      <div>
-        Your number appears after a successful purchase.
-      </div>
+      <div>Your number appears after a successful purchase.</div>
     </div>
 
     <div class="how-step">
       <div class="how-step-number">4</div>
-      <div>
-        We automatically check for your SMS code.
-      </div>
+      <div>We automatically check for your SMS code.</div>
     </div>
 
   </div>
@@ -972,52 +976,43 @@ h1{
 
 </div>
 
-
 <script type="module">
+
+import {
+  initializeApp,
+  getApps
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 /* =====================================================
    FIREBASE
 ===================================================== */
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-import {
-  getAuth,
-  onIdTokenChanged,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
 const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
-
-  authDomain:
-    "trustsocials-8fc8b.firebaseapp.com",
-
-  projectId:
-    "trustsocials-8fc8b",
-
-  storageBucket:
-    "trustsocials-8fc8b.firebasestorage.app",
-
-  messagingSenderId:
-    "675550258010",
-
-  appId:
-    "1:675550258010:web:ec6444eb22b04a92fd0963",
-
-  measurementId:
-    "G-KDVYRV55JD"
-
+  apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
+  authDomain: "trustsocials-8fc8b.firebaseapp.com",
+  projectId: "trustsocials-8fc8b",
+  storageBucket: "trustsocials-8fc8b.firebasestorage.app",
+  messagingSenderId: "675550258010",
+  appId: "1:675550258010:web:ec6444eb22b04a92fd0963",
+  measurementId: "G-KDVYRV55JD"
 };
 
 
+/*
+ * Do not initialize Firebase twice.
+ */
+
 const app =
-  initializeApp(firebaseConfig);
+  getApps().length
+    ? getApps()[0]
+    : initializeApp(firebaseConfig);
 
 const auth =
   getAuth(app);
@@ -1032,19 +1027,15 @@ const API_URL =
 
 
 /* =====================================================
-   STATE
+   VARIABLES
 ===================================================== */
 
 let currentUser = null;
-
 let selectedProvider = "";
-
 let selectedCountry = "";
-
 let selectedService = null;
-
 let allServices = [];
-
+let currentOrder = null;
 let statusTimer = null;
 
 
@@ -1107,11 +1098,8 @@ document
   .addEventListener("click", () => {
 
     sidebar.classList.add("active");
-
     overlay.classList.add("active");
-
-    document.body.style.overflow =
-      "hidden";
+    document.body.style.overflow = "hidden";
 
   });
 
@@ -1125,7 +1113,6 @@ overlay.addEventListener(
 function closeSidebar(){
 
   sidebar.classList.remove("active");
-
   overlay.classList.remove("active");
 
   document.body.style.overflow = "";
@@ -1168,9 +1155,8 @@ document
 
         await signOut(auth);
 
-        window.location.replace(
-          "login.html"
-        );
+        window.location.href =
+          "login.html";
 
       }catch(error){
 
@@ -1190,65 +1176,6 @@ document
 
 
 /* =====================================================
-   FIREBASE TOKEN
-   IMPORTANT FIX
-===================================================== */
-
-async function getFirebaseToken(){
-
-  if(!currentUser){
-
-    throw new Error(
-      "You are not signed in."
-    );
-
-  }
-
-
-  try{
-
-    /*
-     * Force Firebase to refresh the ID token.
-     * This prevents an expired/stale token
-     * from being sent to Vercel.
-     */
-
-    const token =
-      await currentUser.getIdToken(true);
-
-
-    if(
-      typeof token !== "string" ||
-      token.trim().length < 100
-    ){
-
-      throw new Error(
-        "Firebase returned an invalid ID token."
-      );
-
-    }
-
-
-    return token.trim();
-
-  }catch(error){
-
-    console.error(
-      "GET FIREBASE TOKEN ERROR:",
-      error
-    );
-
-
-    throw new Error(
-      "Firebase authentication failed. Please sign in again."
-    );
-
-  }
-
-}
-
-
-/* =====================================================
    API REQUEST
 ===================================================== */
 
@@ -1257,23 +1184,38 @@ async function requestJSON(
   options = {}
 ){
 
-  const response =
-    await fetch(
-      url,
-      {
-        ...options,
+  let response;
 
-        cache:
-          "no-store"
-      }
+  try{
+
+    response =
+      await fetch(
+        url,
+        {
+          ...options,
+          cache:"no-store"
+        }
+      );
+
+  }catch(error){
+
+    console.error(
+      "NETWORK ERROR:",
+      error
     );
+
+    throw new Error(
+      "Unable to connect to the SMS server."
+    );
+
+  }
 
 
   const rawText =
     await response.text();
 
 
-  let data = {};
+  let data;
 
 
   try{
@@ -1286,12 +1228,12 @@ async function requestJSON(
   }catch(error){
 
     console.error(
-      "INVALID SERVER RESPONSE:",
+      "INVALID API RESPONSE:",
       rawText
     );
 
     throw new Error(
-      "Server returned an invalid response."
+      "SMS server returned an invalid response."
     );
 
   }
@@ -1302,62 +1244,24 @@ async function requestJSON(
     throw new Error(
       data?.message ||
       data?.error ||
-      `Server error (${response.status}).`
+      `SMS server error (${response.status}).`
     );
 
   }
 
 
-  if(
-    data &&
-    data.success === false
-  ){
+  if(data?.success === false){
 
     throw new Error(
-      data.message ||
-      data.error ||
-      "Request failed."
+      data?.message ||
+      data?.error ||
+      "SMS request failed."
     );
 
   }
 
 
   return data;
-
-}
-
-
-/* =====================================================
-   AUTHENTICATED GET
-===================================================== */
-
-async function authenticatedGET(
-  url
-){
-
-  const token =
-    await getFirebaseToken();
-
-
-  return await requestJSON(
-    url,
-    {
-
-      method:
-        "GET",
-
-      headers: {
-
-        "Authorization":
-          `Bearer ${token}`,
-
-        "Content-Type":
-          "application/json"
-
-      }
-
-    }
-  );
 
 }
 
@@ -1371,13 +1275,8 @@ function extractArray(
   keys = []
 ){
 
-  if(
-    Array.isArray(data)
-  ){
-
+  if(Array.isArray(data))
     return data;
-
-  }
 
 
   for(
@@ -1385,7 +1284,9 @@ function extractArray(
   ){
 
     if(
-      Array.isArray(data?.[key])
+      Array.isArray(
+        data?.[key]
+      )
     ){
 
       return data[key];
@@ -1396,7 +1297,9 @@ function extractArray(
 
 
   if(
-    Array.isArray(data?.data)
+    Array.isArray(
+      data?.data
+    )
   ){
 
     return data.data;
@@ -1405,7 +1308,9 @@ function extractArray(
 
 
   if(
-    Array.isArray(data?.result)
+    Array.isArray(
+      data?.result
+    )
   ){
 
     return data.result;
@@ -1419,83 +1324,216 @@ function extractArray(
 
 
 /* =====================================================
-   PROVIDERS
+   FIREBASE TOKEN
+   FIXED AUTHENTICATION
+===================================================== */
+
+async function getFirebaseToken(){
+
+  /*
+   * Always use the current Firebase user.
+   */
+
+  if(!currentUser){
+
+    throw new Error(
+      "Your login session has expired. Please sign in again."
+    );
+
+  }
+
+
+  try{
+
+    /*
+     * Force refresh the ID token.
+     *
+     * This is important when the previous token
+     * is expired, stale or invalid.
+     */
+
+    const token =
+      await currentUser.getIdToken(true);
+
+
+    if(
+      typeof token !== "string" ||
+      !token.trim()
+    ){
+
+      throw new Error(
+        "Firebase did not return an authentication token."
+      );
+
+    }
+
+
+    /*
+     * Firebase ID tokens are JWTs.
+     * A valid JWT contains three sections.
+     */
+
+    const parts =
+      token.split(".");
+
+
+    if(parts.length !== 3){
+
+      console.error(
+        "INVALID FIREBASE TOKEN FORMAT"
+      );
+
+      throw new Error(
+        "Firebase returned an invalid authentication token."
+      );
+
+    }
+
+
+    return token.trim();
+
+  }catch(error){
+
+    console.error(
+      "FIREBASE TOKEN ERROR:",
+      error
+    );
+
+
+    /*
+     * If the Firebase session itself is invalid,
+     * refresh the local user state.
+     */
+
+    if(
+      error?.code ===
+        "auth/user-token-expired" ||
+
+      error?.code ===
+        "auth/user-token-revoked" ||
+
+      error?.code ===
+        "auth/user-disabled" ||
+
+      error?.code ===
+        "auth/invalid-user-token"
+    ){
+
+      currentUser = null;
+
+    }
+
+
+    throw new Error(
+      "Unable to verify your account. Please sign in again."
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   AUTH HEADER
+===================================================== */
+
+async function authenticatedHeaders(){
+
+  const token =
+    await getFirebaseToken();
+
+
+  return {
+
+    "Authorization":
+      `Bearer ${token}`,
+
+    "Accept":
+      "application/json"
+
+  };
+
+}
+
+
+/* =====================================================
+   PROVIDER
 ===================================================== */
 
 document
   .querySelectorAll(".provider-card")
-  .forEach(card => {
+  .forEach(
+    card => {
 
-    card.addEventListener(
-      "click",
-      async () => {
+      card.addEventListener(
+        "click",
+        async () => {
 
-        document
-          .querySelectorAll(
-            ".provider-card"
-          )
-          .forEach(item => {
-
-            item.classList.remove(
-              "active"
+          document
+            .querySelectorAll(".provider-card")
+            .forEach(
+              item =>
+                item.classList.remove(
+                  "active"
+                )
             );
 
-          });
+
+          card.classList.add(
+            "active"
+          );
 
 
-        card.classList.add(
-          "active"
-        );
+          selectedProvider =
+            String(
+              card.dataset.provider ||
+              ""
+            ).trim();
 
 
-        selectedProvider =
-          String(
-            card.dataset.provider ||
-            ""
-          ).trim();
+          selectedCountry =
+            "";
+
+          selectedService =
+            null;
+
+          allServices =
+            [];
 
 
-        selectedCountry = "";
-
-        selectedService = null;
-
-        allServices = [];
-
-        serviceSearch.value = "";
-
-        serviceSelect.innerHTML =
-          `<option value="">
-            Select service...
-          </option>`;
+          serviceSearch.value =
+            "";
 
 
-        countrySelect.innerHTML =
-          `<option value="">
-            Loading countries...
-          </option>`;
+          serviceSelect.innerHTML =
+            `<option value="">Select service...</option>`;
 
 
-        price.textContent =
-          "--";
+          countrySelect.innerHTML =
+            `<option value="">Loading countries...</option>`;
 
 
-        priceNote.textContent =
-          "Select a service to see the price.";
+          price.textContent =
+            "--";
 
 
-        updateBuyButton();
-
-        hideError();
-
-        hideSuccess();
+          priceNote.textContent =
+            "Select a service to see the price.";
 
 
-        await loadCountries();
+          hideError();
+          hideSuccess();
 
-      }
-    );
+          updateBuyButton();
 
-  });
+
+          await loadCountries();
+
+        }
+      );
+
+    }
+  );
 
 
 /* =====================================================
@@ -1504,22 +1542,25 @@ document
 
 async function loadCountries(){
 
-  if(!selectedProvider){
-
+  if(!selectedProvider)
     return;
-
-  }
 
 
   countrySelect.innerHTML =
-    `<option value="">
-      Loading countries...
-    </option>`;
+    `<option value="">Loading countries...</option>`;
 
 
   try{
 
     hideError();
+
+
+    /*
+     * Get a freshly refreshed Firebase ID token.
+     */
+
+    const headers =
+      await authenticatedHeaders();
 
 
     const url =
@@ -1528,8 +1569,20 @@ async function loadCountries(){
       )}`;
 
 
+    console.log(
+      "REQUESTING COUNTRIES:",
+      selectedProvider
+    );
+
+
     const data =
-      await authenticatedGET(url);
+      await requestJSON(
+        url,
+        {
+          method:"GET",
+          headers
+        }
+      );
 
 
     console.log(
@@ -1550,21 +1603,19 @@ async function loadCountries(){
 
 
     countrySelect.innerHTML =
-      `<option value="">
-        Select country...
-      </option>`;
+      `<option value="">Select country...</option>`;
 
 
     countries.forEach(
       country => {
 
         let code = "";
-
         let name = "";
 
 
         if(
-          typeof country === "string"
+          typeof country ===
+          "string"
         ){
 
           code =
@@ -1575,7 +1626,8 @@ async function loadCountries(){
 
         }else if(
           country &&
-          typeof country === "object"
+          typeof country ===
+          "object"
         ){
 
           code =
@@ -1605,11 +1657,8 @@ async function loadCountries(){
         }
 
 
-        if(!code){
-
+        if(!code)
           return;
-
-        }
 
 
         const option =
@@ -1620,6 +1669,7 @@ async function loadCountries(){
 
         option.value =
           code;
+
 
         option.textContent =
           name || code;
@@ -1638,9 +1688,7 @@ async function loadCountries(){
     ){
 
       countrySelect.innerHTML =
-        `<option value="">
-          No countries available
-        </option>`;
+        `<option value="">No countries available</option>`;
 
 
       throw new Error(
@@ -1658,9 +1706,7 @@ async function loadCountries(){
 
 
     countrySelect.innerHTML =
-      `<option value="">
-        Unable to load countries
-      </option>`;
+      `<option value="">Unable to load countries</option>`;
 
 
     showError(
@@ -1688,17 +1734,20 @@ countrySelect.addEventListener(
       ).trim();
 
 
-    selectedService = null;
+    selectedService =
+      null;
 
-    allServices = [];
 
-    serviceSearch.value = "";
+    allServices =
+      [];
+
+
+    serviceSearch.value =
+      "";
 
 
     serviceSelect.innerHTML =
-      `<option value="">
-        Select service...
-      </option>`;
+      `<option value="">Select service...</option>`;
 
 
     price.textContent =
@@ -1712,11 +1761,8 @@ countrySelect.addEventListener(
     updateBuyButton();
 
 
-    if(!selectedCountry){
-
+    if(!selectedCountry)
       return;
-
-    }
 
 
     await loadServices();
@@ -1742,14 +1788,16 @@ async function loadServices(){
 
 
   serviceSelect.innerHTML =
-    `<option value="">
-      Loading services...
-    </option>`;
+    `<option value="">Loading services...</option>`;
 
 
   try{
 
     hideError();
+
+
+    const headers =
+      await authenticatedHeaders();
 
 
     const url =
@@ -1761,11 +1809,17 @@ async function loadServices(){
 
 
     const data =
-      await authenticatedGET(url);
+      await requestJSON(
+        url,
+        {
+          method:"GET",
+          headers
+        }
+      );
 
 
     console.log(
-      "SERVICES RESPONSE:",
+      "SERVICES:",
       data
     );
 
@@ -1793,6 +1847,7 @@ async function loadServices(){
       price.textContent =
         "--";
 
+
       priceNote.textContent =
         "No services are available for this country.";
 
@@ -1807,9 +1862,7 @@ async function loadServices(){
 
 
     serviceSelect.innerHTML =
-      `<option value="">
-        Unable to load services
-      </option>`;
+      `<option value="">Unable to load services</option>`;
 
 
     showError(
@@ -1831,7 +1884,8 @@ function getServiceCode(
 ){
 
   if(
-    typeof service === "string"
+    typeof service ===
+    "string"
   ){
 
     return service.trim();
@@ -1861,7 +1915,8 @@ function getServiceName(
 ){
 
   if(
-    typeof service === "string"
+    typeof service ===
+    "string"
   ){
 
     return service.trim();
@@ -1891,19 +1946,14 @@ function renderServices(
 ){
 
   serviceSelect.innerHTML =
-    `<option value="">
-      Select service...
-    </option>`;
+    `<option value="">Select service...</option>`;
 
 
   services.forEach(
     service => {
 
-      if(!service){
-
+      if(!service)
         return;
-
-      }
 
 
       const code =
@@ -1918,11 +1968,8 @@ function renderServices(
         );
 
 
-      if(!code){
-
+      if(!code)
         return;
-
-      }
 
 
       const option =
@@ -1958,9 +2005,7 @@ function renderServices(
   ){
 
     serviceSelect.innerHTML =
-      `<option value="">
-        No matching services
-      </option>`;
+      `<option value="">No matching services</option>`;
 
   }
 
@@ -2060,6 +2105,7 @@ serviceSelect.addEventListener(
 
       updateBuyButton();
 
+
       return;
 
     }
@@ -2121,6 +2167,7 @@ function updateBuyButton(){
     buyBtn.disabled =
       false;
 
+
     buyBtn.textContent =
       "Buy Number";
 
@@ -2128,6 +2175,7 @@ function updateBuyButton(){
 
     buyBtn.disabled =
       true;
+
 
     buyBtn.textContent =
       "Select Provider, Country & Service";
@@ -2174,6 +2222,7 @@ async function buyNumber(){
   buyBtn.disabled =
     true;
 
+
   buyBtn.textContent =
     "Buying Number...";
 
@@ -2181,12 +2230,11 @@ async function buyNumber(){
   try{
 
     hideError();
-
     hideSuccess();
 
 
-    const token =
-      await getFirebaseToken();
+    const headers =
+      await authenticatedHeaders();
 
 
     const serviceCode =
@@ -2215,17 +2263,12 @@ async function buyNumber(){
         API_URL,
         {
 
-          method:
-            "POST",
+          method:"POST",
 
-          headers: {
-
+          headers:{
+            ...headers,
             "Content-Type":
-              "application/json",
-
-            "Authorization":
-              `Bearer ${token}`
-
+              "application/json"
           },
 
           body:
@@ -2258,9 +2301,7 @@ async function buyNumber(){
     );
 
 
-    if(
-      !data.success
-    ){
+    if(!data.success){
 
       throw new Error(
         data.message ||
@@ -2270,14 +2311,20 @@ async function buyNumber(){
     }
 
 
+    currentOrder =
+      data;
+
+
     numberValue.textContent =
-      data.number ||
-      "--";
+      data.number
+        ? String(data.number)
+        : "--";
 
 
     smsCode.textContent =
-      data.sms_code ||
-      "Waiting...";
+      data.sms_code
+        ? String(data.sms_code)
+        : "Waiting...";
 
 
     modalSubtitle.textContent =
@@ -2291,7 +2338,9 @@ async function buyNumber(){
 
     if(
       data.selling_price !==
-      undefined
+        undefined &&
+      data.selling_price !==
+        null
     ){
 
       price.textContent =
@@ -2308,7 +2357,9 @@ async function buyNumber(){
 
     if(
       data.balance !==
-      undefined
+        undefined &&
+      data.balance !==
+        null
     ){
 
       walletBalance.textContent =
@@ -2336,6 +2387,7 @@ async function buyNumber(){
       "Number purchased successfully."
     );
 
+
   }catch(error){
 
     console.error(
@@ -2345,8 +2397,8 @@ async function buyNumber(){
 
 
     showError(
-      error.message ||
-      "Purchase failed."
+      error?.message ||
+      "Purchase failed. Please try again."
     );
 
   }finally{
@@ -2369,9 +2421,12 @@ function startStatusPolling(
   stopStatusPolling();
 
 
-  let attempts = 0;
+  let attempts =
+    0;
 
-  const maxAttempts = 60;
+
+  const maxAttempts =
+    60;
 
 
   statusTimer =
@@ -2395,8 +2450,8 @@ function startStatusPolling(
 
         try{
 
-          const token =
-            await getFirebaseToken();
+          const headers =
+            await authenticatedHeaders();
 
 
           const url =
@@ -2409,17 +2464,8 @@ function startStatusPolling(
             await requestJSON(
               url,
               {
-
-                headers: {
-
-                  "Authorization":
-                    `Bearer ${token}`,
-
-                  "Content-Type":
-                    "application/json"
-
-                }
-
+                method:"GET",
+                headers
               }
             );
 
@@ -2437,14 +2483,18 @@ function startStatusPolling(
                 data.sms_code
               );
 
+
             stopStatusPolling();
 
-          }else if(data.full_sms){
+          }else if(
+            data.full_sms
+          ){
 
             smsCode.textContent =
               String(
                 data.full_sms
               );
+
 
             stopStatusPolling();
 
@@ -2474,6 +2524,7 @@ function startStatusPolling(
 
           }
 
+
         }catch(error){
 
           console.warn(
@@ -2497,6 +2548,7 @@ function stopStatusPolling(){
     clearInterval(
       statusTimer
     );
+
 
     statusTimer =
       null;
@@ -2541,13 +2593,14 @@ function closeNumberModal(){
     "active"
   );
 
+
   stopStatusPolling();
 
 }
 
 
 /* =====================================================
-   ESCAPE
+   ESC
 ===================================================== */
 
 document.addEventListener(
@@ -2555,11 +2608,11 @@ document.addEventListener(
   event => {
 
     if(
-      event.key === "Escape"
+      event.key ===
+      "Escape"
     ){
 
       closeNumberModal();
-
       closeSidebar();
 
     }
@@ -2579,6 +2632,7 @@ function showError(
   errorBox.textContent =
     String(message);
 
+
   errorBox.style.display =
     "block";
 
@@ -2589,6 +2643,7 @@ function hideError(){
 
   errorBox.textContent =
     "";
+
 
   errorBox.style.display =
     "none";
@@ -2602,6 +2657,7 @@ function showSuccess(
 
   successBox.textContent =
     String(message);
+
 
   successBox.style.display =
     "block";
@@ -2619,6 +2675,7 @@ function hideSuccess(){
 
   successBox.textContent =
     "";
+
 
   successBox.style.display =
     "none";
@@ -2642,13 +2699,8 @@ function formatNaira(
     num.toLocaleString(
       "en-NG",
       {
-
-        minimumFractionDigits:
-          2,
-
-        maximumFractionDigits:
-          2
-
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
       }
     );
 
@@ -2661,26 +2713,31 @@ function formatNaira(
 
 async function loadWalletBalance(){
 
-  if(!currentUser){
-
+  if(!currentUser)
     return;
-
-  }
 
 
   try{
 
+    const headers =
+      await authenticatedHeaders();
+
+
     const data =
-      await authenticatedGET(
-        `${API_URL}?action=balance`
+      await requestJSON(
+        `${API_URL}?action=balance`,
+        {
+          method:"GET",
+          headers
+        }
       );
 
 
     if(
       data.balance !==
-      undefined &&
+        undefined &&
       data.balance !==
-      null
+        null
     ){
 
       walletBalance.textContent =
@@ -2703,11 +2760,10 @@ async function loadWalletBalance(){
 
 
 /* =====================================================
-   FIREBASE AUTH STATE
-   IMPORTANT
+   AUTH STATE
 ===================================================== */
 
-onIdTokenChanged(
+onAuthStateChanged(
   auth,
   async user => {
 
@@ -2746,10 +2802,9 @@ onIdTokenChanged(
 
 
     let initials =
-      names[0]
-        ?.charAt(0)
+      names[0]?.charAt(0)
         .toUpperCase() ||
-      "U";
+      "";
 
 
     if(
@@ -2772,16 +2827,20 @@ onIdTokenChanged(
         "userAvatar"
       )
       .textContent =
-        initials;
+        initials ||
+        "U";
 
 
-    /* ================= AUTH TEST ================= */
+    /* ================= VERIFY FIREBASE ================= */
 
     try{
 
       /*
-       * Force-refresh the Firebase
-       * ID token before calling Vercel.
+       * Force refresh here too.
+       *
+       * This makes sure the first request
+       * to Vercel receives a fresh Firebase
+       * ID token.
        */
 
       const token =
@@ -2792,12 +2851,23 @@ onIdTokenChanged(
 
       if(
         typeof token !==
-        "string" ||
+          "string" ||
         !token.trim()
       ){
 
         throw new Error(
-          "Firebase ID token is empty."
+          "No Firebase ID token."
+        );
+
+      }
+
+
+      if(
+        token.split(".").length !== 3
+      ){
+
+        throw new Error(
+          "Invalid Firebase ID token format."
         );
 
       }
@@ -2808,9 +2878,8 @@ onIdTokenChanged(
       );
 
 
-      /* ================= BALANCE ================= */
-
       await loadWalletBalance();
+
 
     }catch(error){
 
@@ -2820,24 +2889,17 @@ onIdTokenChanged(
       );
 
 
-      currentUser =
-        null;
-
+      /*
+       * Do NOT immediately redirect just because
+       * one API request fails.
+       *
+       * This prevents the page from appearing blank
+       * while Firebase is still refreshing the token.
+       */
 
       showError(
-        "Your Firebase login session could not be verified. Please sign in again."
-      );
-
-
-      setTimeout(
-        () => {
-
-          window.location.replace(
-            "login.html"
-          );
-
-        },
-        1500
+        error?.message ||
+        "Unable to verify your account."
       );
 
     }
