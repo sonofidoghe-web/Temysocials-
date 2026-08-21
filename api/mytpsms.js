@@ -148,7 +148,6 @@ function setCors(res) {
 /* =====================================================
    FIREBASE AUTHENTICATION
 ===================================================== */
-
 async function verifyUser(req) {
 
   const authorization =
@@ -156,151 +155,100 @@ async function verifyUser(req) {
     req.headers?.Authorization ||
     "";
 
+  console.log("AUTH HEADER EXISTS:", Boolean(authorization));
+  console.log("AUTH HEADER PREFIX:",
+    typeof authorization === "string"
+      ? authorization.substring(0, 20)
+      : "NOT_STRING"
+  );
+
   if (
     typeof authorization !== "string" ||
-    !authorization.trim()
+    !authorization.startsWith("Bearer ")
   ) {
 
     const error =
-      new Error(
-        "Authentication required."
-      );
+      new Error("Authorization header missing or invalid.");
 
-    error.code =
-      "AUTH_REQUIRED";
+    error.code = "AUTH_HEADER_INVALID";
 
     throw error;
-
   }
-
-
-  if (
-    !authorization.startsWith(
-      "Bearer "
-    )
-  ) {
-
-    const error =
-      new Error(
-        "Invalid authorization header."
-      );
-
-    error.code =
-      "AUTH_HEADER_INVALID";
-
-    throw error;
-
-  }
-
 
   const token =
     authorization
-      .slice(7)
+      .substring(7)
       .trim();
 
+  console.log(
+    "TOKEN EXISTS:",
+    Boolean(token)
+  );
+
+  console.log(
+    "TOKEN LENGTH:",
+    token.length
+  );
 
   if (!token) {
 
     const error =
-      new Error(
-        "Firebase ID token is missing."
-      );
+      new Error("Firebase token is empty.");
 
-    error.code =
-      "AUTH_TOKEN_MISSING";
+    error.code = "AUTH_TOKEN_MISSING";
 
     throw error;
-
   }
-
-
-  /*
-   * A Firebase ID token is a JWT.
-   * This prevents verifyIdToken() from
-   * receiving an empty/malformed value.
-   */
-
-  const parts =
-    token.split(".");
-
-  if (parts.length !== 3) {
-
-    console.error(
-      "Received malformed Firebase token."
-    );
-
-    const error =
-      new Error(
-        "Invalid Firebase authentication token."
-      );
-
-    error.code =
-      "AUTH_TOKEN_INVALID";
-
-    throw error;
-
-  }
-
 
   try {
 
-    /*
-     * Do NOT force refresh here.
-     *
-     * The browser already obtains the current
-     * Firebase ID token.
-     */
-
     const decoded =
       await auth.verifyIdToken(
-        token
+        token,
+        false
       );
 
-    if (
-      !decoded ||
-      !decoded.uid
-    ) {
+    console.log(
+      "FIREBASE UID:",
+      decoded.uid
+    );
 
-      const error =
-        new Error(
-          "Firebase authentication failed."
-        );
-
-      error.code =
-        "AUTH_DECODE_FAILED";
-
-      throw error;
-
-    }
+    console.log(
+      "FIREBASE PROJECT:",
+      decoded.firebase?.sign_in_provider || "unknown"
+    );
 
     return decoded;
 
   } catch (error) {
 
     console.error(
-      "Firebase authentication failed:",
-      {
-        code: error?.code || "",
-        message: error?.message || ""
-      }
+      "========== FIREBASE ADMIN ERROR =========="
     );
 
+    console.error(
+      "CODE:",
+      error?.code
+    );
 
-    /*
-     * Never expose Firebase Admin internals
-     * to the customer.
-     */
+    console.error(
+      "MESSAGE:",
+      error?.message
+    );
+
+    console.error(
+      "=========================================="
+    );
 
     const authError =
       new Error(
-        "Invalid or expired authentication."
+        `Firebase authentication failed: ${error?.code || "unknown"}`
       );
 
     authError.code =
       "AUTH_INVALID";
 
     throw authError;
-
   }
 
 }
