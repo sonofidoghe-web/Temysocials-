@@ -1004,11 +1004,6 @@ const firebaseConfig = {
   measurementId: "G-KDVYRV55JD"
 };
 
-
-/*
- * Do not initialize Firebase twice.
- */
-
 const app =
   getApps().length
     ? getApps()[0]
@@ -1025,18 +1020,39 @@ const auth =
 const API_URL =
   "https://trustsocials.vercel.app/api/mytpsms";
 
+/*
+ * Price endpoint.
+ *
+ * If price.php is hosted somewhere else,
+ * change only this URL.
+ */
+const PRICE_API_URL =
+  "https://trustsocials.vercel.app/price.php";
+
 
 /* =====================================================
    VARIABLES
 ===================================================== */
 
 let currentUser = null;
+
 let selectedProvider = "";
+
 let selectedCountry = "";
+
 let selectedService = null;
+
 let allServices = [];
+
+let currentPrice = null;
+
+let currentPriceData = null;
+
 let currentOrder = null;
+
 let statusTimer = null;
+
+let priceRequestId = 0;
 
 
 /* =====================================================
@@ -1095,13 +1111,19 @@ const modalSubtitle =
 
 document
   .getElementById("menuToggle")
-  .addEventListener("click", () => {
+  .addEventListener(
+    "click",
+    () => {
 
-    sidebar.classList.add("active");
-    overlay.classList.add("active");
-    document.body.style.overflow = "hidden";
+      sidebar.classList.add("active");
 
-  });
+      overlay.classList.add("active");
+
+      document.body.style.overflow =
+        "hidden";
+
+    }
+  );
 
 
 overlay.addEventListener(
@@ -1113,6 +1135,7 @@ overlay.addEventListener(
 function closeSidebar(){
 
   sidebar.classList.remove("active");
+
   overlay.classList.remove("active");
 
   document.body.style.overflow = "";
@@ -1216,7 +1239,6 @@ async function requestJSON(
 
 
   let data;
-
 
   try{
 
@@ -1325,14 +1347,9 @@ function extractArray(
 
 /* =====================================================
    FIREBASE TOKEN
-   FIXED AUTHENTICATION
 ===================================================== */
 
 async function getFirebaseToken(){
-
-  /*
-   * Always use the current Firebase user.
-   */
 
   if(!currentUser){
 
@@ -1345,15 +1362,10 @@ async function getFirebaseToken(){
 
   try{
 
-    /*
-     * Force refresh the ID token.
-     *
-     * This is important when the previous token
-     * is expired, stale or invalid.
-     */
-
     const token =
-      await currentUser.getIdToken(true);
+      await currentUser.getIdToken(
+        true
+      );
 
 
     if(
@@ -1367,11 +1379,6 @@ async function getFirebaseToken(){
 
     }
 
-
-    /*
-     * Firebase ID tokens are JWTs.
-     * A valid JWT contains three sections.
-     */
 
     const parts =
       token.split(".");
@@ -1399,11 +1406,6 @@ async function getFirebaseToken(){
       error
     );
 
-
-    /*
-     * If the Firebase session itself is invalid,
-     * refresh the local user state.
-     */
 
     if(
       error?.code ===
@@ -1491,37 +1493,32 @@ document
             ).trim();
 
 
-          selectedCountry =
-            "";
+          selectedCountry = "";
 
-          selectedService =
-            null;
+          selectedService = null;
 
-          allServices =
-            [];
+          allServices = [];
+
+          currentPrice = null;
+
+          currentPriceData = null;
+
+          priceRequestId++;
 
 
-          serviceSearch.value =
-            "";
-
+          serviceSearch.value = "";
 
           serviceSelect.innerHTML =
             `<option value="">Select service...</option>`;
-
 
           countrySelect.innerHTML =
             `<option value="">Loading countries...</option>`;
 
 
-          price.textContent =
-            "--";
-
-
-          priceNote.textContent =
-            "Select a service to see the price.";
-
+          resetPrice();
 
           hideError();
+
           hideSuccess();
 
           updateBuyButton();
@@ -1554,10 +1551,6 @@ async function loadCountries(){
 
     hideError();
 
-
-    /*
-     * Get a freshly refreshed Firebase ID token.
-     */
 
     const headers =
       await authenticatedHeaders();
@@ -1610,6 +1603,7 @@ async function loadCountries(){
       country => {
 
         let code = "";
+
         let name = "";
 
 
@@ -1734,29 +1728,24 @@ countrySelect.addEventListener(
       ).trim();
 
 
-    selectedService =
-      null;
+    selectedService = null;
+
+    allServices = [];
+
+    currentPrice = null;
+
+    currentPriceData = null;
+
+    priceRequestId++;
 
 
-    allServices =
-      [];
-
-
-    serviceSearch.value =
-      "";
-
+    serviceSearch.value = "";
 
     serviceSelect.innerHTML =
       `<option value="">Select service...</option>`;
 
 
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Select a service to see the price.";
-
+    resetPrice();
 
     updateBuyButton();
 
@@ -1844,9 +1833,7 @@ async function loadServices(){
       allServices.length === 0
     ){
 
-      price.textContent =
-        "--";
-
+      resetPrice();
 
       priceNote.textContent =
         "No services are available for this country.";
@@ -1863,6 +1850,9 @@ async function loadServices(){
 
     serviceSelect.innerHTML =
       `<option value="">Unable to load services</option>`;
+
+
+    resetPrice();
 
 
     showError(
@@ -2078,7 +2068,7 @@ serviceSearch.addEventListener(
 
 serviceSelect.addEventListener(
   "change",
-  () => {
+  async () => {
 
     const option =
       serviceSelect.options[
@@ -2086,25 +2076,21 @@ serviceSelect.addEventListener(
       ];
 
 
+    selectedService = null;
+
+    currentPrice = null;
+
+    currentPriceData = null;
+
+
     if(
       !option ||
       !option.value
     ){
 
-      selectedService =
-        null;
-
-
-      price.textContent =
-        "--";
-
-
-      priceNote.textContent =
-        "Select a service to see the price.";
-
+      resetPrice();
 
       updateBuyButton();
-
 
       return;
 
@@ -2134,32 +2120,565 @@ serviceSelect.addEventListener(
     }
 
 
-    price.textContent =
-      "--";
-
-
-    priceNote.textContent =
-      "Price will be confirmed when you buy.";
+    resetPrice();
 
 
     updateBuyButton();
+
+
+    /*
+     * Fetch the real price immediately.
+     */
+    await loadPrice();
 
   }
 );
 
 
 /* =====================================================
-   BUY BUTTON
+   PRICE API
+===================================================== */
+
+async function loadPrice(){
+
+  if(
+    !selectedProvider ||
+    !selectedCountry ||
+    !selectedService
+  ){
+
+    return;
+
+  }
+
+
+  const requestId =
+    ++priceRequestId;
+
+
+  currentPrice = null;
+
+  currentPriceData = null;
+
+
+  price.textContent =
+    "Loading...";
+
+
+  priceNote.textContent =
+    "Checking price and availability...";
+
+
+  buyBtn.disabled =
+    true;
+
+
+  buyBtn.textContent =
+    "Checking price...";
+
+
+  try{
+
+    hideError();
+
+
+    const serviceCode =
+      getServiceCode(
+        selectedService
+      );
+
+
+    if(!serviceCode){
+
+      throw new Error(
+        "Invalid service selected."
+      );
+
+    }
+
+
+    /*
+     * Price endpoint:
+     *
+     * GET /price.php
+     *
+     * provider
+     * country
+     * service
+     */
+
+    const url =
+      `${PRICE_API_URL}?provider=${encodeURIComponent(
+        selectedProvider
+      )}&country=${encodeURIComponent(
+        selectedCountry
+      )}&service=${encodeURIComponent(
+        serviceCode
+      )}`;
+
+
+    console.log(
+      "REQUESTING PRICE:",
+      url
+    );
+
+
+    const headers =
+      currentUser
+        ? await authenticatedHeaders()
+        : {
+            "Accept":
+              "application/json"
+          };
+
+
+    const data =
+      await requestJSON(
+        url,
+        {
+          method:"GET",
+          headers
+        }
+      );
+
+
+    /*
+     * Ignore an older request if the user
+     * changed the selection while this request
+     * was still running.
+     */
+
+    if(
+      requestId !== priceRequestId
+    ){
+
+      return;
+
+    }
+
+
+    console.log(
+      "PRICE RESPONSE:",
+      data
+    );
+
+
+    currentPriceData =
+      data;
+
+
+    /*
+     * Price can be returned as:
+     *
+     * price
+     *
+     * or the formatted display value.
+     */
+
+    const numericPrice =
+      Number(
+        data?.price
+      );
+
+
+    if(
+      Number.isFinite(
+        numericPrice
+      )
+    ){
+
+      currentPrice =
+        numericPrice;
+
+    }
+
+
+    /*
+     * Update wallet balance if the price
+     * endpoint returns it.
+     */
+
+    if(
+      data?.balance !==
+        undefined &&
+      data?.balance !==
+        null
+    ){
+
+      walletBalance.textContent =
+        formatCurrency(
+          data.balance,
+          data.currency
+        );
+
+    }
+
+
+    /*
+     * OUT OF STOCK
+     */
+
+    if(
+      data?.in_stock === false
+    ){
+
+      price.textContent =
+        getFormattedPrice(
+          data
+        );
+
+
+      const stock =
+        Number(
+          data?.stock
+        );
+
+
+      if(
+        Number.isFinite(stock)
+      ){
+
+        priceNote.textContent =
+          `Out of stock • ${stock} available`;
+
+      }else{
+
+        priceNote.textContent =
+          "Out of stock.";
+
+      }
+
+
+      buyBtn.disabled =
+        true;
+
+
+      buyBtn.textContent =
+        "Out of Stock";
+
+
+      return;
+
+    }
+
+
+    /*
+     * No numeric price.
+     */
+
+    if(
+      !Number.isFinite(
+        currentPrice
+      )
+    ){
+
+      price.textContent =
+        getFormattedPrice(
+          data
+        );
+
+
+      priceNote.textContent =
+        "Price unavailable.";
+
+
+      buyBtn.disabled =
+        true;
+
+
+      buyBtn.textContent =
+        "Price Unavailable";
+
+
+      return;
+
+    }
+
+
+    /*
+     * Display price.
+     */
+
+    price.textContent =
+      getFormattedPrice(
+        data
+      );
+
+
+    /*
+     * Check user's/provider balance
+     * using the API's sufficient field.
+     */
+
+    if(
+      data?.sufficient === false
+    ){
+
+      priceNote.textContent =
+        "Insufficient balance to purchase this number.";
+
+
+      buyBtn.disabled =
+        true;
+
+
+      buyBtn.textContent =
+        "Insufficient Balance";
+
+
+      return;
+
+    }
+
+
+    /*
+     * Stock information.
+     */
+
+    let stockText =
+      "";
+
+
+    const stock =
+      Number(
+        data?.stock
+      );
+
+
+    if(
+      Number.isFinite(stock)
+    ){
+
+      stockText =
+        ` • ${stock} in stock`;
+
+    }
+
+
+    priceNote.textContent =
+      `Purchase price${stockText}`;
+
+
+    buyBtn.disabled =
+      false;
+
+
+    buyBtn.textContent =
+      "Buy Number";
+
+
+  }catch(error){
+
+    if(
+      requestId !== priceRequestId
+    ){
+
+      return;
+
+    }
+
+
+    console.error(
+      "PRICE ERROR:",
+      error
+    );
+
+
+    currentPrice = null;
+
+    currentPriceData = null;
+
+
+    price.textContent =
+      "--";
+
+
+    priceNote.textContent =
+      "Unable to load price.";
+
+
+    buyBtn.disabled =
+      true;
+
+
+    buyBtn.textContent =
+      "Price Unavailable";
+
+
+    showError(
+      "Unable to get number price: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   FORMATTED PRICE
+===================================================== */
+
+function getFormattedPrice(
+  data
+){
+
+  if(
+    data?.formatted !==
+      undefined &&
+    data?.formatted !==
+      null &&
+    String(
+      data.formatted
+    ).trim()
+  ){
+
+    return String(
+      data.formatted
+    );
+
+  }
+
+
+  const amount =
+    Number(
+      data?.price
+    );
+
+
+  if(
+    Number.isFinite(amount)
+  ){
+
+    return formatCurrency(
+      amount,
+      data?.currency
+    );
+
+  }
+
+
+  return "--";
+
+}
+
+
+/* =====================================================
+   CURRENCY FORMAT
+===================================================== */
+
+function formatCurrency(
+  amount,
+  currency = "NGN"
+){
+
+  const num =
+    Number(amount);
+
+
+  if(
+    !Number.isFinite(num)
+  ){
+
+    return "--";
+
+  }
+
+
+  const code =
+    String(
+      currency ||
+      "NGN"
+    )
+    .trim()
+    .toUpperCase();
+
+
+  /*
+   * Keep NGN as Naira.
+   */
+
+  if(
+    code === "NGN" ||
+    code === "Naira"
+  ){
+
+    return "₦" +
+      num.toLocaleString(
+        "en-NG",
+        {
+          minimumFractionDigits:2,
+          maximumFractionDigits:2
+        }
+      );
+
+  }
+
+
+  try{
+
+    return new Intl.NumberFormat(
+      "en-US",
+      {
+        style:"currency",
+        currency:code,
+        minimumFractionDigits:2,
+        maximumFractionDigits:2
+      }
+    ).format(num);
+
+  }catch{
+
+    return `${code} ${num.toFixed(2)}`;
+
+  }
+
+}
+
+
+/* =====================================================
+   RESET PRICE
+===================================================== */
+
+function resetPrice(){
+
+  price.textContent =
+    "--";
+
+
+  priceNote.textContent =
+    "Select a service to see the price.";
+
+}
+
+
+/* =====================================================
+   UPDATE BUY BUTTON
 ===================================================== */
 
 function updateBuyButton(){
 
-  const ready =
+  const basicReady =
     Boolean(
       selectedProvider &&
       selectedCountry &&
       selectedService
     );
+
+
+  /*
+   * Do not allow purchase until the
+   * live price endpoint has confirmed
+   * the service.
+   */
+
+  const ready =
+    basicReady &&
+    Number.isFinite(
+      currentPrice
+    ) &&
+    currentPriceData?.in_stock !== false &&
+    currentPriceData?.sufficient !== false;
 
 
   if(ready){
@@ -2170,6 +2689,40 @@ function updateBuyButton(){
 
     buyBtn.textContent =
       "Buy Number";
+
+  }else if(
+    basicReady &&
+    !currentPrice
+  ){
+
+    buyBtn.disabled =
+      true;
+
+
+    buyBtn.textContent =
+      "Checking Price...";
+
+  }else if(
+    currentPriceData?.in_stock === false
+  ){
+
+    buyBtn.disabled =
+      true;
+
+
+    buyBtn.textContent =
+      "Out of Stock";
+
+  }else if(
+    currentPriceData?.sufficient === false
+  ){
+
+    buyBtn.disabled =
+      true;
+
+
+    buyBtn.textContent =
+      "Insufficient Balance";
 
   }else{
 
@@ -2186,7 +2739,7 @@ function updateBuyButton(){
 
 
 /* =====================================================
-   BUY NUMBER
+   BUY BUTTON
 ===================================================== */
 
 buyBtn.addEventListener(
@@ -2194,6 +2747,10 @@ buyBtn.addEventListener(
   buyNumber
 );
 
+
+/* =====================================================
+   BUY NUMBER
+===================================================== */
 
 async function buyNumber(){
 
@@ -2219,6 +2776,61 @@ async function buyNumber(){
   }
 
 
+  /*
+   * Make sure we actually have a live price.
+   */
+
+  if(
+    !Number.isFinite(
+      currentPrice
+    )
+  ){
+
+    showError(
+      "Please wait for the number price to load."
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Never allow purchase if price endpoint
+   * says there is no stock.
+   */
+
+  if(
+    currentPriceData?.in_stock === false
+  ){
+
+    showError(
+      "This service is currently out of stock."
+    );
+
+    return;
+
+  }
+
+
+  /*
+   * Never allow purchase if price endpoint
+   * says the balance is insufficient.
+   */
+
+  if(
+    currentPriceData?.sufficient === false
+  ){
+
+    showError(
+      "Your balance is insufficient for this number."
+    );
+
+    return;
+
+  }
+
+
   buyBtn.disabled =
     true;
 
@@ -2230,6 +2842,7 @@ async function buyNumber(){
   try{
 
     hideError();
+
     hideSuccess();
 
 
@@ -2258,6 +2871,81 @@ async function buyNumber(){
     }
 
 
+    /*
+     * Optional pool.
+     *
+     * If the price endpoint returns pools[],
+     * use the first available pool unless the
+     * backend expects no pool parameter.
+     */
+
+    const pools =
+      Array.isArray(
+        currentPriceData?.pools
+      )
+        ? currentPriceData.pools
+        : [];
+
+
+    let selectedPool =
+      null;
+
+
+    if(pools.length > 0){
+
+      selectedPool =
+        getPoolValue(
+          pools[0]
+        );
+
+    }
+
+
+    const requestBody = {
+
+      action:
+        "buy",
+
+      provider:
+        selectedProvider,
+
+      country:
+        selectedCountry,
+
+      service:
+        serviceCode,
+
+      serviceName:
+        serviceName,
+
+      /*
+       * Send the price that was displayed
+       * to the user.
+       */
+      price:
+        currentPrice
+
+    };
+
+
+    /*
+     * Only send pool when one exists.
+     */
+
+    if(selectedPool){
+
+      requestBody.pool =
+        selectedPool;
+
+    }
+
+
+    console.log(
+      "BUY REQUEST:",
+      requestBody
+    );
+
+
     const data =
       await requestJSON(
         API_URL,
@@ -2267,29 +2955,16 @@ async function buyNumber(){
 
           headers:{
             ...headers,
+
             "Content-Type":
               "application/json"
+
           },
 
           body:
-            JSON.stringify({
-
-              action:
-                "buy",
-
-              provider:
-                selectedProvider,
-
-              country:
-                selectedCountry,
-
-              service:
-                serviceCode,
-
-              serviceName:
-                serviceName
-
-            })
+            JSON.stringify(
+              requestBody
+            )
 
         }
       );
@@ -2344,8 +3019,9 @@ async function buyNumber(){
     ){
 
       price.textContent =
-        formatNaira(
-          data.selling_price
+        formatCurrency(
+          data.selling_price,
+          data.currency || "NGN"
         );
 
 
@@ -2363,8 +3039,9 @@ async function buyNumber(){
     ){
 
       walletBalance.textContent =
-        formatNaira(
-          data.balance
+        formatCurrency(
+          data.balance,
+          data.currency || "NGN"
         );
 
     }else{
@@ -2403,9 +3080,55 @@ async function buyNumber(){
 
   }finally{
 
+    /*
+     * Do not blindly enable the button.
+     * Re-check the current price state.
+     */
+
     updateBuyButton();
 
   }
+
+}
+
+
+/* =====================================================
+   POOL VALUE
+===================================================== */
+
+function getPoolValue(
+  pool
+){
+
+  if(
+    typeof pool ===
+    "string"
+  ){
+
+    return pool.trim();
+
+  }
+
+
+  if(
+    !pool ||
+    typeof pool !==
+    "object"
+  ){
+
+    return "";
+
+  }
+
+
+  return String(
+    pool.id ??
+    pool.code ??
+    pool.pool ??
+    pool.name ??
+    pool.value ??
+    ""
+  ).trim();
 
 }
 
@@ -2613,6 +3336,7 @@ document.addEventListener(
     ){
 
       closeNumberModal();
+
       closeSidebar();
 
     }
@@ -2684,30 +3408,6 @@ function hideSuccess(){
 
 
 /* =====================================================
-   NAIRA
-===================================================== */
-
-function formatNaira(
-  amount
-){
-
-  const num =
-    Number(amount) || 0;
-
-
-  return "₦" +
-    num.toLocaleString(
-      "en-NG",
-      {
-        minimumFractionDigits:2,
-        maximumFractionDigits:2
-      }
-    );
-
-}
-
-
-/* =====================================================
    WALLET BALANCE
 ===================================================== */
 
@@ -2741,8 +3441,9 @@ async function loadWalletBalance(){
     ){
 
       walletBalance.textContent =
-        formatNaira(
-          data.balance
+        formatCurrency(
+          data.balance,
+          data.currency || "NGN"
         );
 
     }
@@ -2835,14 +3536,6 @@ onAuthStateChanged(
 
     try{
 
-      /*
-       * Force refresh here too.
-       *
-       * This makes sure the first request
-       * to Vercel receives a fresh Firebase
-       * ID token.
-       */
-
       const token =
         await user.getIdToken(
           true
@@ -2888,14 +3581,6 @@ onAuthStateChanged(
         error
       );
 
-
-      /*
-       * Do NOT immediately redirect just because
-       * one API request fails.
-       *
-       * This prevents the page from appearing blank
-       * while Firebase is still refreshing the token.
-       */
 
       showError(
         error?.message ||
