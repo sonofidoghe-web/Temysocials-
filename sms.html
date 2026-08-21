@@ -1595,12 +1595,35 @@ async function getFirebaseToken(){
 
   try{
 
-    return await currentUser.getIdToken(true);
+    /*
+     * Get the current Firebase ID token.
+     * Firebase automatically refreshes it when needed.
+     */
+    const token =
+      await currentUser.getIdToken();
 
-  }catch{
+    if(
+      typeof token !== "string" ||
+      !token.trim()
+    ){
+
+      throw new Error(
+        "Firebase did not return an authentication token."
+      );
+
+    }
+
+    return token;
+
+  }catch(error){
+
+    console.error(
+      "FIREBASE TOKEN ERROR:",
+      error
+    );
 
     throw new Error(
-      "Unable to verify your account."
+      "Unable to verify your account. Please sign in again."
     );
 
   }
@@ -2068,44 +2091,119 @@ onAuthStateChanged(
 
       currentUser = null;
 
-      window.location.href =
-        "login.html";
+      window.location.replace(
+        "login.html"
+      );
 
       return;
 
     }
 
+
     currentUser = user;
+
+
+    /* ================= AVATAR ================= */
 
     const displayName =
       user.displayName ||
       user.email?.split("@")[0] ||
       "User";
 
+
     const names =
       displayName
         .trim()
         .split(/\s+/);
 
+
     let initials =
       names[0]?.charAt(0)
-        .toUpperCase() || "";
+        .toUpperCase() ||
+      "";
+
 
     if(names.length > 1){
 
       initials +=
-        names[names.length - 1]
-          .charAt(0)
-          .toUpperCase();
+        names[
+          names.length - 1
+        ]
+        ?.charAt(0)
+        .toUpperCase() ||
+        "";
 
     }
+
 
     document
       .getElementById("userAvatar")
       .textContent =
-        initials || "U";
+        initials ||
+        "U";
 
-    await loadWalletBalance();
+
+    /* ================= VERIFY SESSION ================= */
+
+    try{
+
+      /*
+       * Make sure Firebase can provide
+       * a valid ID token before loading
+       * protected API data.
+       */
+
+      const token =
+        await user.getIdToken();
+
+
+      if(
+        typeof token !== "string" ||
+        !token.trim()
+      ){
+
+        throw new Error(
+          "No Firebase ID token."
+        );
+
+      }
+
+
+      console.log(
+        "Firebase authentication ready."
+      );
+
+
+      /* ================= LOAD BALANCE ================= */
+
+      await loadWalletBalance();
+
+
+    }catch(error){
+
+      console.error(
+        "AUTH INITIALIZATION ERROR:",
+        error
+      );
+
+
+      currentUser = null;
+
+
+      showError(
+        "Your login session could not be verified. Please sign in again."
+      );
+
+
+      setTimeout(() => {
+
+        window.location.replace(
+          "login.html"
+        );
+
+      },1500);
+
+    }
 
   }
 );
