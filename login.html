@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign in - Temmy Social</title>
+  <title>Sign in - Trust Social</title>
   <style>
     * {
       margin: 0;
@@ -243,10 +243,10 @@
 <body>
   <div class="container">
     <!-- Logo -->
-    <img src="logo.png.jpg" alt="Temmy Social" class="logo">
+    <img src="logo.png.jpg" alt="Trust Social" class="logo">
 
     <h1>Welcome back</h1>
-    <p class="subtitle">Sign in to your TemmySocials account</p>
+    <p class="subtitle">Sign in to your TrustSocials account</p>
 
     <!-- Google button -->
     <button class="google-btn" id="googleBtn">
@@ -411,19 +411,26 @@ setTimeout(() => {
     });
 
     // Google Sign In
-    googleBtn.addEventListener('click', async () => {
-      hideMessage();
-      try {
-        await signInWithPopup(auth, googleProvider);
-        showMessage('Signed in with Google successfully!', 'success');
-        
-        // Optional: redirect
-        // setTimeout(() => window.location.href = 'dashboard.html', 1500);
-      } catch (error) {
-        showMessage('Google sign-in failed. Please try again.', 'error');
-        console.error(error);
-      }
-    });
+googleBtn.addEventListener('click', async () => {
+  hideMessage();
+  googleBtn.disabled = true;
+
+  try {
+    await signInWithPopup(auth, googleProvider);
+    showMessage('Signed in with Google successfully!', 'success');
+
+    // Redirect to dashboard after successful Google login
+    setTimeout(() => {
+      window.location.href = 'dashboard.html';
+    }, 1000);
+
+  } catch (error) {
+    showMessage('Google sign-in failed. Please try again.', 'error');
+    console.error(error);
+  } finally {
+    googleBtn.disabled = false;
+  }
+});
   </script>
 </body>
 </html>
