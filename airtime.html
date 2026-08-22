@@ -546,13 +546,17 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
-    const MARKUP = 0.30; // 30%
+    // ========== MARKUP RATES ==========
+    const AIRTIME_MARKUP = 0.05;      // 5%
+    const DATA_MARKUP = 0.30;         // 30%
+    const ELECTRICITY_MARKUP = 0.05;  // 5%
 
     let currentUser = null;
     let selectedAirtimeNetwork = null;
     let selectedDataNetwork = null;
     let selectedDisco = null;
-   let currentDataPlans = [];
+    let currentDataPlans = [];
+
     // ========== COMMON ==========
     const errorBox = document.getElementById("errorBox");
     const successBox = document.getElementById("successBox");
@@ -643,7 +647,7 @@
 
     document.getElementById("airtimeAmount").addEventListener("input", () => {
       const amount = Number(document.getElementById("airtimeAmount").value) || 0;
-      const selling = amount * (1 + MARKUP);
+      const selling = amount * (1 + AIRTIME_MARKUP);
       const box = document.getElementById("airtimePriceBox");
       if (amount > 0) {
         box.style.display = "block";
@@ -667,7 +671,7 @@
       clearMessages();
       const phone = document.getElementById("airtimePhone").value.trim();
       const amount = Number(document.getElementById("airtimeAmount").value);
-      const sellingPrice = amount * (1 + MARKUP);
+      const sellingPrice = amount * (1 + AIRTIME_MARKUP);
 
       const btn = document.getElementById("airtimeBuyBtn");
       btn.disabled = true;
@@ -684,7 +688,7 @@
           phone,
           amount,
           sellingPrice: Number(sellingPrice.toFixed(2)),
-          markup: 30,
+          markup: 5,
           status: "processing",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
@@ -730,155 +734,155 @@
     });
 
     // ========== DATA ==========
-document.querySelectorAll("#dataNetworks .option-card").forEach(card => {
-  card.addEventListener("click", async () => {
-    document.querySelectorAll("#dataNetworks .option-card").forEach(c => c.classList.remove("active"));
-    card.classList.add("active");
-    selectedDataNetwork = card.dataset.network;
+    document.querySelectorAll("#dataNetworks .option-card").forEach(card => {
+      card.addEventListener("click", async () => {
+        document.querySelectorAll("#dataNetworks .option-card").forEach(c => c.classList.remove("active"));
+        card.classList.add("active");
+        selectedDataNetwork = card.dataset.network;
 
-    const select = document.getElementById("dataPlan");
-    select.innerHTML = `<option value="">Loading plans...</option>`;
-    document.getElementById("dataPriceBox").style.display = "none";
-    document.getElementById("dataBuyBtn").disabled = true;
+        const select = document.getElementById("dataPlan");
+        select.innerHTML = `<option value="">Loading plans...</option>`;
+        document.getElementById("dataPriceBox").style.display = "none";
+        document.getElementById("dataBuyBtn").disabled = true;
 
-    try {
-      const res = await fetch("/api/clubkonnect-plans");
-      const data = await res.json();
+        try {
+          const res = await fetch("/api/clubkonnect-plans");
+          const data = await res.json();
 
-      // Map network codes to ClubKonnect keys
-      const networkMap = {
-        "01": "MTN",
-        "02": "Glo",
-        "03": "m_9mobile",
-        "04": "Airtel"
-      };
+          // Map network codes to ClubKonnect keys
+          const networkMap = {
+            "01": "MTN",
+            "02": "Glo",
+            "03": "m_9mobile",
+            "04": "Airtel"
+          };
 
-      const networkKey = networkMap[selectedDataNetwork];
-      const networkData = data?.MOBILE_NETWORK?.[networkKey];
+          const networkKey = networkMap[selectedDataNetwork];
+          const networkData = data?.MOBILE_NETWORK?.[networkKey];
 
-      select.innerHTML = `<option value="">Select a plan</option>`;
+          select.innerHTML = `<option value="">Select a plan</option>`;
 
-      if (!networkData || !networkData[0] || !networkData[0].PRODUCT) {
-        select.innerHTML = `<option value="">No plans available</option>`;
-        return;
+          if (!networkData || !networkData[0] || !networkData[0].PRODUCT) {
+            select.innerHTML = `<option value="">No plans available</option>`;
+            return;
+          }
+
+          const products = networkData[0].PRODUCT;
+
+          products.forEach(plan => {
+            const planId = plan.PRODUCT_ID;
+            const planName = plan.PRODUCT_NAME;
+            const cost = Number(plan.PRODUCT_AMOUNT);
+
+            if (!planId || isNaN(cost) || cost <= 0) return;
+
+            const opt = document.createElement("option");
+            opt.value = planId;
+            opt.dataset.cost = cost;
+            opt.textContent = `${planName} - ₦${Math.round(cost).toLocaleString()}`;
+            select.appendChild(opt);
+          });
+
+        } catch (err) {
+          console.error(err);
+          select.innerHTML = `<option value="">Failed to load plans</option>`;
+          showError("Could not load data plans. Please try again.");
+        }
+      });
+    });
+
+    // When user selects a plan → show selling price
+    document.getElementById("dataPlan").addEventListener("change", () => {
+      const select = document.getElementById("dataPlan");
+      const cost = Number(select.selectedOptions[0]?.dataset.cost || 0);
+      const selling = cost * (1 + DATA_MARKUP);
+
+      const box = document.getElementById("dataPriceBox");
+      if (cost > 0) {
+        box.style.display = "block";
+        document.getElementById("dataSellingPrice").textContent = "₦" + formatMoney(selling);
+      } else {
+        box.style.display = "none";
       }
-
-      const products = networkData[0].PRODUCT;
-
-      products.forEach(plan => {
-        const planId = plan.PRODUCT_ID;
-        const planName = plan.PRODUCT_NAME;
-        const cost = Number(plan.PRODUCT_AMOUNT);
-
-        if (!planId || isNaN(cost) || cost <= 0) return;
-
-        const opt = document.createElement("option");
-        opt.value = planId;
-        opt.dataset.cost = cost;
-        opt.textContent = `${planName} - ₦${Math.round(cost).toLocaleString()}`;
-        select.appendChild(opt);
-      });
-
-    } catch (err) {
-      console.error(err);
-      select.innerHTML = `<option value="">Failed to load plans</option>`;
-      showError("Could not load data plans. Please try again.");
-    }
-  });
-});
-
-// When user selects a plan → show selling price
-document.getElementById("dataPlan").addEventListener("change", () => {
-  const select = document.getElementById("dataPlan");
-  const cost = Number(select.selectedOptions[0]?.dataset.cost || 0);
-  const selling = cost * (1 + MARKUP);
-
-  const box = document.getElementById("dataPriceBox");
-  if (cost > 0) {
-    box.style.display = "block";
-    document.getElementById("dataSellingPrice").textContent = "₦" + formatMoney(selling);
-  } else {
-    box.style.display = "none";
-  }
-  updateDataButton();
-});
-
-document.getElementById("dataPhone").addEventListener("input", updateDataButton);
-
-function updateDataButton() {
-  const phone = document.getElementById("dataPhone").value.trim();
-  const plan = document.getElementById("dataPlan").value;
-  document.getElementById("dataBuyBtn").disabled = !(selectedDataNetwork && phone.length >= 10 && plan);
-}
-
-// Buy Data button
-document.getElementById("dataBuyBtn").addEventListener("click", async () => {
-  clearMessages();
-  const phone = document.getElementById("dataPhone").value.trim();
-  const planId = document.getElementById("dataPlan").value;
-  const cost = Number(document.getElementById("dataPlan").selectedOptions[0].dataset.cost);
-  const sellingPrice = cost * (1 + MARKUP);
-
-  const btn = document.getElementById("dataBuyBtn");
-  btn.disabled = true;
-  btn.textContent = "Processing...";
-
-  let orderDocId = null;
-
-  try {
-    const orderRef = await addDoc(collection(db, "orders"), {
-      userId: currentUser.uid,
-      userEmail: currentUser.email || "",
-      type: "data",
-      network: selectedDataNetwork,
-      phone,
-      planId,
-      amount: cost,
-      sellingPrice: Number(sellingPrice.toFixed(2)),
-      markup: 30,
-      status: "processing",
-      createdAt: serverTimestamp(),
-      updatedAt: serverTimestamp()
-    });
-    orderDocId = orderRef.id;
-
-    const res = await fetch("/api/clubkonnect-data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        MobileNetwork: selectedDataNetwork,
-        DataPlan: planId,
-        MobileNumber: phone,
-        RequestID: orderDocId
-      })
+      updateDataButton();
     });
 
-    const data = await res.json();
+    document.getElementById("dataPhone").addEventListener("input", updateDataButton);
 
-    if (data.statuscode == "100" || data.status === "ORDER_RECEIVED" || data.orderid) {
-      await updateDoc(doc(db, "orders", orderDocId), {
-        providerOrderId: data.orderid || data.orderId || "",
-        status: "pending",
-        updatedAt: serverTimestamp()
-      });
-      showSuccess(`Data order placed successfully!<br>Order ID: ${data.orderid || orderDocId}`);
-    } else {
-      throw new Error(data.remark || data.status || data.error || "Transaction failed");
+    function updateDataButton() {
+      const phone = document.getElementById("dataPhone").value.trim();
+      const plan = document.getElementById("dataPlan").value;
+      document.getElementById("dataBuyBtn").disabled = !(selectedDataNetwork && phone.length >= 10 && plan);
     }
-  } catch (err) {
-    if (orderDocId) {
-      await updateDoc(doc(db, "orders", orderDocId), {
-        status: "failed",
-        error: err.message,
-        updatedAt: serverTimestamp()
-      });
-    }
-    showError(err.message);
-  } finally {
-    btn.disabled = false;
-    btn.textContent = "Buy Data";
-  }
-});
+
+    // Buy Data button
+    document.getElementById("dataBuyBtn").addEventListener("click", async () => {
+      clearMessages();
+      const phone = document.getElementById("dataPhone").value.trim();
+      const planId = document.getElementById("dataPlan").value;
+      const cost = Number(document.getElementById("dataPlan").selectedOptions[0].dataset.cost);
+      const sellingPrice = cost * (1 + DATA_MARKUP);
+
+      const btn = document.getElementById("dataBuyBtn");
+      btn.disabled = true;
+      btn.textContent = "Processing...";
+
+      let orderDocId = null;
+
+      try {
+        const orderRef = await addDoc(collection(db, "orders"), {
+          userId: currentUser.uid,
+          userEmail: currentUser.email || "",
+          type: "data",
+          network: selectedDataNetwork,
+          phone,
+          planId,
+          amount: cost,
+          sellingPrice: Number(sellingPrice.toFixed(2)),
+          markup: 30,
+          status: "processing",
+          createdAt: serverTimestamp(),
+          updatedAt: serverTimestamp()
+        });
+        orderDocId = orderRef.id;
+
+        const res = await fetch("/api/clubkonnect-data", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            MobileNetwork: selectedDataNetwork,
+            DataPlan: planId,
+            MobileNumber: phone,
+            RequestID: orderDocId
+          })
+        });
+
+        const data = await res.json();
+
+        if (data.statuscode == "100" || data.status === "ORDER_RECEIVED" || data.orderid) {
+          await updateDoc(doc(db, "orders", orderDocId), {
+            providerOrderId: data.orderid || data.orderId || "",
+            status: "pending",
+            updatedAt: serverTimestamp()
+          });
+          showSuccess(`Data order placed successfully!<br>Order ID: ${data.orderid || orderDocId}`);
+        } else {
+          throw new Error(data.remark || data.status || data.error || "Transaction failed");
+        }
+      } catch (err) {
+        if (orderDocId) {
+          await updateDoc(doc(db, "orders", orderDocId), {
+            status: "failed",
+            error: err.message,
+            updatedAt: serverTimestamp()
+          });
+        }
+        showError(err.message);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "Buy Data";
+      }
+    });
 
     // ========== ELECTRICITY ==========
     document.querySelectorAll("#discoGrid .option-card").forEach(card => {
@@ -892,7 +896,7 @@ document.getElementById("dataBuyBtn").addEventListener("click", async () => {
 
     document.getElementById("electricityAmount").addEventListener("input", () => {
       const amount = Number(document.getElementById("electricityAmount").value) || 0;
-      const selling = amount * (1 + MARKUP);
+      const selling = amount * (1 + ELECTRICITY_MARKUP);
       const box = document.getElementById("electricityPriceBox");
       if (amount > 0) {
         box.style.display = "block";
@@ -916,7 +920,7 @@ document.getElementById("dataBuyBtn").addEventListener("click", async () => {
       const meterNo = document.getElementById("meterNumber").value.trim();
       const meterType = document.getElementById("meterType").value;
       const amount = Number(document.getElementById("electricityAmount").value);
-      const sellingPrice = amount * (1 + MARKUP);
+      const sellingPrice = amount * (1 + ELECTRICITY_MARKUP);
 
       const btn = document.getElementById("electricityBuyBtn");
       btn.disabled = true;
@@ -934,7 +938,7 @@ document.getElementById("dataBuyBtn").addEventListener("click", async () => {
           meterType,
           amount,
           sellingPrice: Number(sellingPrice.toFixed(2)),
-          markup: 30,
+          markup: 5,
           status: "processing",
           createdAt: serverTimestamp(),
           updatedAt: serverTimestamp()
