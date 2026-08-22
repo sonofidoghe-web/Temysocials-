@@ -730,137 +730,162 @@
     });
 
     // ========== DATA ==========
-    // Simple common plans (you can expand later)
-    const dataPlans = {
-      "01": [ // MTN
-        { id: "1000", name: "1GB SME - ₦410", cost: 410 },
-        { id: "2000", name: "2GB SME - ₦820", cost: 820 },
-        { id: "3000", name: "3GB SME - ₦1230", cost: 1230 },
-        { id: "5000", name: "5GB SME - ₦2050", cost: 2050 }
-      ],
-      "02": [ // Glo
-        { id: "1000", name: "1GB - ₦461", cost: 461 },
-        { id: "2000", name: "2GB - ₦922", cost: 922 },
-        { id: "5000", name: "5GB - ₦2306", cost: 2306 }
-      ],
-      "04": [ // Airtel
-        { id: "1500", name: "2GB - ₦1455", cost: 1455 },
-        { id: "2000", name: "3GB - ₦1940", cost: 1940 }
-      ],
-      "03": [ // 9mobile
-        { id: "1000", name: "1GB - ₦492", cost: 492 },
-        { id: "2000", name: "2GB - ₦984", cost: 984 }
-      ]
-    };
+let selectedDataNetwork = null;
+let currentDataPlans = [];   // will hold live plans from ClubKonnect
 
-    document.querySelectorAll("#dataNetworks .option-card").forEach(card => {
-      card.addEventListener("click", () => {
-        document.querySelectorAll("#dataNetworks .option-card").forEach(c => c.classList.remove("active"));
-        card.classList.add("active");
-        selectedDataNetwork = card.dataset.network;
+// Network selection
+document.querySelectorAll("#dataNetworks .option-card").forEach(card => {
+  card.addEventListener("click", async () => {
+    document.querySelectorAll("#dataNetworks .option-card").forEach(c => c.classList.remove("active"));
+    card.classList.add("active");
+    selectedDataNetwork = card.dataset.network;
 
-        const select = document.getElementById("dataPlan");
-        select.innerHTML = `<option value="">Select a plan</option>`;
-        (dataPlans[selectedDataNetwork] || []).forEach(plan => {
-          const opt = document.createElement("option");
-          opt.value = plan.id;
-          opt.dataset.cost = plan.cost;
-          opt.textContent = plan.name;
-          select.appendChild(opt);
-        });
-        updateDataButton();
+    // Clear previous plans
+    const select = document.getElementById("dataPlan");
+    select.innerHTML = `<option value="">Loading plans...</option>`;
+    document.getElementById("dataPriceBox").style.display = "none";
+    document.getElementById("dataBuyBtn").disabled = true;
+
+    try {
+      // Fetch live plans from ClubKonnect
+      const res = await fetch("/api/clubkonnect-plans");
+      const data = await res.json();
+
+      // ClubKonnect usually returns plans grouped by network
+      // We filter the ones that belong to the selected network
+      currentDataPlans = [];
+
+      // The response structure can vary. We try the most common formats.
+      if (Array.isArray(data)) {
+        currentDataPlans = data.filter(p => String(p.MobileNetwork || p.network || p.Network) === selectedDataNetwork);
+      } else if (data[selectedDataNetwork]) {
+        currentDataPlans = data[selectedDataNetwork];
+      } else if (data.plans) {
+        currentDataPlans = data.plans.filter(p => String(p.MobileNetwork || p.network) === selectedDataNetwork);
+      }
+
+      // Build the dropdown
+      select.innerHTML = `<option value="">Select a plan</option>`;
+
+      if (currentDataPlans.length === 0) {
+        select.innerHTML = `<option value="">No plans available</option>`;
+        return;
+      }
+
+      currentDataPlans.forEach(plan => {
+        const planId = plan.DataPlan || plan.plan || plan.id || plan.PlanID;
+        const planName = plan.PlanName || plan.name || plan.dataplan || "Data Plan";
+        const cost = Number(plan.Amount || plan.price || plan.Price || plan.cost || 0);
+
+        if (!planId || cost <= 0) return;
+
+        const opt = document.createElement("option");
+        opt.value = planId;
+        opt.dataset.cost = cost;
+        opt.textContent = `${planName} - ₦${cost.toLocaleString()}`;
+        select.appendChild(opt);
       });
-    });
 
-    document.getElementById("dataPlan").addEventListener("change", () => {
-      const select = document.getElementById("dataPlan");
-      const cost = Number(select.selectedOptions[0]?.dataset.cost || 0);
-      const selling = cost * (1 + MARKUP);
-      const box = document.getElementById("dataPriceBox");
-      if (cost > 0) {
-        box.style.display = "block";
-        document.getElementById("dataSellingPrice").textContent = "₦" + formatMoney(selling);
-      } else {
-        box.style.display = "none";
-      }
-      updateDataButton();
-    });
-
-    document.getElementById("dataPhone").addEventListener("input", updateDataButton);
-
-    function updateDataButton() {
-      const phone = document.getElementById("dataPhone").value.trim();
-      const plan = document.getElementById("dataPlan").value;
-      document.getElementById("dataBuyBtn").disabled = !(selectedDataNetwork && phone.length >= 10 && plan);
+    } catch (err) {
+      console.error(err);
+      select.innerHTML = `<option value="">Failed to load plans</option>`;
+      showError("Could not load data plans. Please try again.");
     }
+  });
+});
 
-    document.getElementById("dataBuyBtn").addEventListener("click", async () => {
-      clearMessages();
-      const phone = document.getElementById("dataPhone").value.trim();
-      const planId = document.getElementById("dataPlan").value;
-      const cost = Number(document.getElementById("dataPlan").selectedOptions[0].dataset.cost);
-      const sellingPrice = cost * (1 + MARKUP);
+// When user selects a plan → show selling price
+document.getElementById("dataPlan").addEventListener("change", () => {
+  const select = document.getElementById("dataPlan");
+  const cost = Number(select.selectedOptions[0]?.dataset.cost || 0);
+  const selling = cost * (1 + MARKUP);
 
-      const btn = document.getElementById("dataBuyBtn");
-      btn.disabled = true;
-      btn.textContent = "Processing...";
+  const box = document.getElementById("dataPriceBox");
+  if (cost > 0) {
+    box.style.display = "block";
+    document.getElementById("dataSellingPrice").textContent = "₦" + formatMoney(selling);
+  } else {
+    box.style.display = "none";
+  }
+  updateDataButton();
+});
 
-      let orderDocId = null;
+document.getElementById("dataPhone").addEventListener("input", updateDataButton);
 
-      try {
-        const orderRef = await addDoc(collection(db, "orders"), {
-          userId: currentUser.uid,
-          userEmail: currentUser.email || "",
-          type: "data",
-          network: selectedDataNetwork,
-          phone,
-          planId,
-          amount: cost,
-          sellingPrice: Number(sellingPrice.toFixed(2)),
-          markup: 30,
-          status: "processing",
-          createdAt: serverTimestamp(),
-          updatedAt: serverTimestamp()
-        });
-        orderDocId = orderRef.id;
+function updateDataButton() {
+  const phone = document.getElementById("dataPhone").value.trim();
+  const plan = document.getElementById("dataPlan").value;
+  document.getElementById("dataBuyBtn").disabled = !(selectedDataNetwork && phone.length >= 10 && plan);
+}
 
-        const res = await fetch("/api/clubkonnect-data", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            MobileNetwork: selectedDataNetwork,
-            DataPlan: planId,
-            MobileNumber: phone,
-            RequestID: orderDocId
-          })
-        });
+// Buy Data button
+document.getElementById("dataBuyBtn").addEventListener("click", async () => {
+  clearMessages();
+  const phone = document.getElementById("dataPhone").value.trim();
+  const planId = document.getElementById("dataPlan").value;
+  const cost = Number(document.getElementById("dataPlan").selectedOptions[0].dataset.cost);
+  const sellingPrice = cost * (1 + MARKUP);
 
-        const data = await res.json();
+  const btn = document.getElementById("dataBuyBtn");
+  btn.disabled = true;
+  btn.textContent = "Processing...";
 
-        if (data.statuscode == "100" || data.status === "ORDER_RECEIVED" || data.orderid) {
-          await updateDoc(doc(db, "orders", orderDocId), {
-            providerOrderId: data.orderid || data.orderId || "",
-            status: "pending",
-            updatedAt: serverTimestamp()
-          });
-          showSuccess(`Data order placed successfully!<br>Order ID: ${data.orderid || orderDocId}`);
-        } else {
-          throw new Error(data.remark || data.status || data.error || "Transaction failed");
-        }
-      } catch (err) {
-        if (orderDocId) {
-          await updateDoc(doc(db, "orders", orderDocId), {
-            status: "failed",
-            error: err.message,
-            updatedAt: serverTimestamp()
-          });
-        }
-        showError(err.message);
-      } finally {
-        btn.disabled = false;
-        btn.textContent = "Buy Data";
-      }
+  let orderDocId = null;
+
+  try {
+    const orderRef = await addDoc(collection(db, "orders"), {
+      userId: currentUser.uid,
+      userEmail: currentUser.email || "",
+      type: "data",
+      network: selectedDataNetwork,
+      phone,
+      planId,
+      amount: cost,
+      sellingPrice: Number(sellingPrice.toFixed(2)),
+      markup: 30,
+      status: "processing",
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
     });
+    orderDocId = orderRef.id;
+
+    const res = await fetch("/api/clubkonnect-data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        MobileNetwork: selectedDataNetwork,
+        DataPlan: planId,
+        MobileNumber: phone,
+        RequestID: orderDocId
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.statuscode == "100" || data.status === "ORDER_RECEIVED" || data.orderid) {
+      await updateDoc(doc(db, "orders", orderDocId), {
+        providerOrderId: data.orderid || data.orderId || "",
+        status: "pending",
+        updatedAt: serverTimestamp()
+      });
+      showSuccess(`Data order placed successfully!<br>Order ID: ${data.orderid || orderDocId}`);
+    } else {
+      throw new Error(data.remark || data.status || data.error || "Transaction failed");
+    }
+  } catch (err) {
+    if (orderDocId) {
+      await updateDoc(doc(db, "orders", orderDocId), {
+        status: "failed",
+        error: err.message,
+        updatedAt: serverTimestamp()
+      });
+    }
+    showError(err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "Buy Data";
+  }
+});
 
     // ========== ELECTRICITY ==========
     document.querySelectorAll("#discoGrid .option-card").forEach(card => {
