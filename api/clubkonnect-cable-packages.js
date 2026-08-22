@@ -1,28 +1,29 @@
-import axios from "axios";
-
-const USER_ID = process.env.CLUBKONNECT_USER_ID;
-const API_KEY = process.env.CLUBKONNECT_API_KEY;
-const BASE_URL = "https://www.nellobytesystems.com";
-
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
+    const USER_ID = process.env.CLUBKONNECT_USER_ID;
+    const API_KEY = process.env.CLUBKONNECT_API_KEY;
+
+    if (!USER_ID || !API_KEY) {
+      return res.status(500).json({ error: "Missing ClubKonnect credentials" });
+    }
+
     const provider = (req.query.provider || "").toLowerCase();
 
     if (!provider) {
       return res.status(400).json({ error: "Provider is required" });
     }
 
-    const url = `${BASE_URL}/APICableTVPackagesV2.asp?UserID=${USER_ID}&APIKey=${API_KEY}`;
-    const response = await axios.get(url);
-    const data = response.data;
+    const url = `https://www.nellobytesystems.com/APICableTVPackagesV2.asp?UserID=${USER_ID}&APIKey=${API_KEY}`;
+
+    const response = await fetch(url);
+    const data = await response.json();
 
     let packages = [];
 
-    // Handle different possible response structures from ClubKonnect
     const providerKey = provider.toUpperCase();
     if (data[providerKey]) {
       packages = data[providerKey];
@@ -34,7 +35,6 @@ export default async function handler(req, res) {
       );
     }
 
-    // Normalize for frontend
     const normalized = packages
       .map((pkg) => ({
         code: pkg.PACKAGE_ID || pkg.PACKAGE_CODE || pkg.code || pkg.id,
@@ -45,7 +45,10 @@ export default async function handler(req, res) {
 
     return res.status(200).json({ packages: normalized });
   } catch (error) {
-    console.error("Cable packages error:", error.message);
-    return res.status(500).json({ error: "Failed to load packages" });
+    console.error("Cable packages error:", error);
+    return res.status(500).json({ 
+      error: "Failed to load packages",
+      details: error.message 
+    });
   }
 }
