@@ -730,57 +730,52 @@
     });
 
     // ========== DATA ==========
-
-// Network selection
 document.querySelectorAll("#dataNetworks .option-card").forEach(card => {
   card.addEventListener("click", async () => {
     document.querySelectorAll("#dataNetworks .option-card").forEach(c => c.classList.remove("active"));
     card.classList.add("active");
     selectedDataNetwork = card.dataset.network;
 
-    // Clear previous plans
     const select = document.getElementById("dataPlan");
     select.innerHTML = `<option value="">Loading plans...</option>`;
     document.getElementById("dataPriceBox").style.display = "none";
     document.getElementById("dataBuyBtn").disabled = true;
 
     try {
-      // Fetch live plans from ClubKonnect
       const res = await fetch("/api/clubkonnect-plans");
       const data = await res.json();
 
-      // ClubKonnect usually returns plans grouped by network
-      // We filter the ones that belong to the selected network
-      currentDataPlans = [];
+      // Map network codes to ClubKonnect keys
+      const networkMap = {
+        "01": "MTN",
+        "02": "Glo",
+        "03": "m_9mobile",
+        "04": "Airtel"
+      };
 
-      // The response structure can vary. We try the most common formats.
-      if (Array.isArray(data)) {
-        currentDataPlans = data.filter(p => String(p.MobileNetwork || p.network || p.Network) === selectedDataNetwork);
-      } else if (data[selectedDataNetwork]) {
-        currentDataPlans = data[selectedDataNetwork];
-      } else if (data.plans) {
-        currentDataPlans = data.plans.filter(p => String(p.MobileNetwork || p.network) === selectedDataNetwork);
-      }
+      const networkKey = networkMap[selectedDataNetwork];
+      const networkData = data?.MOBILE_NETWORK?.[networkKey];
 
-      // Build the dropdown
       select.innerHTML = `<option value="">Select a plan</option>`;
 
-      if (currentDataPlans.length === 0) {
+      if (!networkData || !networkData[0] || !networkData[0].PRODUCT) {
         select.innerHTML = `<option value="">No plans available</option>`;
         return;
       }
 
-      currentDataPlans.forEach(plan => {
-        const planId = plan.DataPlan || plan.plan || plan.id || plan.PlanID;
-        const planName = plan.PlanName || plan.name || plan.dataplan || "Data Plan";
-        const cost = Number(plan.Amount || plan.price || plan.Price || plan.cost || 0);
+      const products = networkData[0].PRODUCT;
 
-        if (!planId || cost <= 0) return;
+      products.forEach(plan => {
+        const planId = plan.PRODUCT_ID;
+        const planName = plan.PRODUCT_NAME;
+        const cost = Number(plan.PRODUCT_AMOUNT);
+
+        if (!planId || isNaN(cost) || cost <= 0) return;
 
         const opt = document.createElement("option");
         opt.value = planId;
         opt.dataset.cost = cost;
-        opt.textContent = `${planName} - ₦${cost.toLocaleString()}`;
+        opt.textContent = `${planName} - ₦${Math.round(cost).toLocaleString()}`;
         select.appendChild(opt);
       });
 
