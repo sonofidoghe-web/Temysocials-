@@ -253,16 +253,6 @@
       cursor: not-allowed;
     }
 
-    .loading {
-      background: white;
-      border: 1px solid #eee;
-      border-radius: 14px;
-      padding: 20px;
-      text-align: center;
-      color: #666;
-      margin-bottom: 20px;
-    }
-
     .error-box {
       background: #fff1f1;
       border: 1px solid #ffd0d0;
@@ -476,7 +466,6 @@
         <label>Data Plan</label>
         <select id="dataPlan">
           <option value="">Select a plan</option>
-          <!-- Common plans will be populated by JS -->
         </select>
       </div>
 
@@ -530,7 +519,15 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
     import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-    import { getFirestore, collection, addDoc, updateDoc, doc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+    import { 
+      getFirestore, 
+      collection, 
+      addDoc, 
+      updateDoc, 
+      doc, 
+      serverTimestamp,
+      runTransaction
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDDutrOemL5dqk4hIdQ1K2QmhiBhtegv8k",
@@ -555,7 +552,6 @@
     let selectedAirtimeNetwork = null;
     let selectedDataNetwork = null;
     let selectedDisco = null;
-    let currentDataPlans = [];
 
     // ========== COMMON ==========
     const errorBox = document.getElementById("errorBox");
@@ -663,8 +659,7 @@
     function updateAirtimeButton() {
       const phone = document.getElementById("airtimePhone").value.trim();
       const amount = Number(document.getElementById("airtimeAmount").value);
-      const btn = document.getElementById("airtimeBuyBtn");
-      btn.disabled = !(selectedAirtimeNetwork && phone.length >= 10 && amount >= 50);
+      document.getElementById("airtimeBuyBtn").disabled = !(selectedAirtimeNetwork && phone.length >= 10 && amount >= 50);
     }
 
     document.getElementById("airtimeBuyBtn").addEventListener("click", async () => {
@@ -678,8 +673,23 @@
       btn.textContent = "Processing...";
 
       let orderDocId = null;
+      let deducted = false;
 
       try {
+        // 1. Deduct balance
+        const userRef = doc(db, "users", currentUser.uid);
+        await runTransaction(db, async (transaction) => {
+          const userSnap = await transaction.get(userRef);
+          if (!userSnap.exists()) throw new Error("User not found");
+          const currentBalance = Number(userSnap.data().balance || 0);
+          if (currentBalance < sellingPrice) {
+            throw new Error(`Insufficient balance. You need ₦${formatMoney(sellingPrice)}`);
+          }
+          transaction.update(userRef, { balance: currentBalance - sellingPrice });
+        });
+        deducted = true;
+
+        // 2. Create order
         const orderRef = await addDoc(collection(db, "orders"), {
           userId: currentUser.uid,
           userEmail: currentUser.email || "",
@@ -695,6 +705,7 @@
         });
         orderDocId = orderRef.id;
 
+        // 3. Call ClubKonnect
         const res = await fetch("/api/clubkonnect-airtime", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -719,6 +730,18 @@
           throw new Error(data.remark || data.status || data.error || "Transaction failed");
         }
       } catch (err) {
+        // Refund if deducted
+        if (deducted) {
+          try {
+            const userRef = doc(db, "users", currentUser.uid);
+            await runTransaction(db, async (transaction) => {
+              const userSnap = await transaction.get(userRef);
+              const currentBalance = Number(userSnap.data().balance || 0);
+              transaction.update(userRef, { balance: currentBalance + sellingPrice });
+            });
+          } catch (e) { console.error("Refund failed", e); }
+        }
+
         if (orderDocId) {
           await updateDoc(doc(db, "orders", orderDocId), {
             status: "failed",
@@ -749,7 +772,6 @@
           const res = await fetch("/api/clubkonnect-plans");
           const data = await res.json();
 
-          // Map network codes to ClubKonnect keys
           const networkMap = {
             "01": "MTN",
             "02": "Glo",
@@ -791,7 +813,6 @@
       });
     });
 
-    // When user selects a plan → show selling price
     document.getElementById("dataPlan").addEventListener("change", () => {
       const select = document.getElementById("dataPlan");
       const cost = Number(select.selectedOptions[0]?.dataset.cost || 0);
@@ -815,7 +836,6 @@
       document.getElementById("dataBuyBtn").disabled = !(selectedDataNetwork && phone.length >= 10 && plan);
     }
 
-    // Buy Data button
     document.getElementById("dataBuyBtn").addEventListener("click", async () => {
       clearMessages();
       const phone = document.getElementById("dataPhone").value.trim();
@@ -828,8 +848,23 @@
       btn.textContent = "Processing...";
 
       let orderDocId = null;
+      let deducted = false;
 
       try {
+        // 1. Deduct balance
+        const userRef = doc(db, "users", currentUser.uid);
+        await runTransaction(db, async (transaction) => {
+          const userSnap = await transaction.get(userRef);
+          if (!userSnap.exists()) throw new Error("User not found");
+          const currentBalance = Number(userSnap.data().balance || 0);
+          if (currentBalance < sellingPrice) {
+            throw new Error(`Insufficient balance. You need ₦${formatMoney(sellingPrice)}`);
+          }
+          transaction.update(userRef, { balance: currentBalance - sellingPrice });
+        });
+        deducted = true;
+
+        // 2. Create order
         const orderRef = await addDoc(collection(db, "orders"), {
           userId: currentUser.uid,
           userEmail: currentUser.email || "",
@@ -846,6 +881,7 @@
         });
         orderDocId = orderRef.id;
 
+        // 3. Call ClubKonnect
         const res = await fetch("/api/clubkonnect-data", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -870,6 +906,17 @@
           throw new Error(data.remark || data.status || data.error || "Transaction failed");
         }
       } catch (err) {
+        if (deducted) {
+          try {
+            const userRef = doc(db, "users", currentUser.uid);
+            await runTransaction(db, async (transaction) => {
+              const userSnap = await transaction.get(userRef);
+              const currentBalance = Number(userSnap.data().balance || 0);
+              transaction.update(userRef, { balance: currentBalance + sellingPrice });
+            });
+          } catch (e) { console.error("Refund failed", e); }
+        }
+
         if (orderDocId) {
           await updateDoc(doc(db, "orders", orderDocId), {
             status: "failed",
@@ -927,8 +974,23 @@
       btn.textContent = "Processing...";
 
       let orderDocId = null;
+      let deducted = false;
 
       try {
+        // 1. Deduct balance
+        const userRef = doc(db, "users", currentUser.uid);
+        await runTransaction(db, async (transaction) => {
+          const userSnap = await transaction.get(userRef);
+          if (!userSnap.exists()) throw new Error("User not found");
+          const currentBalance = Number(userSnap.data().balance || 0);
+          if (currentBalance < sellingPrice) {
+            throw new Error(`Insufficient balance. You need ₦${formatMoney(sellingPrice)}`);
+          }
+          transaction.update(userRef, { balance: currentBalance - sellingPrice });
+        });
+        deducted = true;
+
+        // 2. Create order
         const orderRef = await addDoc(collection(db, "orders"), {
           userId: currentUser.uid,
           userEmail: currentUser.email || "",
@@ -945,6 +1007,7 @@
         });
         orderDocId = orderRef.id;
 
+        // 3. Call ClubKonnect
         const res = await fetch("/api/clubkonnect-electricity", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -970,6 +1033,17 @@
           throw new Error(data.remark || data.status || data.error || "Transaction failed");
         }
       } catch (err) {
+        if (deducted) {
+          try {
+            const userRef = doc(db, "users", currentUser.uid);
+            await runTransaction(db, async (transaction) => {
+              const userSnap = await transaction.get(userRef);
+              const currentBalance = Number(userSnap.data().balance || 0);
+              transaction.update(userRef, { balance: currentBalance + sellingPrice });
+            });
+          } catch (e) { console.error("Refund failed", e); }
+        }
+
         if (orderDocId) {
           await updateDoc(doc(db, "orders", orderDocId), {
             status: "failed",
